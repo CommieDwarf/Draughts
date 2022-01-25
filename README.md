@@ -9,8 +9,3 @@
 
 Now with working chat!
 
-<<<<<<< HEAD
-test 123
-=======
-main
->>>>>>> 9a64ad9 (Update README.md)
