@@ -1,0 +1,46 @@
+.game-preview {
+    width: 550px;
+    height: 100px;
+    margin: auto;
+    position: relative;
+    display: flex;
+  }
+
+  .game-preview__chessboard-wrapper {
+    width: 150px;
+    height: auto;
+    transform-origin: left top;
+    transform: scale(0.2);
+    position: relative;
+    cursor: pointer;
+  }
+  .game-preview__chessboard {
+    transition: transform 0s linear;
+    transform-style: preserve-3D;
+    transform: perspective(1000px) rotateX(60deg);
+    transform-origin: top;
+  }
+
+
+  .game-preview__label {
+    color: white;
+    width: 400px;
+    height: 100px;
+    text-align: center;
+    font-size: 90px;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+
+
+  .game-preview__close-game {
+    color: #FD1515;
+    width: 100px;
+    height: 100px;
+    font-size: 100px;
+    z-index: 1000;
+    position: absolute;
+    left: 400px;
+    top: 0px;
+  }
+  

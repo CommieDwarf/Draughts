@@ -1,0 +1,106 @@
+.pionowa-lewa {
+    background-color: yellow;
+    width: 5px;
+    border-radius: 0% 100% 0% 39%;
+    height: 17px;
+    position: absolute;
+    top: -6px;
+    border-top: 1px solid rgb(221 225 0);
+    border-left: 1px solid rgb(221 225 0);
+}
+.pionowa-srodkowa {
+  background-color: yellow;
+  width: 6px;
+  border-radius: 100% 100% 0% 0%;
+  height: 17px;
+  position: absolute;
+  top: -6px;
+  left: 7px;
+  border-top: 1px solid rgb(221 225 0);
+}
+
+.pionowa-prawa {
+  background-color: yellow;
+  width: 5px;
+  border-radius: 100% 0% 39% 0%;
+  height: 17px;
+  position: absolute;
+  top: -6px;
+  left: 14px;
+  border-top: 1px solid rgb(221 225 0);
+  border-right: 1px solid rgb(221 225 0);
+}
+.pozioma-belka {
+  background-color: yellow;
+  height: 5px;
+  width: 16px;
+  position: absolute;
+  top: 7px;
+  border-radius: 20%;
+  left: 2px;
+  border-bottom: 1px solid rgb(221 225 0);
+  /*-box-shadow: 0px 3px 5px -1px rgb(221 225 0); */
+}
+.black-crown {
+  background-color: #cf8600;
+}
+.pionowa-srodkowa-czarna {
+  border-top: 1px solid #955b00
+}
+.pionowa-prawa-czarna {
+  border-right: 1px solid #955b00;
+  border-top: 1px solid #955b00;
+}
+.pionowa-lewa-czarna {
+  border-left: 1px solid #955b00;
+  border-top: 1px solid #955b00;
+}
+.pozioma-belka-czarna {
+  border-bottom: 1px solid #955b00;
+  /* box-shadow: 0px 3px 5px -1px orange; */
+}
+.selected-crown-black {
+  background-color: #a36900;
+}
+.cien1 {
+  left: 9px;
+  border-top-left-radius: 100%;
+  border-top-right-radius: 100%;
+}
+.cien2 {
+  border-top-right-radius: 100%;
+  left: 2px;
+}
+.cien3 {
+  border-top-left-radius: 100%;
+  left: 16px;
+}
+.cien-white {
+  background-color: rgb(235 239 0);
+}
+.cien-black {
+  background-color: rgb(171 96 0);
+}
+.cien {
+  width: 2px;
+  height: 10px;
+  top: -3px;
+  position: absolute;
+}
+.cien-kula1 {
+  top: 1px;
+}
+.cien-kula2 {
+  left: 7px;
+}
+.cien-kula3 {
+  left: 14px;
+}
+.cien-kula {
+  width: 2px;
+  height: 2px;
+  border-radius: 100%;
+  z-index: 3;
+  position: absolute;
+  top: 1px;
+}

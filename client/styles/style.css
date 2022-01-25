@@ -1,0 +1,180 @@
+body {
+  background-color: #000;
+  height: 95vh;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+.app {
+
+  width: 100%;
+  max-width: 1500px;
+  margin: auto;
+}
+
+.app__input-name {
+  width: 300px;
+  height: 100px;
+  color: white;
+  text-align: center;
+  margin: auto;
+}
+
+#game {
+  width: 510px;
+  height: 700px;
+  margin: auto;
+}
+
+#container {
+  width: 100%;
+  margin: auto;
+}
+
+.chessboard {
+  height: 400px;
+  width: 400px;
+  background-color: black;
+  margin-top: 50px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  border: 3px solid black;
+  -webkit-box-shadow: 0px 0px 111px -16px rgba(255,255,255,1);
+  -moz-box-shadow: 0px 0px 111px -16px rgba(255,255,255,1);
+  box-shadow: 0px 0px 111px -16px rgba(255,255,255,1);
+  z-index: 1;
+}
+
+
+
+
+
+.square {
+  height: 50px;
+  width: 50px;
+  background-color: black;
+  position: relative;
+}
+.white {
+  background-color: white;
+}
+.black {
+  background-color: black;
+}
+.highlightedSquare {border-radius: bb ;
+  -webkit-box-shadow: inset 0px 0px 33px 14px rgba(21,255,0,0.41);
+  -moz-box-shadow: inset 0px 0px 33px 14px rgba(21,255,0,0.41);
+  box-shadow: inset 0px 0px 33px 14px rgba(21,255,0,0.41);
+}
+
+.label {
+  cursor: default;
+  user-select: none;
+}
+
+#top-label {
+  width: 400px;
+  height: 50px;
+  margin: auto;
+}
+.top-letter, .bot-letter {
+  height: 45px;
+  width: 50px;
+  font-size: 40px;
+  text-align: center;
+  padding-top: 5px;
+  display: inline-block;
+  margin: 0;
+}
+#left-label {
+  float: left;
+  z-index: 7;
+  position:relative
+}
+.left-num {
+  height: 50px;
+  width: 50px;
+  font-size: 40px;
+  text-align: center;
+}
+#right-label {
+  float: right;
+}
+.right-num {
+  height: 50px;
+  width: 50px;
+  font-size: 40px;
+  text-align: center;
+}
+#bot-label {
+  width: 400px;
+  height: 50px;
+  margin: auto;
+  position: relative;
+}
+
+
+:root {
+  --color: white;
+}
+
+.bg-animation {
+  animation-duration: 8s;
+  animation-iteration-count: infinite;
+  animation-name: fog;
+  color: white;
+}
+
+
+@keyframes fog {
+  0% {box-shadow: 0px 0px 80px -16px}
+  50% {box-shadow: 0px 0px 150px -16px}
+  100% {box-shadow: 0px 0px 80px -16px}
+}
+
+
+
+
+/* WIN
+  ===============================
+*/
+
+
+
+.contextMenu {
+  background-color: white;
+  width: 100px;
+  height: 60px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  visibility: hidden; 
+  z-index: 10000;
+  position:absolute;
+  border: 2px black solid;
+}
+.contextTop {
+  cursor: pointer;
+}
+.contextBot {
+  cursor: pointer
+}
+hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+
+
+.color-black {
+  color: black !important;
+}

@@ -1,0 +1,30 @@
+.win-menu {
+    width: 402px;
+    height: 402px;
+    position: absolute;
+    background-color: black;
+    z-index: 10;
+    margin-top: 51px;
+    margin-left: 53px;
+    color: white;
+    text-align: center;
+    font-size: 35px;
+    background: rgba(0, 0, 0, .7);
+    visibility: hidden;
+}
+
+.win-menu--visible {
+    visibility: visible;
+}
+
+.win-menu--hidden {
+    visibility: hidden;
+}
+
+.win-menu__play-again {
+cursor: pointer;
+}
+
+
+
+
