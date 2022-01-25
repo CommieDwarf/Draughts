@@ -1,7 +1,7 @@
 import React, { createElement, ReactElement } from "react";
 import Avatar from "./avatar";
 
-import { Player } from "./lobby";
+import { IPlayer } from "./lobby";
 import { path } from "./emojis";
 import { emojis } from "./emojis";
 
@@ -9,7 +9,7 @@ import { emojis } from "./emojis";
 export default class Message extends React.Component {
 
     props: {
-        author: Player,
+        author: IPlayer,
         content: string,
         thisPlayerId: string;
     }

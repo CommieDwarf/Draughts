@@ -1,51 +1,62 @@
 import React from 'react';
-import {IChessboard} from "../../engine";
+import { IChessboard } from "../../engine";
 
 
 export default class ContextMenu extends React.Component {
 
     ctxMenuRef: React.RefObject<HTMLDivElement>
-
+    // dsad
     props: {
-        queen: boolean;
-        piece: string;
-        id: number;
+        contextMenu: {
+            piece: string,
+            queen: boolean,
+            i: number,
+            clientX: number,
+            clientY: number,
+            showMenu: boolean
+        }
         chessboard: IChessboard;
     }
     constructor(props: any) {
         super(props);
         this.props = props;
         this.state = {}
+        this.ctxMenuRef = React.createRef();
     }
 
     onClickTopHandler = () => {
         let props = this.props
-        if (props.queen) {
-            props.chessboard[props.id]["queen"] = false;
-        } else if (props.piece) {
-            props.chessboard[props.id]['queen'] = true;
+        if (props.contextMenu.queen) {
+            props.chessboard[props.contextMenu.i]["queen"] = false;
+        } else if (props.contextMenu.piece) {
+            props.chessboard[props.contextMenu.i]['queen'] = true;
         } else {
-            props.chessboard[props.id]["piece"] = "black";
+            props.chessboard[props.contextMenu.i]["piece"] = "black";
         }
     }
+
+    
+
+    
     onClickBotHandler = () => {
         let props = this.props
-        if (props.queen) {
-            props.chessboard[props.id]["piece"] = "";
-            props.chessboard[props.id]["queen"] = false;
-        } else if (props.piece) {
-            props.chessboard[props.id]['piece'] = "";
+        if (props.contextMenu.queen) {
+            props.chessboard[props.contextMenu.i]["piece"] = "";
+            props.chessboard[props.contextMenu.i]["queen"] = false;
+        } else if (props.contextMenu.piece) {
+            props.chessboard[props.contextMenu.i]['piece'] = "";
         } else {
-            props.chessboard[props.id]["piece"] = "white";
+            props.chessboard[props.contextMenu.i]["piece"] = "white";
         }
     }
 
     componentDidUpdate() {
-        let contextMenu =  
+        let contextMenu = this.ctxMenuRef.current;
+        
         if (contextMenu) {
-            let attribute = "left: " + this.state.contextMenu.clientX + "px; "
-            attribute += "top: " + this.state.contextMenu.clientY + "px; "
-            if (this.state.contextMenu.showMenu) {
+            let attribute = "left: " + this.props.contextMenu.clientX + "px; "
+            attribute += "top: " + this.props.contextMenu.clientY + "px; "
+            if (this.props.contextMenu.showMenu) {
                 attribute += "visibility: visible";
             } else {
                 attribute += "visibility: hidden";
@@ -60,30 +71,30 @@ export default class ContextMenu extends React.Component {
 
         let label1
         let label2
-        
-        if (props.queen) {
+
+        if (props.contextMenu.queen) {
             label1 = "queen";
             label2 = "remove";
-        } else if (props.piece) {
+        } else if (props.contextMenu.piece) {
             label1 = "queen";
             label2 = "remove";
         } else {
             label1 = "black";
             label2 = "white";
         }
-        
+
         return (
-            <div className = "context-menu" ref={this.props.ctxRef}>
-                <div className="context-menu__label" onClick={this.onClickTopHandler}> 
-                {label1}
+            <div className="context-menu" ref={this.ctxMenuRef}>
+                <div className="context-menu__label" onClick={this.onClickTopHandler}>
+                    {label1}
                 </div>
-                <hr/>
-                <div className="context-menu__label" onClick={this.onClickBotHandler}> 
-                {label2}
+                <hr />
+                <div className="context-menu__label" onClick={this.onClickBotHandler}>
+                    {label2}
                 </div>
                 <br></br>
             </div>
         )
     }
-    
+
 }

@@ -107,18 +107,6 @@ var Board = /** @class */ (function (_super) {
     Board.prototype.componentDidUpdate = function () {
         var engine = this.props.game.engine;
         // context menu managment
-        var contextMenu = ReactDOM.findDOMNode(); //this.contextMenuRef;
-        if (contextMenu) {
-            var attribute = "left: " + this.state.contextMenu.clientX + "px; ";
-            attribute += "top: " + this.state.contextMenu.clientY + "px; ";
-            if (this.state.contextMenu.showMenu) {
-                attribute += "visibility: visible";
-            }
-            else {
-                attribute += "visibility: hidden";
-            }
-            contextMenu.setAttribute("style", attribute);
-        }
         // win menu managment
         var winMenu = document.getElementById('winMenu');
         if (winMenu) {
@@ -145,7 +133,7 @@ var Board = /** @class */ (function (_super) {
             react_1.default.createElement(right_label_1.default, null),
             react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, id: 0, game: this.props.game, setWinner: this.setWinner }),
             react_1.default.createElement(bot_label_1.default, null),
-            react_1.default.createElement(context_menu_1.default, { ctxRef: this.contextMenuRef, piece: ctxMenu.piece, queen: ctxMenu.queen, id: ctxMenu.i, chessboard: engine.chessboard })));
+            react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard })));
     };
     return Board;
 }(react_1.default.Component));

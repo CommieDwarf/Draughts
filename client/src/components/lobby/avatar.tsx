@@ -16,7 +16,7 @@ export default class Avatar extends Component<Props, State> {
         theme: string,
         shape: string,
         small?: boolean,
-        canInvite: boolean,
+        canInvite?: boolean,
     }
 
     constructor(props: any) {

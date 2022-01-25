@@ -108,17 +108,7 @@ export default class Board extends React.Component<MyProps, MyState> {
     componentDidUpdate() {
         let engine = this.props.game.engine;
         // context menu managment
-        let contextMenu = ReactDOM.findDOMNode() //this.contextMenuRef;
-        if (contextMenu) {
-            let attribute = "left: " + this.state.contextMenu.clientX + "px; "
-            attribute += "top: " + this.state.contextMenu.clientY + "px; "
-            if (this.state.contextMenu.showMenu) {
-                attribute += "visibility: visible";
-            } else {
-                attribute += "visibility: hidden";
-            }
-            contextMenu.setAttribute("style", attribute);
-        }
+        
 
         // win menu managment
         let winMenu = document.getElementById('winMenu');
@@ -154,7 +144,7 @@ export default class Board extends React.Component<MyProps, MyState> {
                 <RightLabel/>
                 <Chessboard engine = {engine} preview = {false} id={0} game={this.props.game} setWinner={this.setWinner}/>
                 <BotLabel/>
-                <ContextMenu ctxRef={this.contextMenuRef} piece={ctxMenu.piece} queen ={ctxMenu.queen} id={ctxMenu.i} chessboard={engine.chessboard}/>
+                <ContextMenu contextMenu={this.state.contextMenu} chessboard={engine.chessboard}/>
             </div>
         )
     }

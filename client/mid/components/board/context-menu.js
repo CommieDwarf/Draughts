@@ -25,39 +25,40 @@ var ContextMenu = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.onClickTopHandler = function () {
             var props = _this.props;
-            if (props.queen) {
-                props.chessboard[props.id]["queen"] = false;
+            if (props.contextMenu.queen) {
+                props.chessboard[props.contextMenu.i]["queen"] = false;
             }
-            else if (props.piece) {
-                props.chessboard[props.id]['queen'] = true;
+            else if (props.contextMenu.piece) {
+                props.chessboard[props.contextMenu.i]['queen'] = true;
             }
             else {
-                props.chessboard[props.id]["piece"] = "black";
+                props.chessboard[props.contextMenu.i]["piece"] = "black";
             }
         };
         _this.onClickBotHandler = function () {
             var props = _this.props;
-            if (props.queen) {
-                props.chessboard[props.id]["piece"] = "";
-                props.chessboard[props.id]["queen"] = false;
+            if (props.contextMenu.queen) {
+                props.chessboard[props.contextMenu.i]["piece"] = "";
+                props.chessboard[props.contextMenu.i]["queen"] = false;
             }
-            else if (props.piece) {
-                props.chessboard[props.id]['piece'] = "";
+            else if (props.contextMenu.piece) {
+                props.chessboard[props.contextMenu.i]['piece'] = "";
             }
             else {
-                props.chessboard[props.id]["piece"] = "white";
+                props.chessboard[props.contextMenu.i]["piece"] = "white";
             }
         };
         _this.props = props;
         _this.state = {};
+        _this.ctxMenuRef = react_1.default.createRef();
         return _this;
     }
     ContextMenu.prototype.componentDidUpdate = function () {
-        var contextMenu = ;
+        var contextMenu = this.ctxMenuRef.current;
         if (contextMenu) {
-            var attribute = "left: " + this.state.contextMenu.clientX + "px; ";
-            attribute += "top: " + this.state.contextMenu.clientY + "px; ";
-            if (this.state.contextMenu.showMenu) {
+            var attribute = "left: " + this.props.contextMenu.clientX + "px; ";
+            attribute += "top: " + this.props.contextMenu.clientY + "px; ";
+            if (this.props.contextMenu.showMenu) {
                 attribute += "visibility: visible";
             }
             else {
@@ -70,11 +71,11 @@ var ContextMenu = /** @class */ (function (_super) {
         var props = this.props;
         var label1;
         var label2;
-        if (props.queen) {
+        if (props.contextMenu.queen) {
             label1 = "queen";
             label2 = "remove";
         }
-        else if (props.piece) {
+        else if (props.contextMenu.piece) {
             label1 = "queen";
             label2 = "remove";
         }
@@ -82,7 +83,7 @@ var ContextMenu = /** @class */ (function (_super) {
             label1 = "black";
             label2 = "white";
         }
-        return (react_1.default.createElement("div", { className: "context-menu", ref: this.props.ctxRef },
+        return (react_1.default.createElement("div", { className: "context-menu", ref: this.ctxMenuRef },
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickTopHandler }, label1),
             react_1.default.createElement("hr", null),
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickBotHandler }, label2),
