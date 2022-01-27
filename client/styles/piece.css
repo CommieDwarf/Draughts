@@ -7,7 +7,7 @@
     z-index: 100;
   
   }
-  .piece-center {
+  .piece__center {
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -16,75 +16,75 @@
     top: 11px;
   }
   
-  .piece-white {
+  .piece--white {
     background-color: #DDD;
     cursor: pointer;
   }
-  .piece-center-white {
+  .piece__center--white {
     border-bottom: 1px solid #AAA;
     background-color: #EEE;
   }
-  .piece-black {
+  .piece--black {
     background-color: #666;
   }
-  .piece-center-black {
+  .piece__center--black {
     border-bottom: 1px solid #333;
     background-color: #777;
   }
   
-  .white-killable {
+  .piece--white-killable {
      background-color: #ff9999;
   }
-  .white-center-killable {
+  .piece__center--white-killable {
     background-color: #fad4d4;
     border-bottom: 1px solid #4d0000;
   }
-  .black-killable {
+  .piece--black-killable {
     background-color: #993300;
   }
-  .black-center-killable {
+  .piece__center--black-killable {
     background-color: #e64d00;
     border-bottom: 1px solid #4d1a00;
   }
-  .white-locked {
+  .piece--white-locked {
     background-color: #ccffcf;
   }
-  .white-center-locked {
+  .piece__center--white-locked {
     background-color: #f7fff8;
     border-bottom: 1px solid #498763;
   }
-  .black-locked {
+  .piece--black-locked {
     background-color: #586e5a !important;
   }
-  .black-center-locked {
+  .piece__center--black-locked {
     background-color: #709c77;
     border-bottom: 1px solid #172b1f;
   }
-  .selected-black {
+  .piece--selected-black {
     background-color: #586e5a;
   }
-  .selected-center-black {
+  .center--black-selected {
     background-color: #709c77;
     border-bottom: 1px solid #172b1f;
   }
-  .white-selected {
+  .piece--white-selected {
     background-color: #4dff5b !important;
   }
-  .white-center-selected {
+  .piece__center--white-selected {
     background-color: #b3ffb9 !important;
     border-bottom: 1px solid #00800b !important;
   }
-  .black-selected {
+  .piece--black-selected {
     background-color: #004d00 !important;
   }
-  .black-center-selected {
+  .piece__center--black-selected {
     background-color: #008000 !important;
     border-bottom: 1px solid #001a00 !important;
   }
 
-  .piece-white-hover {
+  .piece--white-hover {
     background-color: #b8b8b8;
   }
-  .piece-center-white-hover {
+  .piece__center--white-hover {
     background-color: #ededed;
   }

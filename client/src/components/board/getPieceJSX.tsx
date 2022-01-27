@@ -18,9 +18,9 @@ export function getPieceJSX(color: Color, type: Type, queen: boolean = false) {
     switch (color) {
       case "black":
         piece = (
-          <div className={"piece piece-black " + baseClass}>
+          <div className={"piece piece--black " + baseClass}>
             {" "}
-            <div className={"piece-center piece-center-black " + centerClass}>
+            <div className={"piece__center piece__center--black " + centerClass}>
               {" "}
             </div>{" "}
           </div>
@@ -28,9 +28,9 @@ export function getPieceJSX(color: Color, type: Type, queen: boolean = false) {
         break;
       case "white":
         piece = (
-          <div className={"piece piece-white " + baseClass}>
+          <div className={"piece piece--white " + baseClass}>
             {" "}
-            <div className={"piece-center piece-center-white " + centerClass}>
+            <div className={"piece__center piece__center--white " + centerClass}>
               {" "}
             </div>{" "}
           </div>
@@ -45,8 +45,8 @@ function getQueen(color: Color, type: Type) {
   let [baseClass, centerClass] = getSpecialClass(type, color);
   if (color == "white") {
     return (
-      <div className={"piece piece-white " + baseClass}>
-        <div className={"piece-center piece-center-white " + centerClass}>
+      <div className={"piece piece--white " + baseClass}>
+        <div className={"piece__center piece__center--white " + centerClass}>
           <div className="pionowa-lewa"></div>
           <div className="pionowa-srodkowa"></div>
           <div className="pionowa-prawa"></div>
@@ -63,8 +63,8 @@ function getQueen(color: Color, type: Type) {
     );
   } else {
     return (
-      <div className={"piece piece-black " + baseClass}>
-        <div className={"piece-center piece-center-black " + centerClass}>
+      <div className={"piece piece--black " + baseClass}>
+        <div className={"piece__center piece__center--black " + centerClass}>
           <div className="pionowa-lewa black-crown pionowa-lewa-czarna"></div>
           <div className="pionowa-srodkowa black-crown pionowa-srodkowa-czarna"></div>
           <div className="pionowa-prawa black-crown pionowa-prawa-czarna"></div>
@@ -88,16 +88,16 @@ function getSpecialClass(type: Type, color: Color) {
   if (color == "white") {
     switch (type) {
       case "selected":
-        baseClass = "white-selected";
-        centerClass = "white-center-selected";
+        baseClass = "piece--white-selected";
+        centerClass = "piece__center--white-selected";
         break;
       case "locked":
-        baseClass = "white-locked";
-        centerClass = "white-center-locked";
+        baseClass = "piece--white-locked";
+        centerClass = "piece__center--white-locked";
         break;
       case "killable":
-          baseClass="white-killable";
-          centerClass = "white-center-killable";
+          baseClass="piece--white-killable";
+          centerClass = "piece__center--white-killable";
           break;
       default:
         baseClass = "";
@@ -107,16 +107,16 @@ function getSpecialClass(type: Type, color: Color) {
   } else {
     switch (type) {
       case "selected":
-        baseClass = "black-selected";
-        centerClass = "black-center-selected";
+        baseClass = "piece--black-selected";
+        centerClass = "piece__center--black-selected";
         break;
         case "killable":
-          baseClass = "black-killable";
-          centerClass = "black-center-killable";
+          baseClass = "piece--black-killable";
+          centerClass = "piece__center--black-killable";
           break;
       case "locked":
-        baseClass = "black-locked";
-        centerClass = "black-center-locked";
+        baseClass = "piece--black-locked";
+        centerClass = "piece__-center-black-locked";
         break;
       default:
         baseClass = "";

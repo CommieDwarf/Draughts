@@ -23,7 +23,7 @@ export default class Game {
   id: number;
 
   constructor(gameMode: GAMEMODE, playerColor: Color, side: SIDE, label: string, id: number) {
-    this.engine = new Engine(SIDE.CUSTOM);
+    this.engine = new Engine(side);
     this.botColor = playerColor == "white" ? "black" : "white";
     this.bot = new Bot(this.engine, this.botColor);
     this.gameMode = gameMode;

@@ -18,15 +18,15 @@ function getPieceJSX(color, type, queen) {
     else {
         switch (color) {
             case "black":
-                piece = (react_1.default.createElement("div", { className: "piece piece-black " + baseClass },
+                piece = (react_1.default.createElement("div", { className: "piece piece--black " + baseClass },
                     " ",
-                    react_1.default.createElement("div", { className: "piece-center piece-center-black " + centerClass }, " "),
+                    react_1.default.createElement("div", { className: "piece__center piece__center--black " + centerClass }, " "),
                     " "));
                 break;
             case "white":
-                piece = (react_1.default.createElement("div", { className: "piece piece-white " + baseClass },
+                piece = (react_1.default.createElement("div", { className: "piece piece--white " + baseClass },
                     " ",
-                    react_1.default.createElement("div", { className: "piece-center piece-center-white " + centerClass }, " "),
+                    react_1.default.createElement("div", { className: "piece__center piece__center--white " + centerClass }, " "),
                     " "));
                 break;
         }
@@ -37,8 +37,8 @@ exports.getPieceJSX = getPieceJSX;
 function getQueen(color, type) {
     var _a = getSpecialClass(type, color), baseClass = _a[0], centerClass = _a[1];
     if (color == "white") {
-        return (react_1.default.createElement("div", { className: "piece piece-white " + baseClass },
-            react_1.default.createElement("div", { className: "piece-center piece-center-white " + centerClass },
+        return (react_1.default.createElement("div", { className: "piece piece--white " + baseClass },
+            react_1.default.createElement("div", { className: "piece__center piece__center--white " + centerClass },
                 react_1.default.createElement("div", { className: "pionowa-lewa" }),
                 react_1.default.createElement("div", { className: "pionowa-srodkowa" }),
                 react_1.default.createElement("div", { className: "pionowa-prawa" }),
@@ -51,8 +51,8 @@ function getQueen(color, type) {
                 react_1.default.createElement("div", { className: "cien3 cien-white cien" }))));
     }
     else {
-        return (react_1.default.createElement("div", { className: "piece piece-black " + baseClass },
-            react_1.default.createElement("div", { className: "piece-center piece-center-black " + centerClass },
+        return (react_1.default.createElement("div", { className: "piece piece--black " + baseClass },
+            react_1.default.createElement("div", { className: "piece__center piece__center--black " + centerClass },
                 react_1.default.createElement("div", { className: "pionowa-lewa black-crown pionowa-lewa-czarna" }),
                 react_1.default.createElement("div", { className: "pionowa-srodkowa black-crown pionowa-srodkowa-czarna" }),
                 react_1.default.createElement("div", { className: "pionowa-prawa black-crown pionowa-prawa-czarna" }),
@@ -71,16 +71,16 @@ function getSpecialClass(type, color) {
     if (color == "white") {
         switch (type) {
             case "selected":
-                baseClass = "white-selected";
-                centerClass = "white-center-selected";
+                baseClass = "piece--white-selected";
+                centerClass = "piece__center--white-selected";
                 break;
             case "locked":
-                baseClass = "white-locked";
-                centerClass = "white-center-locked";
+                baseClass = "piece--white-locked";
+                centerClass = "piece__center--white-locked";
                 break;
             case "killable":
-                baseClass = "white-killable";
-                centerClass = "white-center-killable";
+                baseClass = "piece--white-killable";
+                centerClass = "piece__center--white-killable";
                 break;
             default:
                 baseClass = "";
@@ -91,16 +91,16 @@ function getSpecialClass(type, color) {
     else {
         switch (type) {
             case "selected":
-                baseClass = "black-selected";
-                centerClass = "black-center-selected";
+                baseClass = "piece--black-selected";
+                centerClass = "piece__center--black-selected";
                 break;
             case "killable":
-                baseClass = "black-killable";
-                centerClass = "black-center-killable";
+                baseClass = "piece--black-killable";
+                centerClass = "piece__center--black-killable";
                 break;
             case "locked":
-                baseClass = "black-locked";
-                centerClass = "black-center-locked";
+                baseClass = "piece--black-locked";
+                centerClass = "piece__-center-black-locked";
                 break;
             default:
                 baseClass = "";

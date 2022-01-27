@@ -44,7 +44,7 @@ var engine_1 = require("./engine");
 var createChessboard_1 = __importDefault(require("./createChessboard"));
 var Game = /** @class */ (function () {
     function Game(gameMode, playerColor, side, label, id) {
-        this.engine = new engine_1.Engine(2 /* CUSTOM */);
+        this.engine = new engine_1.Engine(side);
         this.botColor = playerColor == "white" ? "black" : "white";
         this.bot = new bot_1.default(this.engine, this.botColor);
         this.gameMode = gameMode;
