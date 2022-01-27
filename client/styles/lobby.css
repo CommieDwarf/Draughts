@@ -1,4 +1,4 @@
-#lobby {
+.lobby {
     width: 300px;
     height: 420px;
     float: left;
@@ -6,7 +6,7 @@
     margin-top: 30px;
     border-radius: 5px;
 }
-#invite {
+.lobby__invite-button {
     width: 20%;
     height: 20px;
     border: 1px solid white;
@@ -16,7 +16,7 @@
     text-align: center;
     font-weight: bold;
 }
-#players {
+.lobby__players {
     width: 95%;
     height: 130px;
     margin: auto;
@@ -29,15 +29,14 @@
     background-color: black;
     padding: 5px;
     border-radius: 5px;
-}
-#players::-webkit-scrollbar {
-    display: none;
-  }
-#players {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+}
+.lobby__players::-webkit-scrollbar {
+    display: none;
   }
-.player {
+
+.lobby__player {
     width: 50px;
     height: 60px;
     color: lightgreen;
@@ -46,7 +45,7 @@
 }
 
 
-.can-invite {
+.lobby__player--invitable {
     font-weight: bold !important;
     color: lightgreen;
     animation-name: shadowChange;
@@ -61,25 +60,28 @@
     100% {box-shadow: 0px 0px 10px 0px lightgreen}
 }
 
-.avatar-div {
-    width: 40px;
-    height: 40px;
-    margin: auto;
-    
+.lobby__player--current {
+    color: white;
 }
 
-.avatar {
+.lobby___avatar-div {
     width: 40px;
     height: 40px;
     margin: auto;
 }
 
-#rooms {
+.lobby__avatar-img {
+    width: 40px;
+    height: 40px;
+    margin: auto;
+}
+
+.lobby__rooms {
     color: white;
     height: 30px;
     display: flex;
 }
-.room {
+.lobby__room {
     border: 1px solid white;
     border-radius: 5px;
     display: inline-block;
@@ -87,31 +89,41 @@
     margin-top: 5px;
     margin-right: 5px;
 }
-#new-room {
+
+.lobby__room--current {
+    color: lightgreen;
+}
+
+
+.lobby__new-room-button {
     margin-top: 5px;
     margin-right: 5px;
     padding: 2px;
 }
+.lobby__new-room-button--green {
+    color: lightgreen;
+}
 
-#chat {
+.lobby__chat {
     width: 95%;
     height: 230px;
     margin: auto;
     margin-top: 10px;
     padding: 5px;
 }
-#messages {
+
+.lobby__messages {
     width: 100%;
     height: 200px;
     overflow-y: scroll;
     position: relative;
 }
 
-.message {
+.lobby__message {
     margin-top: 5px;
 }
 
-.message-author {
+.lobby__message-author {
     display: inline-block;
     color: lightgreen;
     width: 100px;
@@ -119,11 +131,8 @@
     margin-top: 5px;
 }
 
-.color-white {
-    color: white !important;
-}
 
-.message-content {
+.lobby__message-content {
     background-color: white;
     display: inline-block;
     border-radius: 5px;
@@ -137,38 +146,41 @@
     vertical-align: top;
 }
 
-.message-author-avatar {
+.lobby__author-avatar-img {
     width: 20px;
     height: 20px;
     margin-bottom: -5px;
     
 }
 
-.message-author-avatar-div {
+.lobby__author-avatar-div {
     display: inline-block;
     width: 20px;
     height: 20px;
 
 }
-.author-name {
+.lobby__author-name {
     margin-left: 10px;
 }
+.lobby__author-name--current {
+    color: white;
+}
 
-#someone-writing {
+.lobby__someone-writing {
     color: white;
     position: relative;
 }
 
-.dot-wrapper {
+.lobby__dot-wrapper {
     display: inline-block;
     width: 10px;
     height: 10px;
 }
-#dot-wrapper-1 {
+.lobby__dot-wrapper--1 {
     margin-left: 5px;
 }
 
-.dot {
+.lobby__dot {
     background-color: white;
     width: 3px;
     height: 3px;
@@ -193,12 +205,12 @@
     100% {width: 3px; height: 3px}
 }
 
-#input {
+.lobby__input {
     width: 200px;
     margin-top: 10px;
     display: inline-block;
 }
-#send-button {
+.lobby__send-button {
     color: white;
     width: 20px;
     height: 20px;
@@ -212,11 +224,11 @@
     padding-top: 2px;
     padding-bottom: 4px;
 }
-#send-button:hover {
+.lobby__send-button:hover {
     background-color: white;
     color: black;
 }
-#emo-button {
+.lobby__emo-button {
     display: inline-block;
     color: white;
     width: 20px;
@@ -229,18 +241,17 @@
     padding-top: 2px;
     padding-bottom: 4px;
 }
-#emo-button:hover {
+.lobby__emo-button:hover {
     background-color: white;
     color: black;
 }
 
-.avatar-placeholder {
+.lobby__avatar-placeholder {
     animation-name: rotation;
     animation-duration: 1s;
     animation-iteration-count: infinite;
     position: absolute;
 }
-
 
 @keyframes rotation {
     0% {transform: rotate(0deg) translate(0)};
@@ -248,7 +259,7 @@
     100% {transform: rotate(360deg) translate(0)}
 }
 
-#emoji-container {
+.lobby__emoji-container {
     width: 100%;
     border-top: 1px solid white;
     padding-top: 5px;
@@ -261,28 +272,25 @@
     bottom: 0;
 }
 
-.emoji {
+.lobby__emoji {
     height: 30px;
     width: 30px;
 }
 
-.emoji:hover {
+.lobby__emoji:hover {
     background-color: rgb(68, 68, 68);
 }
 
-.emoji-wrapper {
+.lobby__emoji-wrapper {
     height: 28px;
     width: 40px;
     display: inline-block;
     position: relative;
 }
 
-.text-emoji {
+.lobby__inline-emoji {
     position: absolute;
     height: 35px;
     width: 35px;
     top: 0;
-}
-.green {
-    color: lightgreen;
 }

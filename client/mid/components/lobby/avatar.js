@@ -57,18 +57,18 @@ var Avatar = /** @class */ (function (_super) {
         return _this;
     }
     Avatar.prototype.render = function () {
-        var divClass = "avatar-div";
-        var imgClass = "avatar";
+        var divClass = "lobby__avatar-div";
+        var imgClass = "lobby__avatar-img";
         var inviteClass = "";
         if (this.props.small) {
-            divClass = "message-author-avatar-div";
-            imgClass = "message-author-avatar";
+            divClass = "lobby__author-avatar-div";
+            imgClass = "lobby__author-avatar-img";
         }
-        else if (this.props.canInvite) {
-            inviteClass = "can-invite";
+        else if (this.props.invitable) {
+            inviteClass = "lobby__player--invitable";
         }
         return (react_1.default.createElement("div", { className: divClass + " " + inviteClass },
-            !this.state.loaded && !this.state.error && react_1.default.createElement("img", { className: "avatar-placeholder " + imgClass, src: "./img/pawn.png" }),
+            !this.state.loaded && !this.state.error && react_1.default.createElement("img", { className: "lobby__avatar-placeholder " + imgClass, src: "./img/pawn.png" }),
             react_1.default.createElement("img", { className: imgClass, src: this.state.src, onLoad: this.onLoadHandler, onError: this.onErrorHandler })));
     };
     return Avatar;

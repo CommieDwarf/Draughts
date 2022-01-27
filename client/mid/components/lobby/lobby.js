@@ -92,22 +92,22 @@ var Lobby = /** @class */ (function (_super) {
         var rooms = this.state.rooms.map(function (room, id) {
             var roomClass = "";
             if (room == _this.state.currentRoom) {
-                roomClass = "green";
+                roomClass = "lobby__room--current";
             }
-            return react_1.default.createElement("div", { className: "room no-select " + roomClass, id: room, key: id }, room);
+            return react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass, id: room, key: id }, room);
         });
-        var newRoomClass = "";
+        var newRoomButtonClass = "";
         if (this.state.canInvite) {
-            newRoomClass = "green";
+            newRoomButtonClass = "lobby__new-room-button--green";
         }
-        return (react_1.default.createElement("div", { id: "lobby" },
-            react_1.default.createElement("div", { id: "invite" }, "Invite"),
-            react_1.default.createElement("div", { id: "players", ref: this.playersRef },
-                react_1.default.createElement(players_1.default, { players: this.state.players, canInvite: this.state.canInvite, handlePlayerInvite: this.handlePlayerInvite }),
+        return (react_1.default.createElement("div", { className: "lobby" },
+            react_1.default.createElement("div", { className: "lobby__invite-button" }, "Invite"),
+            react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
+                react_1.default.createElement(players_1.default, { players: this.state.players, invitable: this.state.canInvite, handlePlayerInvite: this.handlePlayerInvite }),
                 ";"),
-            react_1.default.createElement("div", { id: "rooms" },
+            react_1.default.createElement("div", { className: "lobby__rooms" },
                 rooms,
-                react_1.default.createElement("div", { id: "new-room", className: "no-select " + newRoomClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
+                react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
             player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom })));
     };

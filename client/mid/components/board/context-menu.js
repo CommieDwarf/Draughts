@@ -58,12 +58,6 @@ var ContextMenu = /** @class */ (function (_super) {
         if (contextMenu) {
             var attribute = "left: " + this.props.contextMenu.clientX + "px; ";
             attribute += "top: " + this.props.contextMenu.clientY + "px; ";
-            if (this.props.contextMenu.showMenu) {
-                attribute += "visibility: visible";
-            }
-            else {
-                attribute += "visibility: hidden";
-            }
             contextMenu.setAttribute("style", attribute);
         }
     };
@@ -83,9 +77,16 @@ var ContextMenu = /** @class */ (function (_super) {
             label1 = "black";
             label2 = "white";
         }
-        return (react_1.default.createElement("div", { className: "context-menu", ref: this.ctxMenuRef },
+        var visibility;
+        if (props.contextMenu.showMenu) {
+            visibility = "context-menu--visible";
+        }
+        else {
+            visibility = "context-menu--hidden";
+        }
+        return (react_1.default.createElement("div", { className: "context-menu " + visibility, ref: this.ctxMenuRef },
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickTopHandler }, label1),
-            react_1.default.createElement("hr", null),
+            react_1.default.createElement("hr", { className: "context-menu__break-line" }),
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickBotHandler }, label2),
             react_1.default.createElement("br", null)));
     };

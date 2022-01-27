@@ -80,7 +80,7 @@ var Chat = /** @class */ (function (_super) {
         };
         _this.handleOutsideClick = function (event) {
             var target = event.target;
-            if (!target.closest('#emoji-container') && !target.closest("#emo-button")) {
+            if (!target.closest('.lobby__emoji-container') && !target.closest(".lobby__emo-button")) {
                 _this.setState({ showEmojis: false });
             }
         };
@@ -146,22 +146,22 @@ var Chat = /** @class */ (function (_super) {
             }
         });
         var emoButtonClass = this.state.showEmojis ? "white color-black" : "";
-        return (react_1.default.createElement("div", { id: "chat" },
-            react_1.default.createElement("div", { id: "messages" },
+        return (react_1.default.createElement("div", { className: "lobby__chat" },
+            react_1.default.createElement("div", { className: "lobby__messages" },
                 messages,
-                this.state.someoneWriting && react_1.default.createElement("div", { id: "someone-writing" },
+                this.state.someoneWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
                     "Someone is writing",
-                    react_1.default.createElement("div", { id: "dot-wrapper-1", className: "dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-1", className: "dot" })),
-                    react_1.default.createElement("div", { id: "dot-wrapper-2", className: "dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-2", className: "dot" })),
-                    react_1.default.createElement("div", { id: "dot-wrapper-3", className: "dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-3", className: "dot" }))),
+                    react_1.default.createElement("div", { className: "lobby__dot-wrapper lobby__dot-wrapper--1" },
+                        react_1.default.createElement("div", { id: "dot-1", className: "lobby__dot" })),
+                    react_1.default.createElement("div", { id: "dot-wrapper-2", className: "lobby__dot-wrapper" },
+                        react_1.default.createElement("div", { id: "dot-2", className: "lobby__dot" })),
+                    react_1.default.createElement("div", { id: "dot-wrapper-3", className: "lobby__dot-wrapper" },
+                        react_1.default.createElement("div", { id: "dot-3", className: "lobby__dot" }))),
                 this.state.showEmojis && react_1.default.createElement(emojis_1.default, { pickEmoji: this.pickEmoji })),
-            react_1.default.createElement("input", { id: "input", type: "text", onChange: this.onChangeHandler, value: this.state.message, autoComplete: "off" }),
-            react_1.default.createElement("div", { id: "emo-button", className: "no-select " + emoButtonClass, onClick: this.toggleEmojis },
+            react_1.default.createElement("input", { className: "lobby__input", type: "text", onChange: this.onChangeHandler, value: this.state.message, autoComplete: "off" }),
+            react_1.default.createElement("div", { className: "lobby__emo-button no-select " + emoButtonClass, onClick: this.toggleEmojis },
                 react_1.default.createElement("i", { className: "icon-emo-happy" })),
-            react_1.default.createElement("div", { id: "send-button", onClick: this.sendMesage, className: "no-select" },
+            react_1.default.createElement("div", { className: "lobby__send-button no-select", onClick: this.sendMesage },
                 react_1.default.createElement("i", { className: "icon-right-open-outline" }))));
     };
     return Chat;

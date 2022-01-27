@@ -35,8 +35,8 @@ var Message = /** @class */ (function (_super) {
         var message = [];
         for (var i = 0; i < text.length; i++) {
             if (emojis_2.emojis.includes(text[i])) {
-                message.push(react_1.default.createElement("div", { className: "emoji-wrapper" },
-                    react_1.default.createElement("img", { src: emojis_1.path + text[i] + ".png", className: "text-emoji", key: i })));
+                message.push(react_1.default.createElement("div", { className: "lobby__emoji-wrapper" },
+                    react_1.default.createElement("img", { src: emojis_1.path + text[i] + ".png", className: "lobby__inline-emoji", key: i })));
             }
             else {
                 message.push(react_1.default.createElement("span", { key: i }, text[i] + " "));
@@ -44,16 +44,16 @@ var Message = /** @class */ (function (_super) {
         }
         var msgAuthorClass = "";
         if (this.props.thisPlayerId == this.props.author.id) {
-            msgAuthorClass = "color-white";
+            msgAuthorClass = "lobby__author-name--current";
         }
-        return (react_1.default.createElement("div", { className: "message" },
-            react_1.default.createElement("div", { className: "message-author" },
-                react_1.default.createElement("div", { id: "player1", className: "message-author" },
+        return (react_1.default.createElement("div", { className: "lobby__message" },
+            react_1.default.createElement("div", { className: "lobby__message-author" },
+                react_1.default.createElement("div", { id: "player1", className: "lobby__message-author" },
                     react_1.default.createElement(avatar_1.default, { shape: author.avatar.shape, theme: author.avatar.theme, name: author.name, small: true }),
-                    react_1.default.createElement("span", { className: "author-name " + msgAuthorClass },
+                    react_1.default.createElement("span", { className: "lobby__author-name " + msgAuthorClass },
                         this.props.author.name,
                         ":"))),
-            react_1.default.createElement("div", { className: "message-content " }, message)));
+            react_1.default.createElement("div", { className: "lobby__message-content " }, message)));
     };
     return Message;
 }(react_1.default.Component));

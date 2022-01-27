@@ -8,7 +8,7 @@ export default class Players extends Component {
 
     props: {
         players: IPlayer[],
-        canInvite: boolean,
+        invitable: boolean,
         handlePlayerInvite: (event: any) => void
     }
 
@@ -24,18 +24,14 @@ export default class Players extends Component {
             const shape = player.avatar.shape 
             const name = player.name;
 
-            let playerClass = "";
-            let divClass = ""
-            let canInvite = false;
+            let spanClass = "";
             if (socket.id == player.id) {
-                playerClass = "color-white";
-            } else if (this.props.canInvite) {
-                canInvite = true;
+                spanClass = "lobby__player--current";
             }
             return (
-                <div className={"player " + divClass} key={id} id={player.name} onClick={this.props.handlePlayerInvite}>
-                    <Avatar name={name} shape={shape} theme={theme} canInvite={canInvite}/>
-                    <span className={"player-name " + playerClass}>{player.name}</span>
+                <div className={"lobby__player "} key={id} id={player.name} onClick={this.props.handlePlayerInvite}>
+                    <Avatar name={name} shape={shape} theme={theme} invitable={this.props.invitable}/>
+                    <span className={"player-name " + spanClass}>{player.name}</span>
                 </div>
             )
         })

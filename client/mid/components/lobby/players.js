@@ -53,18 +53,13 @@ var Players = /** @class */ (function (_super) {
             var theme = player.avatar.theme;
             var shape = player.avatar.shape;
             var name = player.name;
-            var playerClass = "";
-            var divClass = "";
-            var canInvite = false;
+            var spanClass = "";
             if (main_1.socket.id == player.id) {
-                playerClass = "color-white";
+                spanClass = "lobby__player--current";
             }
-            else if (_this.props.canInvite) {
-                canInvite = true;
-            }
-            return (react_1.default.createElement("div", { className: "player " + divClass, key: id, id: player.name, onClick: _this.props.handlePlayerInvite },
-                react_1.default.createElement(avatar_1.default, { name: name, shape: shape, theme: theme, canInvite: canInvite }),
-                react_1.default.createElement("span", { className: "player-name " + playerClass }, player.name)));
+            return (react_1.default.createElement("div", { className: "lobby__player ", key: id, id: player.name, onClick: _this.props.handlePlayerInvite },
+                react_1.default.createElement(avatar_1.default, { name: name, shape: shape, theme: theme, invitable: _this.props.invitable }),
+                react_1.default.createElement("span", { className: "player-name " + spanClass }, player.name)));
         });
         return (react_1.default.createElement(react_1.default.Fragment, null, players));
     };

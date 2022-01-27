@@ -56,8 +56,8 @@ var Emojis = /** @class */ (function (_super) {
     }
     Emojis.prototype.render = function () {
         var _this = this;
-        var imgs = emojis.map(function (emoji) { return react_1.default.createElement("img", { className: "emoji", src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler }); });
-        return (react_1.default.createElement("div", { id: "emoji-container", ref: this.containerRef }, imgs));
+        var imgs = emojis.map(function (emoji, id) { return react_1.default.createElement("img", { className: "lobby__emoji", key: id, src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler }); });
+        return (react_1.default.createElement("div", { className: "lobby__emoji-container", ref: this.containerRef }, imgs));
     };
     return Emojis;
 }(react_1.Component));

@@ -34,7 +34,7 @@ export default class Message extends React.Component {
 
         for (let i = 0; i < text.length; i++) {
             if (emojis.includes(text[i])) {
-                message.push(<div className="emoji-wrapper"><img src={path + text[i] + ".png"} className="text-emoji" key={i}></img></div>)
+                message.push(<div className="lobby__emoji-wrapper"><img src={path + text[i] + ".png"} className="lobby__inline-emoji" key={i}></img></div>)
             } else {
                 message.push(<span key={i}>{text[i] + " "}</span>)
             }
@@ -44,19 +44,19 @@ export default class Message extends React.Component {
         let msgAuthorClass = "";
 
         if (this.props.thisPlayerId == this.props.author.id) {
-            msgAuthorClass = "color-white";
+            msgAuthorClass = "lobby__author-name--current";
         }
 
 
         return (
-            <div className="message">
-                            <div className="message-author">
-                                <div id="player1" className="message-author">
+            <div className="lobby__message">
+                            <div className="lobby__message-author">
+                                <div id="player1" className="lobby__message-author">
                                         <Avatar shape={author.avatar.shape} theme={author.avatar.theme} name={author.name} small={true}/>
-                                    <span className={"author-name " + msgAuthorClass}>{this.props.author.name}:</span>
+                                    <span className={"lobby__author-name " + msgAuthorClass}>{this.props.author.name}:</span>
                                 </div>
                             </div>
-                            <div className={"message-content "}>
+                            <div className={"lobby__message-content "}>
                                 {message}
                             </div>
                         </div>

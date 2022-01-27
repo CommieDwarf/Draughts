@@ -21,7 +21,7 @@ cursor: pointer;
 }
 
 
-hr {
+.context-menu__break-line {
 margin-top: 5px;
 margin-bottom: 5px;
 }

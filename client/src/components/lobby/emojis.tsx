@@ -32,11 +32,10 @@ export default class Emojis extends Component {
 
     render() {
 
-        const imgs = emojis.map((emoji) => <img className="emoji" src={path + emoji + ".png"} alt={emoji} onClick={this.onClickHandler}></img>)
+        const imgs = emojis.map((emoji, id) => <img className="lobby__emoji" key={id} src={path + emoji + ".png"} alt={emoji} onClick={this.onClickHandler}></img>)
         
-
         return (
-            <div id="emoji-container" ref={this.containerRef}>
+            <div className="lobby__emoji-container" ref={this.containerRef}>
                 {imgs}
             </div>
         )

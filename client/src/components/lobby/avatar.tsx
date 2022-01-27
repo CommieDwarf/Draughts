@@ -16,7 +16,7 @@ export default class Avatar extends Component<Props, State> {
         theme: string,
         shape: string,
         small?: boolean,
-        canInvite?: boolean,
+        invitable?: boolean,
     }
 
     constructor(props: any) {
@@ -41,21 +41,21 @@ export default class Avatar extends Component<Props, State> {
     }
 
     render() {
-        let divClass = "avatar-div";
-        let imgClass = "avatar";
+        let divClass = "lobby__avatar-div";
+        let imgClass = "lobby__avatar-img";
         let inviteClass = "";
         if (this.props.small) {
-            divClass = "message-author-avatar-div";
-            imgClass = "message-author-avatar";
-        } else if (this.props.canInvite) {
-            inviteClass = "can-invite";
+            divClass = "lobby__author-avatar-div";
+            imgClass = "lobby__author-avatar-img";
+        } else if (this.props.invitable) {
+            inviteClass = "lobby__player--invitable";
         }
 
 
 
         return (
             <div className={divClass + " " + inviteClass} >
-                {!this.state.loaded && !this.state.error && <img className={"avatar-placeholder " + imgClass} src={"./img/pawn.png"}></img>}
+                {!this.state.loaded && !this.state.error && <img className={"lobby__avatar-placeholder " + imgClass} src={"./img/pawn.png"}></img>}
                 <img className={imgClass} src={this.state.src} onLoad={this.onLoadHandler} onError={this.onErrorHandler}></img>
             </div>
         )

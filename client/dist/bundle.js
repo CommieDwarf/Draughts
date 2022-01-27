@@ -791,12 +791,6 @@ var ContextMenu = /** @class */ (function (_super) {
         if (contextMenu) {
             var attribute = "left: " + this.props.contextMenu.clientX + "px; ";
             attribute += "top: " + this.props.contextMenu.clientY + "px; ";
-            if (this.props.contextMenu.showMenu) {
-                attribute += "visibility: visible";
-            }
-            else {
-                attribute += "visibility: hidden";
-            }
             contextMenu.setAttribute("style", attribute);
         }
     };
@@ -816,9 +810,16 @@ var ContextMenu = /** @class */ (function (_super) {
             label1 = "black";
             label2 = "white";
         }
-        return (react_1.default.createElement("div", { className: "context-menu", ref: this.ctxMenuRef },
+        var visibility;
+        if (props.contextMenu.showMenu) {
+            visibility = "context-menu--visible";
+        }
+        else {
+            visibility = "context-menu--hidden";
+        }
+        return (react_1.default.createElement("div", { className: "context-menu " + visibility, ref: this.ctxMenuRef },
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickTopHandler }, label1),
-            react_1.default.createElement("hr", null),
+            react_1.default.createElement("hr", { className: "context-menu__break-line" }),
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickBotHandler }, label2),
             react_1.default.createElement("br", null)));
     };
@@ -1575,18 +1576,18 @@ var Avatar = /** @class */ (function (_super) {
         return _this;
     }
     Avatar.prototype.render = function () {
-        var divClass = "avatar-div";
-        var imgClass = "avatar";
+        var divClass = "lobby__avatar-div";
+        var imgClass = "lobby__avatar-img";
         var inviteClass = "";
         if (this.props.small) {
-            divClass = "message-author-avatar-div";
-            imgClass = "message-author-avatar";
+            divClass = "lobby__author-avatar-div";
+            imgClass = "lobby__author-avatar-img";
         }
-        else if (this.props.canInvite) {
-            inviteClass = "can-invite";
+        else if (this.props.invitable) {
+            inviteClass = "lobby__player--invitable";
         }
         return (react_1.default.createElement("div", { className: divClass + " " + inviteClass },
-            !this.state.loaded && !this.state.error && react_1.default.createElement("img", { className: "avatar-placeholder " + imgClass, src: "./img/pawn.png" }),
+            !this.state.loaded && !this.state.error && react_1.default.createElement("img", { className: "lobby__avatar-placeholder " + imgClass, src: "./img/pawn.png" }),
             react_1.default.createElement("img", { className: imgClass, src: this.state.src, onLoad: this.onLoadHandler, onError: this.onErrorHandler })));
     };
     return Avatar;
@@ -1676,7 +1677,7 @@ var Chat = /** @class */ (function (_super) {
         };
         _this.handleOutsideClick = function (event) {
             var target = event.target;
-            if (!target.closest('#emoji-container') && !target.closest("#emo-button")) {
+            if (!target.closest('.lobby__emoji-container') && !target.closest(".lobby__emo-button")) {
                 _this.setState({ showEmojis: false });
             }
         };
@@ -1742,22 +1743,22 @@ var Chat = /** @class */ (function (_super) {
             }
         });
         var emoButtonClass = this.state.showEmojis ? "white color-black" : "";
-        return (react_1.default.createElement("div", { id: "chat" },
-            react_1.default.createElement("div", { id: "messages" },
+        return (react_1.default.createElement("div", { className: "lobby__chat" },
+            react_1.default.createElement("div", { className: "lobby__messages" },
                 messages,
-                this.state.someoneWriting && react_1.default.createElement("div", { id: "someone-writing" },
+                this.state.someoneWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
                     "Someone is writing",
-                    react_1.default.createElement("div", { id: "dot-wrapper-1", className: "dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-1", className: "dot" })),
-                    react_1.default.createElement("div", { id: "dot-wrapper-2", className: "dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-2", className: "dot" })),
-                    react_1.default.createElement("div", { id: "dot-wrapper-3", className: "dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-3", className: "dot" }))),
+                    react_1.default.createElement("div", { className: "lobby__dot-wrapper lobby__dot-wrapper--1" },
+                        react_1.default.createElement("div", { id: "dot-1", className: "lobby__dot" })),
+                    react_1.default.createElement("div", { id: "dot-wrapper-2", className: "lobby__dot-wrapper" },
+                        react_1.default.createElement("div", { id: "dot-2", className: "lobby__dot" })),
+                    react_1.default.createElement("div", { id: "dot-wrapper-3", className: "lobby__dot-wrapper" },
+                        react_1.default.createElement("div", { id: "dot-3", className: "lobby__dot" }))),
                 this.state.showEmojis && react_1.default.createElement(emojis_1.default, { pickEmoji: this.pickEmoji })),
-            react_1.default.createElement("input", { id: "input", type: "text", onChange: this.onChangeHandler, value: this.state.message, autoComplete: "off" }),
-            react_1.default.createElement("div", { id: "emo-button", className: "no-select " + emoButtonClass, onClick: this.toggleEmojis },
+            react_1.default.createElement("input", { className: "lobby__input", type: "text", onChange: this.onChangeHandler, value: this.state.message, autoComplete: "off" }),
+            react_1.default.createElement("div", { className: "lobby__emo-button no-select " + emoButtonClass, onClick: this.toggleEmojis },
                 react_1.default.createElement("i", { className: "icon-emo-happy" })),
-            react_1.default.createElement("div", { id: "send-button", onClick: this.sendMesage, className: "no-select" },
+            react_1.default.createElement("div", { className: "lobby__send-button no-select", onClick: this.sendMesage },
                 react_1.default.createElement("i", { className: "icon-right-open-outline" }))));
     };
     return Chat;
@@ -1823,8 +1824,8 @@ var Emojis = /** @class */ (function (_super) {
     }
     Emojis.prototype.render = function () {
         var _this = this;
-        var imgs = emojis.map(function (emoji) { return react_1.default.createElement("img", { className: "emoji", src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler }); });
-        return (react_1.default.createElement("div", { id: "emoji-container", ref: this.containerRef }, imgs));
+        var imgs = emojis.map(function (emoji, id) { return react_1.default.createElement("img", { className: "lobby__emoji", key: id, src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler }); });
+        return (react_1.default.createElement("div", { className: "lobby__emoji-container", ref: this.containerRef }, imgs));
     };
     return Emojis;
 }(react_1.Component));
@@ -1925,22 +1926,22 @@ var Lobby = /** @class */ (function (_super) {
         var rooms = this.state.rooms.map(function (room, id) {
             var roomClass = "";
             if (room == _this.state.currentRoom) {
-                roomClass = "green";
+                roomClass = "lobby__room--current";
             }
-            return react_1.default.createElement("div", { className: "room no-select " + roomClass, id: room, key: id }, room);
+            return react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass, id: room, key: id }, room);
         });
-        var newRoomClass = "";
+        var newRoomButtonClass = "";
         if (this.state.canInvite) {
-            newRoomClass = "green";
+            newRoomButtonClass = "lobby__new-room-button--green";
         }
-        return (react_1.default.createElement("div", { id: "lobby" },
-            react_1.default.createElement("div", { id: "invite" }, "Invite"),
-            react_1.default.createElement("div", { id: "players", ref: this.playersRef },
-                react_1.default.createElement(players_1.default, { players: this.state.players, canInvite: this.state.canInvite, handlePlayerInvite: this.handlePlayerInvite }),
+        return (react_1.default.createElement("div", { className: "lobby" },
+            react_1.default.createElement("div", { className: "lobby__invite-button" }, "Invite"),
+            react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
+                react_1.default.createElement(players_1.default, { players: this.state.players, invitable: this.state.canInvite, handlePlayerInvite: this.handlePlayerInvite }),
                 ";"),
-            react_1.default.createElement("div", { id: "rooms" },
+            react_1.default.createElement("div", { className: "lobby__rooms" },
                 rooms,
-                react_1.default.createElement("div", { id: "new-room", className: "no-select " + newRoomClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
+                react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
             player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom })));
     };
@@ -1986,8 +1987,8 @@ var Message = /** @class */ (function (_super) {
         var message = [];
         for (var i = 0; i < text.length; i++) {
             if (emojis_2.emojis.includes(text[i])) {
-                message.push(react_1.default.createElement("div", { className: "emoji-wrapper" },
-                    react_1.default.createElement("img", { src: emojis_1.path + text[i] + ".png", className: "text-emoji", key: i })));
+                message.push(react_1.default.createElement("div", { className: "lobby__emoji-wrapper" },
+                    react_1.default.createElement("img", { src: emojis_1.path + text[i] + ".png", className: "lobby__inline-emoji", key: i })));
             }
             else {
                 message.push(react_1.default.createElement("span", { key: i }, text[i] + " "));
@@ -1995,16 +1996,16 @@ var Message = /** @class */ (function (_super) {
         }
         var msgAuthorClass = "";
         if (this.props.thisPlayerId == this.props.author.id) {
-            msgAuthorClass = "color-white";
+            msgAuthorClass = "lobby__author-name--current";
         }
-        return (react_1.default.createElement("div", { className: "message" },
-            react_1.default.createElement("div", { className: "message-author" },
-                react_1.default.createElement("div", { id: "player1", className: "message-author" },
+        return (react_1.default.createElement("div", { className: "lobby__message" },
+            react_1.default.createElement("div", { className: "lobby__message-author" },
+                react_1.default.createElement("div", { id: "player1", className: "lobby__message-author" },
                     react_1.default.createElement(avatar_1.default, { shape: author.avatar.shape, theme: author.avatar.theme, name: author.name, small: true }),
-                    react_1.default.createElement("span", { className: "author-name " + msgAuthorClass },
+                    react_1.default.createElement("span", { className: "lobby__author-name " + msgAuthorClass },
                         this.props.author.name,
                         ":"))),
-            react_1.default.createElement("div", { className: "message-content " }, message)));
+            react_1.default.createElement("div", { className: "lobby__message-content " }, message)));
     };
     return Message;
 }(react_1.default.Component));
@@ -2066,18 +2067,13 @@ var Players = /** @class */ (function (_super) {
             var theme = player.avatar.theme;
             var shape = player.avatar.shape;
             var name = player.name;
-            var playerClass = "";
-            var divClass = "";
-            var canInvite = false;
+            var spanClass = "";
             if (main_1.socket.id == player.id) {
-                playerClass = "color-white";
+                spanClass = "lobby__player--current";
             }
-            else if (_this.props.canInvite) {
-                canInvite = true;
-            }
-            return (react_1.default.createElement("div", { className: "player " + divClass, key: id, id: player.name, onClick: _this.props.handlePlayerInvite },
-                react_1.default.createElement(avatar_1.default, { name: name, shape: shape, theme: theme, canInvite: canInvite }),
-                react_1.default.createElement("span", { className: "player-name " + playerClass }, player.name)));
+            return (react_1.default.createElement("div", { className: "lobby__player ", key: id, id: player.name, onClick: _this.props.handlePlayerInvite },
+                react_1.default.createElement(avatar_1.default, { name: name, shape: shape, theme: theme, invitable: _this.props.invitable }),
+                react_1.default.createElement("span", { className: "player-name " + spanClass }, player.name)));
         });
         return (react_1.default.createElement(react_1.default.Fragment, null, players));
     };

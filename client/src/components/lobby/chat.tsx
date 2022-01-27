@@ -104,7 +104,7 @@ export default class Chat extends React.Component<Props, State> {
     
     handleOutsideClick = (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (!target.closest('#emoji-container') && !target.closest("#emo-button")) {
+        if (!target.closest('.lobby__emoji-container') && !target.closest(".lobby__emo-button")) {
             this.setState({showEmojis: false})
         }
     }
@@ -147,7 +147,6 @@ export default class Chat extends React.Component<Props, State> {
     }
 
     render() {
-
         let messages = this.state.messages.map((msg, id) => {
             if (msg.room == this.props.currentRoom) {
                 return (
@@ -164,34 +163,34 @@ export default class Chat extends React.Component<Props, State> {
         const emoButtonClass = this.state.showEmojis ? "white color-black" : "";
 
         return (
-            <div id="chat">
-                    <div id="messages">
+            <div className="lobby__chat">
+                    <div className="lobby__messages">
                         {messages}
-                        {this.state.someoneWriting && <div id="someone-writing">
+                        {this.state.someoneWriting && <div className="lobby__someone-writing">
                             Someone is writing
-                            <div id="dot-wrapper-1" className="dot-wrapper">
-                                <div id="dot-1" className="dot"></div>
+                            <div className="lobby__dot-wrapper lobby__dot-wrapper--1">
+                                <div id="dot-1" className="lobby__dot"></div>
                             </div>
-                            <div id="dot-wrapper-2" className="dot-wrapper">
-                                <div id="dot-2" className="dot"></div>
+                            <div id="dot-wrapper-2" className="lobby__dot-wrapper">
+                                <div id="dot-2" className="lobby__dot"></div>
                             </div>
-                            <div id="dot-wrapper-3" className="dot-wrapper">
-                                <div id="dot-3" className="dot"></div>
+                            <div id="dot-wrapper-3" className="lobby__dot-wrapper">
+                                <div id="dot-3" className="lobby__dot"></div>
                             </div>
                         </div>}
                         {this.state.showEmojis && <Emojis pickEmoji={this.pickEmoji}/>}
                     </div>
-                        <input id="input" 
+                        <input className="lobby__input" 
                         type="text"
                          onChange={this.onChangeHandler}
                           value={this.state.message}
                           autoComplete="off">
                         </input>
                     
-                    <div id="emo-button" className={"no-select " + emoButtonClass} onClick={this.toggleEmojis}>
+                    <div className={"lobby__emo-button no-select " + emoButtonClass} onClick={this.toggleEmojis}>
                         <i className="icon-emo-happy"></i>
                     </div>
-                    <div id="send-button" onClick={this.sendMesage} className="no-select">
+                    <div className="lobby__send-button no-select" onClick={this.sendMesage}>
                     <i className="icon-right-open-outline"></i>
                     </div>
                 </div>

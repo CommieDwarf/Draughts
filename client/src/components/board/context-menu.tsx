@@ -5,7 +5,6 @@ import { IChessboard } from "../../engine";
 export default class ContextMenu extends React.Component {
 
     ctxMenuRef: React.RefObject<HTMLDivElement>
-    // dsad
     props: {
         contextMenu: {
             piece: string,
@@ -35,9 +34,6 @@ export default class ContextMenu extends React.Component {
         }
     }
 
-    
-
-    
     onClickBotHandler = () => {
         let props = this.props
         if (props.contextMenu.queen) {
@@ -54,13 +50,9 @@ export default class ContextMenu extends React.Component {
         let contextMenu = this.ctxMenuRef.current;
         
         if (contextMenu) {
-            let attribute = "left: " + this.props.contextMenu.clientX + "px; "
-            attribute += "top: " + this.props.contextMenu.clientY + "px; "
-            if (this.props.contextMenu.showMenu) {
-                attribute += "visibility: visible";
-            } else {
-                attribute += "visibility: hidden";
-            }
+            let attribute = "left: " + this.props.contextMenu.clientX + "px; ";
+            attribute += "top: " + this.props.contextMenu.clientY + "px; ";
+           
             contextMenu.setAttribute("style", attribute);
         }
     }
@@ -83,12 +75,19 @@ export default class ContextMenu extends React.Component {
             label2 = "white";
         }
 
+        let visibility;
+        if (props.contextMenu.showMenu) {
+            visibility = "context-menu--visible";
+        } else {
+            visibility = "context-menu--hidden";
+        }
+
         return (
-            <div className="context-menu" ref={this.ctxMenuRef}>
+            <div className={"context-menu " + visibility} ref={this.ctxMenuRef}>
                 <div className="context-menu__label" onClick={this.onClickTopHandler}>
                     {label1}
                 </div>
-                <hr />
+                <hr className="context-menu__break-line"/>
                 <div className="context-menu__label" onClick={this.onClickBotHandler}>
                     {label2}
                 </div>

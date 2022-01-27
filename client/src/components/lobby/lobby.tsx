@@ -29,7 +29,7 @@ export default class Lobby extends React.Component<Props, State> {
 
     props: {
         name: string,
-        
+
     }
     playersRef: React.RefObject<HTMLDivElement>
     createRoomRef: React.RefObject<HTMLDivElement>
@@ -72,22 +72,22 @@ export default class Lobby extends React.Component<Props, State> {
             console.log(target.id)
         }
     }
-    
-    handleClickNewRoom =() => {
-        this.setState({canInvite: true});
+
+    handleClickNewRoom = () => {
+        this.setState({ canInvite: true });
     }
-    
+
     handleOutsidePlayersClick = (event: any) => {
-        const {target} = event
+        const { target } = event
         if (!this.playersRef.current?.contains(target) && !this.createRoomRef.current?.contains(target)) {
-            this.setState({canInvite: false});
+            this.setState({ canInvite: false });
         }
-        
+
     }
 
     componentDidMount = () => {
         socket.on("players_update", (players) => {
-            this.setState({players})
+            this.setState({ players })
         })
         document.addEventListener('click', this.handleOutsidePlayersClick);
 
@@ -98,42 +98,43 @@ export default class Lobby extends React.Component<Props, State> {
     }
 
     render() {
-        
+
 
         const player = this.state.players.find((player) => player.name == this.props.name)
 
         let rooms = this.state.rooms.map((room, id) => {
             let roomClass = "";
             if (room == this.state.currentRoom) {
-                roomClass = "green";
+                roomClass = "lobby__room--current";
             }
-            return <div className={"room no-select " + roomClass} id={room} key={id}>{room}</div>
+            return <div className={"lobby__room no-select " + roomClass} id={room} key={id}>{room}</div>
         })
 
-        let newRoomClass = "";
+        let newRoomButtonClass = "";
         if (this.state.canInvite) {
-            newRoomClass = "green";
+            newRoomButtonClass = "lobby__new-room-button--green";
         }
 
         return (
-            <div id="lobby">
-                <div id="invite">
+            <div className="lobby">
+                <div className="lobby__invite-button">
                     Invite
                 </div>
-                <div id="players" ref={this.playersRef}>
-                    <Players players={this.state.players} 
-                    canInvite={this.state.canInvite}
-                    handlePlayerInvite={this.handlePlayerInvite}
+                <div className="lobby__players" ref={this.playersRef}>
+                    <Players players={this.state.players}
+                        invitable={this.state.canInvite}
+                        handlePlayerInvite={this.handlePlayerInvite}
                     />;
                 </div>
-                <div id="rooms">
+                <div className="lobby__rooms">
                     {rooms}
-                    <div id="new-room" 
-                    className={"no-select " + newRoomClass} 
-                    onClick={this.handleClickNewRoom} ref={this.createRoomRef}>
-                        <i className="icon-user-plus"></i></div>
+                    <div
+                        className={"lobby__new-room-button no-select " + newRoomButtonClass}
+                        onClick={this.handleClickNewRoom} ref={this.createRoomRef}>
+                        <i className="icon-user-plus"></i>
+                    </div>
                 </div>
-                {player && <Chat player={player} currentRoom={this.state.currentRoom}/>}
+                {player && <Chat player={player} currentRoom={this.state.currentRoom} />}
             </div>
         )
     }
