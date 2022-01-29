@@ -39,30 +39,30 @@ function getQueen(color, type) {
     if (color == "white") {
         return (react_1.default.createElement("div", { className: "piece piece--white " + baseClass },
             react_1.default.createElement("div", { className: "piece__center piece__center--white " + centerClass },
-                react_1.default.createElement("div", { className: "pionowa-lewa" }),
-                react_1.default.createElement("div", { className: "pionowa-srodkowa" }),
-                react_1.default.createElement("div", { className: "pionowa-prawa" }),
-                react_1.default.createElement("div", { className: "pozioma-belka" },
-                    react_1.default.createElement("div", { className: "cien-kula1 cien-white cien-kula" }),
-                    react_1.default.createElement("div", { className: "cien-kula2 cien-white cien-kula" }),
-                    react_1.default.createElement("div", { className: "cien-kula3 cien-white cien-kula" })),
-                react_1.default.createElement("div", { className: "cien1 cien-white cien" }),
-                react_1.default.createElement("div", { className: "cien2 cien-white cien" }),
-                react_1.default.createElement("div", { className: "cien3 cien-white cien" }))));
+                react_1.default.createElement("div", { className: "piece__vertical-bar-left piece__vertical-bar-left--white" }),
+                react_1.default.createElement("div", { className: "piece__vertical-bar-mid piece__vertical-bar-mid--white" }),
+                react_1.default.createElement("div", { className: "piece__vertical-bar-right piece__vertical-bar-right--white" }),
+                react_1.default.createElement("div", { className: "piece__horizontal-bar piece__horizontal-bar--white" },
+                    react_1.default.createElement("div", { className: "piece__circle piece__circle--1 piece__circle--white" }),
+                    react_1.default.createElement("div", { className: "piece__circle piece__circle--2 piece__circle--white" }),
+                    react_1.default.createElement("div", { className: "piece__circle piece__circle--3 piece__circle--white" })),
+                react_1.default.createElement("div", { className: "piece__shadow-bar piece__shadow-bar--1 piece__shadow-bar--white" }),
+                react_1.default.createElement("div", { className: "piece__shadow-bar piece__shadow-bar--2 piece__shadow-bar--white" }),
+                react_1.default.createElement("div", { className: "piece__shadow-bar piece__shadow-bar--3 piece__shadow-bar--white" }))));
     }
     else {
         return (react_1.default.createElement("div", { className: "piece piece--black " + baseClass },
             react_1.default.createElement("div", { className: "piece__center piece__center--black " + centerClass },
-                react_1.default.createElement("div", { className: "pionowa-lewa black-crown pionowa-lewa-czarna" }),
-                react_1.default.createElement("div", { className: "pionowa-srodkowa black-crown pionowa-srodkowa-czarna" }),
-                react_1.default.createElement("div", { className: "pionowa-prawa black-crown pionowa-prawa-czarna" }),
-                react_1.default.createElement("div", { className: "pozioma-belka black-crown pozioma-belka-czarna" },
-                    react_1.default.createElement("div", { className: "cien-kula1 cien-black cien-kula" }),
-                    react_1.default.createElement("div", { className: "cien-kula2 cien-black cien-kula" }),
-                    react_1.default.createElement("div", { className: "cien-kula3 cien-black cien-kula" })),
-                react_1.default.createElement("div", { className: "cien1 cien-black cien" }),
-                react_1.default.createElement("div", { className: "cien2 cien-black cien" }),
-                react_1.default.createElement("div", { className: "cien3 cien-black cien" }))));
+                react_1.default.createElement("div", { className: "piece__vertical-bar-left piece__vertical-bar-left--black" }),
+                react_1.default.createElement("div", { className: "piece__vertical-bar-mid piece__vertical-bar-mid--black" }),
+                react_1.default.createElement("div", { className: "piece__vertical-bar-right piece__vertical-bar-right--black" }),
+                react_1.default.createElement("div", { className: "piece__horizontal-bar piece__horizontal-bar--black" },
+                    react_1.default.createElement("div", { className: "piece__circle piece__circle--1 piece__circle--black" }),
+                    react_1.default.createElement("div", { className: "piece__circle piece__circle--2 piece__circle--black" }),
+                    react_1.default.createElement("div", { className: "piece__circle piece__circle--3 piece__circle--black" })),
+                react_1.default.createElement("div", { className: "piece__shadow-bar piece__shadow-bar--1 piece__shadow-bar--black" }),
+                react_1.default.createElement("div", { className: "piece__shadow-bar piece__shadow-bar--2 piece__shadow-bar--black" }),
+                react_1.default.createElement("div", { className: "piece__shadow-bar piece__shadow-bar--3 piece__shadow-bar--black" }))));
     }
 }
 function getSpecialClass(type, color) {

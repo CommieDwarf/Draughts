@@ -54,7 +54,8 @@ var App = /** @class */ (function (_super) {
                 }
                 _this.setState(function (state) {
                     var label = _this.getLabel(gameMode);
-                    var game = new game_1.default(gameMode, color, side, label, _this.gameId++);
+                    //////////////////////////---------------------------------------------------
+                    var game = new game_1.default(gameMode, color, 2 /* CUSTOM */, label, _this.gameId++);
                     _this.menuPosition = "right";
                     return {
                         games: __spreadArray([game], state.games, true),

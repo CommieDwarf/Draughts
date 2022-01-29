@@ -47,17 +47,17 @@ function getQueen(color: Color, type: Type) {
     return (
       <div className={"piece piece--white " + baseClass}>
         <div className={"piece__center piece__center--white " + centerClass}>
-          <div className="pionowa-lewa"></div>
-          <div className="pionowa-srodkowa"></div>
-          <div className="pionowa-prawa"></div>
-          <div className="pozioma-belka">
-            <div className="cien-kula1 cien-white cien-kula"></div>
-            <div className="cien-kula2 cien-white cien-kula"></div>
-            <div className="cien-kula3 cien-white cien-kula"></div>
+          <div className="piece__vertical-bar-left piece__vertical-bar-left--white"></div>
+          <div className="piece__vertical-bar-mid piece__vertical-bar-mid--white" ></div>
+          <div className="piece__vertical-bar-right piece__vertical-bar-right--white"></div>
+          <div className="piece__horizontal-bar piece__horizontal-bar--white">
+            <div className="piece__circle piece__circle--1 piece__circle--white"></div>
+            <div className="piece__circle piece__circle--2 piece__circle--white"></div>
+            <div className="piece__circle piece__circle--3 piece__circle--white"></div>
           </div>
-          <div className="cien1 cien-white cien"></div>
-          <div className="cien2 cien-white cien"></div>
-          <div className="cien3 cien-white cien"></div>
+          <div className="piece__shadow-bar piece__shadow-bar--1 piece__shadow-bar--white"></div>
+          <div className="piece__shadow-bar piece__shadow-bar--2 piece__shadow-bar--white"></div>
+          <div className="piece__shadow-bar piece__shadow-bar--3 piece__shadow-bar--white"></div>
         </div>
       </div>
     );
@@ -65,17 +65,17 @@ function getQueen(color: Color, type: Type) {
     return (
       <div className={"piece piece--black " + baseClass}>
         <div className={"piece__center piece__center--black " + centerClass}>
-          <div className="pionowa-lewa black-crown pionowa-lewa-czarna"></div>
-          <div className="pionowa-srodkowa black-crown pionowa-srodkowa-czarna"></div>
-          <div className="pionowa-prawa black-crown pionowa-prawa-czarna"></div>
-          <div className="pozioma-belka black-crown pozioma-belka-czarna">
-            <div className="cien-kula1 cien-black cien-kula"></div>
-            <div className="cien-kula2 cien-black cien-kula"></div>
-            <div className="cien-kula3 cien-black cien-kula"></div>
+          <div className="piece__vertical-bar-left piece__vertical-bar-left--black"></div>
+          <div className="piece__vertical-bar-mid piece__vertical-bar-mid--black"></div>
+          <div className="piece__vertical-bar-right piece__vertical-bar-right--black"></div>
+          <div className="piece__horizontal-bar piece__horizontal-bar--black">
+            <div className="piece__circle piece__circle--1 piece__circle--black"></div>
+            <div className="piece__circle piece__circle--2 piece__circle--black"></div>
+            <div className="piece__circle piece__circle--3 piece__circle--black"></div>
           </div>
-          <div className="cien1 cien-black cien"></div>
-          <div className="cien2 cien-black cien"></div>
-          <div className="cien3 cien-black cien"></div>
+          <div className="piece__shadow-bar piece__shadow-bar--1 piece__shadow-bar--black"></div>
+          <div className="piece__shadow-bar piece__shadow-bar--2 piece__shadow-bar--black"></div>
+          <div className="piece__shadow-bar piece__shadow-bar--3 piece__shadow-bar--black"></div>
         </div>
       </div>
     );
