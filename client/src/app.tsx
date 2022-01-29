@@ -79,8 +79,7 @@ export default class App extends React.Component<Props, State> {
             }
             this.setState((state) => {
                 const label = this.getLabel(gameMode);
-                //////////////////////////---------------------------------------------------
-                let game = new Game(gameMode, color, SIDE.CUSTOM, label, this.gameId++); 
+                let game = new Game(gameMode, color, side, label, this.gameId++); 
                 this.menuPosition = "right";
                 return {
                     games: [game, ...state.games],

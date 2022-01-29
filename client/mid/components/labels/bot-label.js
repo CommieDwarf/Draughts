@@ -25,15 +25,15 @@ var BotLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     BotLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "bot-label", className: "label" },
-            react_1.default.createElement("div", { id: "AA", className: "bot-letter" }, "A"),
-            react_1.default.createElement("div", { id: "BB", className: "bot-letter" }, "B"),
-            react_1.default.createElement("div", { id: "CC", className: "bot-letter" }, "C"),
-            react_1.default.createElement("div", { id: "DD", className: "bot-letter" }, "D"),
-            react_1.default.createElement("div", { id: "EE", className: "bot-letter" }, "E"),
-            react_1.default.createElement("div", { id: "FF", className: "bot-letter" }, "F"),
-            react_1.default.createElement("div", { id: "GG", className: "bot-letter" }, "G"),
-            react_1.default.createElement("div", { id: "HH", className: "bot-letter" }, "H")));
+        return (react_1.default.createElement("div", { className: "board__bot-label no-select" },
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "A"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "B"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "C"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "D"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "E"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "F"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "G"),
+            react_1.default.createElement("div", { className: "bot-letter" }, "H")));
     };
     return BotLabel;
 }(react_1.default.Component));

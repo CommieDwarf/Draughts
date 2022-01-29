@@ -107,7 +107,6 @@ export class Engine {
     clickedId: number | null,
     chessboard: IChessboard
   ): void {
-
     let killMoves = this.getAllMovesWithKill(chessboard, this.turn, this.playerSide);
     let routes = this.getLongestRoutes(killMoves, this.turn, chessboard, this.playerSide);
     if (routes.length > 0) {

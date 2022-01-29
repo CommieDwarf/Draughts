@@ -45,14 +45,13 @@ var Chessboard = /** @class */ (function (_super) {
         }
     };
     Chessboard.prototype.componentDidMount = function () {
-        this.setBackgroundColor();
     };
-    Chessboard.prototype.setBackgroundColor = function () {
+    Chessboard.prototype.getBgAnimationClass = function () {
         if (this.props.engine.turn == this.props.game.playerColor && this.chessboardRef.current) {
-            this.chessboardRef.current.style.color = "lightgreen";
+            return "bg-animation--green";
         }
-        else if (this.chessboardRef.current) {
-            this.chessboardRef.current.style.color = "white";
+        else {
+            return "bg-animation--white";
         }
     };
     Chessboard.prototype.render = function () {
@@ -60,20 +59,30 @@ var Chessboard = /** @class */ (function (_super) {
         var game = this.props.game;
         var squares = [];
         if (engine.chessboard.length > 0) {
-            var className = "square";
+            var className = "chessboard__square chessboard__square--black";
             var pieceColor = void 0;
             for (var row = 1; row <= 8; row++) {
                 for (var column = 1; column <= 8; column++) {
-                    className = className == "square white" ? "square" : "square white";
+                    if (className == "chessboard__square chessboard__square--white") {
+                        className = "chessboard__square chessboard__square--black";
+                    }
+                    else {
+                        className = "chessboard__square chessboard__square--white";
+                    }
                     var id_1 = (row - 1) * 8 + column - 1;
                     if (engine.availableMoves.includes(id_1)) {
-                        className += " highlightedSquare";
+                        className += " chessboard__square--hightlight";
                     }
                     pieceColor = engine.chessboard[id_1]['piece'];
                     var queen = engine.chessboard[id_1]["queen"];
                     squares.push(react_1.default.createElement(square_1.default, { id: id_1.toString(), className: className, key: id_1, pieceColor: pieceColor, type: this.getPieceType(id_1), queen: queen }));
                 }
-                className = className == "square white" ? "square" : "square white";
+                if (className == "chessboard__square chessboard__square--white") {
+                    className = "chessboard__square chessboard__square--black";
+                }
+                else {
+                    className = "chessboard__square chessboard__square--white";
+                }
             }
         }
         var previewWrapperClass = "";
@@ -88,10 +97,10 @@ var Chessboard = /** @class */ (function (_super) {
                 react_1.default.createElement("i", { className: "icon-cancel-circled" })));
             label = (react_1.default.createElement("div", { id: "game-label-preview-" + id, className: "game-preview__label" }, this.props.label));
         }
-        this.setBackgroundColor();
+        var bgAnimationClass = this.getBgAnimationClass();
         return (react_1.default.createElement("div", { className: previewWrapperClass },
             label,
-            react_1.default.createElement("div", { className: "chessboard bg-animation " + previewChessboardClass, id: ("chessboard-" + id), ref: this.chessboardRef }, squares),
+            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, id: ("chessboard-" + id), ref: this.chessboardRef }, squares),
             closeIcon));
     };
     return Chessboard;

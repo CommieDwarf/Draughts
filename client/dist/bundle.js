@@ -55,8 +55,7 @@ var App = /** @class */ (function (_super) {
                 }
                 _this.setState(function (state) {
                     var label = _this.getLabel(gameMode);
-                    //////////////////////////---------------------------------------------------
-                    var game = new game_1.default(gameMode, color, 2 /* CUSTOM */, label, _this.gameId++);
+                    var game = new game_1.default(gameMode, color, side, label, _this.gameId++);
                     _this.menuPosition = "right";
                     return {
                         games: __spreadArray([game], state.games, true),
@@ -616,7 +615,7 @@ var Board = /** @class */ (function (_super) {
         }
         var engine = this.props.game.engine;
         var ctxMenu = this.state.contextMenu;
-        return (react_1.default.createElement("div", { id: "game", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
+        return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
             react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.restartGame }),
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
@@ -678,14 +677,13 @@ var Chessboard = /** @class */ (function (_super) {
         }
     };
     Chessboard.prototype.componentDidMount = function () {
-        this.setBackgroundColor();
     };
-    Chessboard.prototype.setBackgroundColor = function () {
+    Chessboard.prototype.getBgAnimationClass = function () {
         if (this.props.engine.turn == this.props.game.playerColor && this.chessboardRef.current) {
-            this.chessboardRef.current.style.color = "lightgreen";
+            return "bg-animation--green";
         }
-        else if (this.chessboardRef.current) {
-            this.chessboardRef.current.style.color = "white";
+        else {
+            return "bg-animation--white";
         }
     };
     Chessboard.prototype.render = function () {
@@ -693,20 +691,30 @@ var Chessboard = /** @class */ (function (_super) {
         var game = this.props.game;
         var squares = [];
         if (engine.chessboard.length > 0) {
-            var className = "square";
+            var className = "chessboard__square chessboard__square--black";
             var pieceColor = void 0;
             for (var row = 1; row <= 8; row++) {
                 for (var column = 1; column <= 8; column++) {
-                    className = className == "square white" ? "square" : "square white";
+                    if (className == "chessboard__square chessboard__square--white") {
+                        className = "chessboard__square chessboard__square--black";
+                    }
+                    else {
+                        className = "chessboard__square chessboard__square--white";
+                    }
                     var id_1 = (row - 1) * 8 + column - 1;
                     if (engine.availableMoves.includes(id_1)) {
-                        className += " highlightedSquare";
+                        className += " chessboard__square--hightlight";
                     }
                     pieceColor = engine.chessboard[id_1]['piece'];
                     var queen = engine.chessboard[id_1]["queen"];
                     squares.push(react_1.default.createElement(square_1.default, { id: id_1.toString(), className: className, key: id_1, pieceColor: pieceColor, type: this.getPieceType(id_1), queen: queen }));
                 }
-                className = className == "square white" ? "square" : "square white";
+                if (className == "chessboard__square chessboard__square--white") {
+                    className = "chessboard__square chessboard__square--black";
+                }
+                else {
+                    className = "chessboard__square chessboard__square--white";
+                }
             }
         }
         var previewWrapperClass = "";
@@ -721,10 +729,10 @@ var Chessboard = /** @class */ (function (_super) {
                 react_1.default.createElement("i", { className: "icon-cancel-circled" })));
             label = (react_1.default.createElement("div", { id: "game-label-preview-" + id, className: "game-preview__label" }, this.props.label));
         }
-        this.setBackgroundColor();
+        var bgAnimationClass = this.getBgAnimationClass();
         return (react_1.default.createElement("div", { className: previewWrapperClass },
             label,
-            react_1.default.createElement("div", { className: "chessboard bg-animation " + previewChessboardClass, id: ("chessboard-" + id), ref: this.chessboardRef }, squares),
+            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, id: ("chessboard-" + id), ref: this.chessboardRef }, squares),
             closeIcon));
     };
     return Chessboard;
@@ -1377,15 +1385,15 @@ var BotLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     BotLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "bot-label", className: "label" },
-            react_1.default.createElement("div", { id: "AA", className: "bot-letter" }, "A"),
-            react_1.default.createElement("div", { id: "BB", className: "bot-letter" }, "B"),
-            react_1.default.createElement("div", { id: "CC", className: "bot-letter" }, "C"),
-            react_1.default.createElement("div", { id: "DD", className: "bot-letter" }, "D"),
-            react_1.default.createElement("div", { id: "EE", className: "bot-letter" }, "E"),
-            react_1.default.createElement("div", { id: "FF", className: "bot-letter" }, "F"),
-            react_1.default.createElement("div", { id: "GG", className: "bot-letter" }, "G"),
-            react_1.default.createElement("div", { id: "HH", className: "bot-letter" }, "H")));
+        return (react_1.default.createElement("div", { className: "board__bot-label no-select" },
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "A"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "B"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "C"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "D"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "E"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "F"),
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "G"),
+            react_1.default.createElement("div", { className: "bot-letter" }, "H")));
     };
     return BotLabel;
 }(react_1.default.Component));
@@ -1419,15 +1427,15 @@ var leftLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     leftLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "left-label", className: "label" },
-            react_1.default.createElement("div", { id: "111", className: "left-num" }, "1"),
-            react_1.default.createElement("div", { id: "222", className: "left-num" }, "2"),
-            react_1.default.createElement("div", { id: "333", className: "left-num" }, "3"),
-            react_1.default.createElement("div", { id: "444", className: "left-num" }, "4"),
-            react_1.default.createElement("div", { id: "555", className: "left-num" }, "5"),
-            react_1.default.createElement("div", { id: "666", className: "left-num" }, "6"),
-            react_1.default.createElement("div", { id: "777", className: "left-num" }, "7"),
-            react_1.default.createElement("div", { id: "888", className: "left-num" }, "8")));
+        return (react_1.default.createElement("div", { className: "board__left-label" },
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "1"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "2"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "3"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "4"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "5"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "6"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "7"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "8")));
     };
     return leftLabel;
 }(react_1.default.Component));
@@ -1461,15 +1469,15 @@ var RightLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     RightLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "right-label", className: "label" },
-            react_1.default.createElement("div", { id: "11", className: "right-num" }, "1"),
-            react_1.default.createElement("div", { id: "22", className: "right-num" }, "2"),
-            react_1.default.createElement("div", { id: "33", className: "right-num" }, "3"),
-            react_1.default.createElement("div", { id: "44", className: "right-num" }, "4"),
-            react_1.default.createElement("div", { id: "55", className: "right-num" }, "5"),
-            react_1.default.createElement("div", { id: "66", className: "right-num" }, "6"),
-            react_1.default.createElement("div", { id: "77", className: "right-num" }, "7"),
-            react_1.default.createElement("div", { id: "88", className: "right-num" }, "8")));
+        return (react_1.default.createElement("div", { className: "board__right-label" },
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "1"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "2"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "3"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "4"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "5"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "6"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "7"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "8")));
     };
     return RightLabel;
 }(react_1.default.Component));
@@ -1503,15 +1511,15 @@ var TopLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TopLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "top-label", className: "label" },
-            react_1.default.createElement("div", { id: "A", className: "top-letter" }, "A"),
-            react_1.default.createElement("div", { id: "B", className: "top-letter" }, "B"),
-            react_1.default.createElement("div", { id: "C", className: "top-letter" }, "C"),
-            react_1.default.createElement("div", { id: "D", className: "top-letter" }, "D"),
-            react_1.default.createElement("div", { id: "E", className: "top-letter" }, "E"),
-            react_1.default.createElement("div", { id: "F", className: "top-letter" }, "F"),
-            react_1.default.createElement("div", { id: "G", className: "top-letter" }, "G"),
-            react_1.default.createElement("div", { id: "H", className: "top-letter" }, "H")));
+        return (react_1.default.createElement("div", { className: "board__top-label" },
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "A"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "B"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "C"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "D"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "E"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "F"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "G"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "H")));
     };
     return TopLabel;
 }(react_1.default.Component));
@@ -2794,7 +2802,7 @@ var Game = /** @class */ (function () {
                         return [3 /*break*/, 5];
                     case 1:
                         if (!(event.target instanceof Element)) return [3 /*break*/, 5];
-                        square = event.target.closest(".square");
+                        square = event.target.closest(".chessboard__square");
                         if (!square) return [3 /*break*/, 4];
                         if (!square.getAttribute("id")) return [3 /*break*/, 3];
                         squareId = square.getAttribute("id");
@@ -2839,7 +2847,7 @@ var react_dom_1 = __importDefault(require("react-dom"));
 var App_1 = __importDefault(require("./App"));
 var socket_io_client_1 = __importDefault(require("socket.io-client"));
 exports.socket = (0, socket_io_client_1.default)("http://localhost:3001");
-react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.getElementById("container"));
+react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.querySelector(".container"));
 
 },{"./App":1,"react":64,"react-dom":61,"socket.io-client":71}],29:[function(require,module,exports){
 "use strict";

@@ -65,7 +65,7 @@ export default class Board extends React.Component<MyProps, MyState> {
     clickHandler = (event: any) => {
         this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
         this.props.game.clickHandler(event);
-        this.forceUpdate()
+        this.forceUpdate();
         document.getElementById('games-preview')?.dispatchEvent(new Event("click", {"bubbles": true}))
     }
 
@@ -137,7 +137,7 @@ export default class Board extends React.Component<MyProps, MyState> {
         let ctxMenu = this.state.contextMenu;
 
         return (
-            <div id="game"  onClick={this.clickHandler} onContextMenu={this.onContextHandler}>
+            <div className="board"  onClick={this.clickHandler} onContextMenu={this.onContextHandler}>
                 <WinMenu winner={engine.winner} restart={this.restartGame}/>
                 <TopLabel/>
                 <LeftLabel/>

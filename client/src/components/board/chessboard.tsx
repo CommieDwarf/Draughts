@@ -3,6 +3,7 @@ import React, { ReactElement } from 'react';
 import Square from './square';
 import { IChessboard } from '../../engine';
 import { Color } from './getPieceJSX';
+import Players from '../lobby/players';
 
 type props = {
 
@@ -57,14 +58,13 @@ export default class Chessboard extends React.Component<props, state> {
     }
 
     componentDidMount() {
-        this.setBackgroundColor();
     }
 
-    setBackgroundColor() {
+    getBgAnimationClass() {
         if (this.props.engine.turn == this.props.game.playerColor && this.chessboardRef.current) {
-            this.chessboardRef.current.style.color = "lightgreen";
-        } else if (this.chessboardRef.current) {
-            this.chessboardRef.current.style.color = "white";
+            return "bg-animation--green";
+        } else  {
+            return "bg-animation--white";
         }
     }
 
@@ -75,15 +75,19 @@ export default class Chessboard extends React.Component<props, state> {
 
         if (engine.chessboard.length > 0) {
 
-            let className = "square";
+            let className = "chessboard__square chessboard__square--black";
             let pieceColor: "black" | "white" | "";
 
             for (let row = 1; row <= 8; row++) {
                 for (let column = 1; column <= 8; column++) {
-                    className = className == "square white" ? "square" : "square white";
+                    if (className == "chessboard__square chessboard__square--white") {
+                        className = "chessboard__square chessboard__square--black"
+                    } else {
+                        className = "chessboard__square chessboard__square--white"
+                    }
                     let id = (row - 1) * 8 + column - 1;
                     if (engine.availableMoves.includes(id)) {
-                        className += " highlightedSquare";
+                        className += " chessboard__square--hightlight";
                     }
                     pieceColor = engine.chessboard[id]['piece'];
                     let queen = engine.chessboard[id]["queen"];
@@ -91,7 +95,11 @@ export default class Chessboard extends React.Component<props, state> {
 
                     squares.push(<Square id={id.toString()} className={className} key={id} pieceColor={pieceColor} type={this.getPieceType(id)} queen={queen} />)
                 }
-                className = className == "square white" ? "square" : "square white";
+                if (className == "chessboard__square chessboard__square--white") {
+                    className = "chessboard__square chessboard__square--black"
+                } else {
+                    className = "chessboard__square chessboard__square--white"
+                }
             }
         }
 
@@ -116,13 +124,13 @@ export default class Chessboard extends React.Component<props, state> {
             )
         }
 
-        
-        this.setBackgroundColor();
+ 
+        const bgAnimationClass = this.getBgAnimationClass();
 
         return (
             <div className={previewWrapperClass}>
                 {label}
-                <div className={"chessboard bg-animation " + previewChessboardClass} id={("chessboard-" + id)} ref={this.chessboardRef}>
+                <div className={"chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass} id={("chessboard-" + id)} ref={this.chessboardRef}>
                     {squares}
                 </div>
                 {closeIcon}

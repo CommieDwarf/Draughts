@@ -126,7 +126,7 @@ var Board = /** @class */ (function (_super) {
         }
         var engine = this.props.game.engine;
         var ctxMenu = this.state.contextMenu;
-        return (react_1.default.createElement("div", { id: "game", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
+        return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
             react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.restartGame }),
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),

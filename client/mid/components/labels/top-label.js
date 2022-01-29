@@ -25,15 +25,15 @@ var TopLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TopLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "top-label", className: "label" },
-            react_1.default.createElement("div", { id: "A", className: "top-letter" }, "A"),
-            react_1.default.createElement("div", { id: "B", className: "top-letter" }, "B"),
-            react_1.default.createElement("div", { id: "C", className: "top-letter" }, "C"),
-            react_1.default.createElement("div", { id: "D", className: "top-letter" }, "D"),
-            react_1.default.createElement("div", { id: "E", className: "top-letter" }, "E"),
-            react_1.default.createElement("div", { id: "F", className: "top-letter" }, "F"),
-            react_1.default.createElement("div", { id: "G", className: "top-letter" }, "G"),
-            react_1.default.createElement("div", { id: "H", className: "top-letter" }, "H")));
+        return (react_1.default.createElement("div", { className: "board__top-label" },
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "A"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "B"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "C"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "D"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "E"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "F"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "G"),
+            react_1.default.createElement("div", { className: "board__top-label-letter" }, "H")));
     };
     return TopLabel;
 }(react_1.default.Component));

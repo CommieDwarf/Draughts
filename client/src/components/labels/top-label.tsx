@@ -3,22 +3,22 @@ import React from 'react';
 export default class TopLabel extends React.Component {
     render() {
         return (
-            <div id="top-label" className="label">
-                <div id="A" className="top-letter">A
+            <div className="board__top-label">
+                <div className="board__top-label-letter">A
                 </div>
-                <div id="B" className="top-letter">B
+                <div className="board__top-label-letter">B
                 </div>
-                <div id="C" className="top-letter">C
+                <div className="board__top-label-letter">C
                 </div>
-                <div id="D" className="top-letter">D
+                <div className="board__top-label-letter">D
                 </div>
-                <div id="E" className="top-letter">E
+                <div className="board__top-label-letter">E
                 </div>
-                <div id="F" className="top-letter">F
+                <div className="board__top-label-letter">F
                 </div>
-                <div id="G" className="top-letter">G
+                <div className="board__top-label-letter">G
                 </div>
-                <div id="H" className="top-letter">H
+                <div className="board__top-label-letter">H
                 </div>
              </div>
         )

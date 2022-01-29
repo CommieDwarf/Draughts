@@ -9,5 +9,5 @@ var react_dom_1 = __importDefault(require("react-dom"));
 var App_1 = __importDefault(require("./App"));
 var socket_io_client_1 = __importDefault(require("socket.io-client"));
 exports.socket = (0, socket_io_client_1.default)("http://localhost:3001");
-react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.getElementById("container"));
+react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.querySelector(".container"));
 //# sourceMappingURL=main.js.map

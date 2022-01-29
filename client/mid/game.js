@@ -73,7 +73,7 @@ var Game = /** @class */ (function () {
                         return [3 /*break*/, 5];
                     case 1:
                         if (!(event.target instanceof Element)) return [3 /*break*/, 5];
-                        square = event.target.closest(".square");
+                        square = event.target.closest(".chessboard__square");
                         if (!square) return [3 /*break*/, 4];
                         if (!square.getAttribute("id")) return [3 /*break*/, 3];
                         squareId = square.getAttribute("id");

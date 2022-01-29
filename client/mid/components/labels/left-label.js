@@ -25,15 +25,15 @@ var leftLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     leftLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "left-label", className: "label" },
-            react_1.default.createElement("div", { id: "111", className: "left-num" }, "1"),
-            react_1.default.createElement("div", { id: "222", className: "left-num" }, "2"),
-            react_1.default.createElement("div", { id: "333", className: "left-num" }, "3"),
-            react_1.default.createElement("div", { id: "444", className: "left-num" }, "4"),
-            react_1.default.createElement("div", { id: "555", className: "left-num" }, "5"),
-            react_1.default.createElement("div", { id: "666", className: "left-num" }, "6"),
-            react_1.default.createElement("div", { id: "777", className: "left-num" }, "7"),
-            react_1.default.createElement("div", { id: "888", className: "left-num" }, "8")));
+        return (react_1.default.createElement("div", { className: "board__left-label" },
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "1"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "2"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "3"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "4"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "5"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "6"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "7"),
+            react_1.default.createElement("div", { className: "board__left-label-num" }, "8")));
     };
     return leftLabel;
 }(react_1.default.Component));

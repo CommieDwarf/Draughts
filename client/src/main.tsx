@@ -9,4 +9,4 @@ export const socket = io("http://localhost:3001");
 
 
 
-ReactDOM.render(<App />, document.getElementById("container"));
+ReactDOM.render(<App />, document.querySelector(".container"));

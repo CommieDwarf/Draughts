@@ -43,13 +43,11 @@ export default class Game {
   }
 
   async clickHandler(event: any) {
-
       let engine = this.engine
-
       if (this.gameMode == GAMEMODE.BOT && engine.turn !== this.playerColor) {
       } else {
         if (event.target instanceof Element) {
-          let square = event.target.closest(".square");
+          let square = event.target.closest(".chessboard__square");
           if (square) {
             if (square.getAttribute("id")) {
               let squareId = square.getAttribute("id");

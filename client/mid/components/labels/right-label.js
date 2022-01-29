@@ -25,15 +25,15 @@ var RightLabel = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     RightLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: "right-label", className: "label" },
-            react_1.default.createElement("div", { id: "11", className: "right-num" }, "1"),
-            react_1.default.createElement("div", { id: "22", className: "right-num" }, "2"),
-            react_1.default.createElement("div", { id: "33", className: "right-num" }, "3"),
-            react_1.default.createElement("div", { id: "44", className: "right-num" }, "4"),
-            react_1.default.createElement("div", { id: "55", className: "right-num" }, "5"),
-            react_1.default.createElement("div", { id: "66", className: "right-num" }, "6"),
-            react_1.default.createElement("div", { id: "77", className: "right-num" }, "7"),
-            react_1.default.createElement("div", { id: "88", className: "right-num" }, "8")));
+        return (react_1.default.createElement("div", { className: "board__right-label" },
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "1"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "2"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "3"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "4"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "5"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "6"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "7"),
+            react_1.default.createElement("div", { className: "board__right-label-num" }, "8")));
     };
     return RightLabel;
 }(react_1.default.Component));
