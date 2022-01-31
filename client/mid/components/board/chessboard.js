@@ -24,6 +24,18 @@ var Chessboard = /** @class */ (function (_super) {
     __extends(Chessboard, _super);
     function Chessboard(props) {
         var _this = _super.call(this, props) || this;
+        _this.forceUpdateHandler = function () {
+            _this.forceUpdate();
+        };
+        _this.closeGameHandler = function (event) {
+            var _a;
+            var target = event.target;
+            if (target && _this.props.closeGame) {
+                var id = (_a = target.closest(".game-preview__close-game")) === null || _a === void 0 ? void 0 : _a.id.slice(11);
+                if (id)
+                    _this.props.closeGame(parseInt(id));
+            }
+        };
         _this.props = props;
         _this.chessboardRef = react_1.default.createRef();
         _this.timeout = null;
@@ -44,15 +56,19 @@ var Chessboard = /** @class */ (function (_super) {
             return 'normal';
         }
     };
-    Chessboard.prototype.componentDidMount = function () {
-    };
     Chessboard.prototype.getBgAnimationClass = function () {
-        if (this.props.engine.turn == this.props.game.playerColor && this.chessboardRef.current) {
+        if (this.props.engine.turn == this.props.game.playerColor) {
             return "bg-animation--green";
         }
         else {
             return "bg-animation--white";
         }
+    };
+    Chessboard.prototype.componentDidMount = function () {
+        document.addEventListener("chessboardChanged", this.forceUpdateHandler);
+    };
+    Chessboard.prototype.componentWillUnmount = function () {
+        document.removeEventListener("chessboardChanged", this.forceUpdateHandler);
     };
     Chessboard.prototype.render = function () {
         var engine = this.props.engine;
@@ -93,7 +109,7 @@ var Chessboard = /** @class */ (function (_super) {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = (react_1.default.createElement("div", { id: "close-game-" + id, className: "game-preview__close-game" },
+            closeIcon = (react_1.default.createElement("div", { id: "close-game-" + id, className: "game-preview__close-game", onClick: this.closeGameHandler },
                 react_1.default.createElement("i", { className: "icon-cancel-circled" })));
             label = (react_1.default.createElement("div", { id: "game-label-preview-" + id, className: "game-preview__label" }, this.props.label));
         }

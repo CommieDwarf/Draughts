@@ -34,6 +34,10 @@ var Engine = /** @class */ (function () {
         this.killablePieces = [];
         this.winner = "";
     }
+    Engine.prototype.dispatchEvent = function () {
+        document.dispatchEvent(new Event('chessboardChanged'));
+        console.log('dispatch');
+    };
     Engine.prototype.setWinner = function (chessboard, turn, playerSide) {
         var allMoves = this.getAllMoves(chessboard, turn, playerSide);
         var opponent = turn == "white" ? "black" : "white";
@@ -74,6 +78,11 @@ var Engine = /** @class */ (function () {
     };
     /////////////////////////////// MAIN FUNCTION
     Engine.prototype.performAction = function (clickedId, chessboard) {
+        var oldState = {
+            selectedPiece: this.selectedPiece,
+            chessboard: JSON.stringify(this.chessboard),
+            turn: this.turn,
+        };
         var killMoves = this.getAllMovesWithKill(chessboard, this.turn, this.playerSide);
         var routes = this.getLongestRoutes(killMoves, this.turn, chessboard, this.playerSide);
         if (routes.length > 0) {
@@ -143,6 +152,14 @@ var Engine = /** @class */ (function () {
             }
         }
         this.setWinner(chessboard, this.turn, this.playerSide);
+        var currentState = {
+            selectedPiece: this.selectedPiece,
+            chessboard: JSON.stringify(this.chessboard),
+            turn: this.turn,
+        };
+        if (JSON.stringify(oldState) != JSON.stringify(currentState)) {
+            this.dispatchEvent();
+        }
     };
     /////////////////////////////////////////////////
     Engine.prototype.shouldMakeQueen = function (piece, chessboard) {

@@ -49,10 +49,11 @@ var App = /** @class */ (function (_super) {
                 return false;
             }
             else if (_this.state.games.length < 4 && _this.state.name.length > 0) {
-                if (_this.gameId == 0) {
+                if (_this.justStarted) {
                     _this.connect(_this.state.name);
                 }
                 _this.setState(function (state) {
+                    _this.justStarted = false;
                     var label = _this.getLabel(gameMode);
                     var game = new game_1.default(gameMode, color, side, label, _this.gameId++);
                     _this.menuPosition = "right";
@@ -81,6 +82,14 @@ var App = /** @class */ (function (_super) {
                 });
             }
         };
+        _this.closeGame = function (gameId) {
+            _this.setState(function (state) {
+                return {
+                    games: state.games.filter(function (game) { return game.id != gameId; }),
+                    currentGame: null,
+                };
+            });
+        };
         _this.state = {
             name: "",
             games: [],
@@ -91,6 +100,7 @@ var App = /** @class */ (function (_super) {
         };
         _this.menuPosition = 'center';
         _this.gameId = 0;
+        _this.justStarted = true;
         return _this;
     }
     App.prototype.getLabel = function (mode) {
@@ -105,7 +115,6 @@ var App = /** @class */ (function (_super) {
     };
     App.prototype.connect = function (name) {
         main_1.socket.emit("player-connected", name);
-        console.log('player connected');
     };
     App.prototype.requestPlayerList = function () {
         main_1.socket.emit("request_players_list");
@@ -123,17 +132,16 @@ var App = /** @class */ (function (_super) {
         var _this = this;
         main_1.socket.on("get_players", function (players) {
             _this.setState({ players: players });
-            console.log(players);
         });
     };
     App.prototype.render = function () {
         var games = this.state.games;
-        if (this.state.currentGame) {
+        if (!this.justStarted) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
-                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame }),
+                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name }),
                 react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: false, error: this.state.newGameError }),
-                react_1.default.createElement(board_1.default, { game: this.state.currentGame })));
+                this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,

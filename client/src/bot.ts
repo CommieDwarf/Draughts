@@ -50,17 +50,21 @@ export default class Bot {
                 this.engine.makeQueen(move.move, chessboard);
             }
             this.engine.move(move.piece, move.move, chessboard);
+            this.engine.dispatchEvent();
             if (move.kill) {
                 this.engine.kill(move.kill, chessboard);
                 let routes = this.engine.getLongestRoutes([move.move], this.color, chessboard, "top");
                 if (routes.some((route) => route.length > 1)) {
                     await sleep(1000);
                     this.makeMove(chessboard);
+                    this.engine.dispatchEvent();
                 } else {
                     this.engine.turn = this.playerColor;
+                    this.engine.dispatchEvent();
                 }
             } else {
                 this.engine.turn = this.playerColor;
+                this.engine.dispatchEvent();
             }
 
         }

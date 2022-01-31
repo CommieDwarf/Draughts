@@ -27,7 +27,7 @@ var ColorSelection = /** @class */ (function (_super) {
             var target = event.target;
             var color;
             var side;
-            if (target.closest("#choose-white")) {
+            if (target.closest(".game-menu__color--white")) {
                 color = "white";
                 side = 0 /* NORMAL */;
             }
@@ -43,8 +43,8 @@ var ColorSelection = /** @class */ (function (_super) {
     ColorSelection.prototype.render = function () {
         var visibility = this.props.visibility;
         return (react_1.default.createElement("div", { className: "game-menu__color-selection" },
-            react_1.default.createElement("div", { className: "game-menu__color " + visibility, onClick: this.onClickHandler }, "Play white"),
-            react_1.default.createElement("div", { className: "game-menu__color " + visibility, onClick: this.onClickHandler }, "Play black")));
+            react_1.default.createElement("div", { className: "game-menu__color " + visibility + " game-menu__color--white", onClick: this.onClickHandler }, "Play white"),
+            react_1.default.createElement("div", { className: "game-menu__color " + visibility + " game-menu__color--black", onClick: this.onClickHandler }, "Play black")));
     };
     return ColorSelection;
 }(react_1.default.Component));

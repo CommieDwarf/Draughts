@@ -61,6 +61,10 @@ export class Engine {
     this.winner = "";
   }
 
+  dispatchEvent() {   // dispatching event in order react to update
+    document.dispatchEvent(new Event('chessboardChanged'));
+    console.log('dispatch')
+  }
   
   setWinner(chessboard: IChessboard, turn: Turn, playerSide: string) {
     const allMoves = this.getAllMoves(chessboard, turn, playerSide);
@@ -107,6 +111,11 @@ export class Engine {
     clickedId: number | null,
     chessboard: IChessboard
   ): void {
+    const oldState = {
+      selectedPiece: this.selectedPiece,
+      chessboard: JSON.stringify(this.chessboard),
+      turn: this.turn,
+    }
     let killMoves = this.getAllMovesWithKill(chessboard, this.turn, this.playerSide);
     let routes = this.getLongestRoutes(killMoves, this.turn, chessboard, this.playerSide);
     if (routes.length > 0) {
@@ -144,6 +153,7 @@ export class Engine {
         this.unsetAvailableMoves();
         this.unselectPiece();
         this.lockPieces([]);
+        
         let killed = false;
         if (move.kill) {
           this.kill(move.kill, chessboard);
@@ -177,6 +187,16 @@ export class Engine {
       }
     }
     this.setWinner(chessboard, this.turn, this.playerSide);
+
+    const currentState = {
+      selectedPiece: this.selectedPiece,
+      chessboard: JSON.stringify(this.chessboard),
+      turn: this.turn,
+    }
+
+    if (JSON.stringify(oldState) != JSON.stringify(currentState)) {
+      this.dispatchEvent();
+    }
   }
 
   /////////////////////////////////////////////////

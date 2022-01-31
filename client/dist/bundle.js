@@ -50,10 +50,11 @@ var App = /** @class */ (function (_super) {
                 return false;
             }
             else if (_this.state.games.length < 4 && _this.state.name.length > 0) {
-                if (_this.gameId == 0) {
+                if (_this.justStarted) {
                     _this.connect(_this.state.name);
                 }
                 _this.setState(function (state) {
+                    _this.justStarted = false;
                     var label = _this.getLabel(gameMode);
                     var game = new game_1.default(gameMode, color, side, label, _this.gameId++);
                     _this.menuPosition = "right";
@@ -82,6 +83,14 @@ var App = /** @class */ (function (_super) {
                 });
             }
         };
+        _this.closeGame = function (gameId) {
+            _this.setState(function (state) {
+                return {
+                    games: state.games.filter(function (game) { return game.id != gameId; }),
+                    currentGame: null,
+                };
+            });
+        };
         _this.state = {
             name: "",
             games: [],
@@ -92,6 +101,7 @@ var App = /** @class */ (function (_super) {
         };
         _this.menuPosition = 'center';
         _this.gameId = 0;
+        _this.justStarted = true;
         return _this;
     }
     App.prototype.getLabel = function (mode) {
@@ -106,7 +116,6 @@ var App = /** @class */ (function (_super) {
     };
     App.prototype.connect = function (name) {
         main_1.socket.emit("player-connected", name);
-        console.log('player connected');
     };
     App.prototype.requestPlayerList = function () {
         main_1.socket.emit("request_players_list");
@@ -124,17 +133,16 @@ var App = /** @class */ (function (_super) {
         var _this = this;
         main_1.socket.on("get_players", function (players) {
             _this.setState({ players: players });
-            console.log(players);
         });
     };
     App.prototype.render = function () {
         var games = this.state.games;
-        if (this.state.currentGame) {
+        if (!this.justStarted) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
-                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame }),
+                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name }),
                 react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: false, error: this.state.newGameError }),
-                react_1.default.createElement(board_1.default, { game: this.state.currentGame })));
+                this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,
@@ -208,6 +216,7 @@ var Bot = /** @class */ (function () {
                             this.engine.makeQueen(move.move, chessboard);
                         }
                         this.engine.move(move.piece, move.move, chessboard);
+                        this.engine.dispatchEvent();
                         if (!move.kill) return [3 /*break*/, 4];
                         this.engine.kill(move.kill, chessboard);
                         routes = this.engine.getLongestRoutes([move.move], this.color, chessboard, "top");
@@ -216,13 +225,16 @@ var Bot = /** @class */ (function () {
                     case 1:
                         _a.sent();
                         this.makeMove(chessboard);
+                        this.engine.dispatchEvent();
                         return [3 /*break*/, 3];
                     case 2:
                         this.engine.turn = this.playerColor;
+                        this.engine.dispatchEvent();
                         _a.label = 3;
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         this.engine.turn = this.playerColor;
+                        this.engine.dispatchEvent();
                         _a.label = 5;
                     case 5:
                         this.engine.playerSide = "bot";
@@ -503,17 +515,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -536,11 +537,8 @@ var Board = /** @class */ (function (_super) {
             });
         };
         _this.clickHandler = function (event) {
-            var _a;
-            _this.setState({ contextMenu: __assign(__assign({}, _this.state.contextMenu), { showMenu: false }) });
+            //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
-            _this.forceUpdate();
-            (_a = document.getElementById('games-preview')) === null || _a === void 0 ? void 0 : _a.dispatchEvent(new Event("click", { "bubbles": true }));
         };
         _this.onContextHandler = function (event) {
             event.preventDefault();
@@ -572,9 +570,6 @@ var Board = /** @class */ (function (_super) {
                     } });
             }
             return false;
-        };
-        _this.onForceUpdateHandler = function () {
-            _this.forceUpdate();
         };
         _this.props = props;
         _this.state = {
@@ -656,6 +651,18 @@ var Chessboard = /** @class */ (function (_super) {
     __extends(Chessboard, _super);
     function Chessboard(props) {
         var _this = _super.call(this, props) || this;
+        _this.forceUpdateHandler = function () {
+            _this.forceUpdate();
+        };
+        _this.closeGameHandler = function (event) {
+            var _a;
+            var target = event.target;
+            if (target && _this.props.closeGame) {
+                var id = (_a = target.closest(".game-preview__close-game")) === null || _a === void 0 ? void 0 : _a.id.slice(11);
+                if (id)
+                    _this.props.closeGame(parseInt(id));
+            }
+        };
         _this.props = props;
         _this.chessboardRef = react_1.default.createRef();
         _this.timeout = null;
@@ -676,15 +683,19 @@ var Chessboard = /** @class */ (function (_super) {
             return 'normal';
         }
     };
-    Chessboard.prototype.componentDidMount = function () {
-    };
     Chessboard.prototype.getBgAnimationClass = function () {
-        if (this.props.engine.turn == this.props.game.playerColor && this.chessboardRef.current) {
+        if (this.props.engine.turn == this.props.game.playerColor) {
             return "bg-animation--green";
         }
         else {
             return "bg-animation--white";
         }
+    };
+    Chessboard.prototype.componentDidMount = function () {
+        document.addEventListener("chessboardChanged", this.forceUpdateHandler);
+    };
+    Chessboard.prototype.componentWillUnmount = function () {
+        document.removeEventListener("chessboardChanged", this.forceUpdateHandler);
     };
     Chessboard.prototype.render = function () {
         var engine = this.props.engine;
@@ -725,7 +736,7 @@ var Chessboard = /** @class */ (function (_super) {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = (react_1.default.createElement("div", { id: "close-game-" + id, className: "game-preview__close-game" },
+            closeIcon = (react_1.default.createElement("div", { id: "close-game-" + id, className: "game-preview__close-game", onClick: this.closeGameHandler },
                 react_1.default.createElement("i", { className: "icon-cancel-circled" })));
             label = (react_1.default.createElement("div", { id: "game-label-preview-" + id, className: "game-preview__label" }, this.props.label));
         }
@@ -1105,7 +1116,7 @@ var ColorSelection = /** @class */ (function (_super) {
             var target = event.target;
             var color;
             var side;
-            if (target.closest("#choose-white")) {
+            if (target.closest(".game-menu__color--white")) {
                 color = "white";
                 side = 0 /* NORMAL */;
             }
@@ -1121,8 +1132,8 @@ var ColorSelection = /** @class */ (function (_super) {
     ColorSelection.prototype.render = function () {
         var visibility = this.props.visibility;
         return (react_1.default.createElement("div", { className: "game-menu__color-selection" },
-            react_1.default.createElement("div", { className: "game-menu__color " + visibility, onClick: this.onClickHandler }, "Play white"),
-            react_1.default.createElement("div", { className: "game-menu__color " + visibility, onClick: this.onClickHandler }, "Play black")));
+            react_1.default.createElement("div", { className: "game-menu__color " + visibility + " game-menu__color--white", onClick: this.onClickHandler }, "Play white"),
+            react_1.default.createElement("div", { className: "game-menu__color " + visibility + " game-menu__color--black", onClick: this.onClickHandler }, "Play black")));
     };
     return ColorSelection;
 }(react_1.default.Component));
@@ -1298,14 +1309,14 @@ var GamePreview = /** @class */ (function (_super) {
                 var id = chessboard.id.slice(-1);
                 _this.props.switchGame(id);
             }
-            _this.forceUpdate();
         };
         _this.props = props;
         return _this;
     }
     GamePreview.prototype.render = function () {
+        var _this = this;
         var games = this.props.games.map(function (game, i) {
-            return react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, id: game.id, label: game.label, game: game });
+            return react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, id: game.id, label: game.label, game: game, closeGame: _this.props.closeGame });
         });
         return (react_1.default.createElement("div", { className: "game-preview", onClick: this.onClickHandler }, games));
     };
@@ -2286,6 +2297,10 @@ var Engine = /** @class */ (function () {
         this.killablePieces = [];
         this.winner = "";
     }
+    Engine.prototype.dispatchEvent = function () {
+        document.dispatchEvent(new Event('chessboardChanged'));
+        console.log('dispatch');
+    };
     Engine.prototype.setWinner = function (chessboard, turn, playerSide) {
         var allMoves = this.getAllMoves(chessboard, turn, playerSide);
         var opponent = turn == "white" ? "black" : "white";
@@ -2326,6 +2341,11 @@ var Engine = /** @class */ (function () {
     };
     /////////////////////////////// MAIN FUNCTION
     Engine.prototype.performAction = function (clickedId, chessboard) {
+        var oldState = {
+            selectedPiece: this.selectedPiece,
+            chessboard: JSON.stringify(this.chessboard),
+            turn: this.turn,
+        };
         var killMoves = this.getAllMovesWithKill(chessboard, this.turn, this.playerSide);
         var routes = this.getLongestRoutes(killMoves, this.turn, chessboard, this.playerSide);
         if (routes.length > 0) {
@@ -2395,6 +2415,14 @@ var Engine = /** @class */ (function () {
             }
         }
         this.setWinner(chessboard, this.turn, this.playerSide);
+        var currentState = {
+            selectedPiece: this.selectedPiece,
+            chessboard: JSON.stringify(this.chessboard),
+            turn: this.turn,
+        };
+        if (JSON.stringify(oldState) != JSON.stringify(currentState)) {
+            this.dispatchEvent();
+        }
     };
     /////////////////////////////////////////////////
     Engine.prototype.shouldMakeQueen = function (piece, chessboard) {
@@ -2791,39 +2819,42 @@ var Game = /** @class */ (function () {
         return this.engine.chessboard;
     };
     Game.prototype.clickHandler = function (event) {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
             var engine, square, squareId, board;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         engine = this.engine;
-                        if (!(this.gameMode == 1 /* BOT */ && engine.turn !== this.playerColor)) return [3 /*break*/, 1];
-                        return [3 /*break*/, 5];
-                    case 1:
-                        if (!(event.target instanceof Element)) return [3 /*break*/, 5];
+                        if (!!(this.gameMode == 1 /* BOT */ && engine.turn !== this.playerColor)) return [3 /*break*/, 4];
+                        if (!(event.target instanceof Element)) {
+                            return [2 /*return*/];
+                        }
                         square = event.target.closest(".chessboard__square");
-                        if (!square) return [3 /*break*/, 4];
-                        if (!square.getAttribute("id")) return [3 /*break*/, 3];
+                        if (!square) return [3 /*break*/, 3];
+                        if (!square.getAttribute("id")) {
+                            return [2 /*return*/];
+                        }
                         squareId = square.getAttribute("id");
-                        if (!squareId) return [3 /*break*/, 3];
+                        if (!squareId) {
+                            return [2 /*return*/];
+                        }
                         board = JSON.stringify(this.engine.chessboard);
                         engine.performAction(parseInt(squareId), engine.chessboard);
-                        if (!(board !== JSON.stringify(this.engine.chessboard))) return [3 /*break*/, 3];
-                        if (!(engine.turn == this.bot.color && this.gameMode == 1 /* BOT */)) return [3 /*break*/, 3];
+                        if (board == JSON.stringify(this.engine.chessboard)) {
+                            return [2 /*return*/];
+                        }
+                        if (!(engine.turn == this.bot.color && this.gameMode == 1 /* BOT */)) return [3 /*break*/, 2];
                         return [4 /*yield*/, sleep(2000)];
-                    case 2:
-                        _c.sent();
+                    case 1:
+                        _a.sent();
                         this.bot.makeMove(this.engine.chessboard);
                         this.engine.setWinner(this.engine.chessboard, this.engine.turn, this.engine.playerSide);
-                        (_a = document.getElementById('game')) === null || _a === void 0 ? void 0 : _a.dispatchEvent(new Event('click', { "bubbles": true }));
-                        (_b = document.getElementById('games-preview')) === null || _b === void 0 ? void 0 : _b.dispatchEvent(new Event('click', { "bubbles": true }));
-                        _c.label = 3;
-                    case 3: return [3 /*break*/, 5];
-                    case 4:
+                        _a.label = 2;
+                    case 2: return [3 /*break*/, 4];
+                    case 3:
                         engine.unselectPiece();
-                        _c.label = 5;
-                    case 5: return [2 /*return*/];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });

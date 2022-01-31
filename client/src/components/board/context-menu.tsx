@@ -45,7 +45,7 @@ export default class ContextMenu extends React.Component {
             props.chessboard[props.contextMenu.i]["piece"] = "white";
         }
     }
-
+    
     componentDidUpdate() {
         let contextMenu = this.ctxMenuRef.current;
         

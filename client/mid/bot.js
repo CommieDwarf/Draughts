@@ -59,6 +59,7 @@ var Bot = /** @class */ (function () {
                             this.engine.makeQueen(move.move, chessboard);
                         }
                         this.engine.move(move.piece, move.move, chessboard);
+                        this.engine.dispatchEvent();
                         if (!move.kill) return [3 /*break*/, 4];
                         this.engine.kill(move.kill, chessboard);
                         routes = this.engine.getLongestRoutes([move.move], this.color, chessboard, "top");
@@ -67,13 +68,16 @@ var Bot = /** @class */ (function () {
                     case 1:
                         _a.sent();
                         this.makeMove(chessboard);
+                        this.engine.dispatchEvent();
                         return [3 /*break*/, 3];
                     case 2:
                         this.engine.turn = this.playerColor;
+                        this.engine.dispatchEvent();
                         _a.label = 3;
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         this.engine.turn = this.playerColor;
+                        this.engine.dispatchEvent();
                         _a.label = 5;
                     case 5:
                         this.engine.playerSide = "bot";

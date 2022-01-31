@@ -62,39 +62,42 @@ var Game = /** @class */ (function () {
         return this.engine.chessboard;
     };
     Game.prototype.clickHandler = function (event) {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
             var engine, square, squareId, board;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         engine = this.engine;
-                        if (!(this.gameMode == 1 /* BOT */ && engine.turn !== this.playerColor)) return [3 /*break*/, 1];
-                        return [3 /*break*/, 5];
-                    case 1:
-                        if (!(event.target instanceof Element)) return [3 /*break*/, 5];
+                        if (!!(this.gameMode == 1 /* BOT */ && engine.turn !== this.playerColor)) return [3 /*break*/, 4];
+                        if (!(event.target instanceof Element)) {
+                            return [2 /*return*/];
+                        }
                         square = event.target.closest(".chessboard__square");
-                        if (!square) return [3 /*break*/, 4];
-                        if (!square.getAttribute("id")) return [3 /*break*/, 3];
+                        if (!square) return [3 /*break*/, 3];
+                        if (!square.getAttribute("id")) {
+                            return [2 /*return*/];
+                        }
                         squareId = square.getAttribute("id");
-                        if (!squareId) return [3 /*break*/, 3];
+                        if (!squareId) {
+                            return [2 /*return*/];
+                        }
                         board = JSON.stringify(this.engine.chessboard);
                         engine.performAction(parseInt(squareId), engine.chessboard);
-                        if (!(board !== JSON.stringify(this.engine.chessboard))) return [3 /*break*/, 3];
-                        if (!(engine.turn == this.bot.color && this.gameMode == 1 /* BOT */)) return [3 /*break*/, 3];
+                        if (board == JSON.stringify(this.engine.chessboard)) {
+                            return [2 /*return*/];
+                        }
+                        if (!(engine.turn == this.bot.color && this.gameMode == 1 /* BOT */)) return [3 /*break*/, 2];
                         return [4 /*yield*/, sleep(2000)];
-                    case 2:
-                        _c.sent();
+                    case 1:
+                        _a.sent();
                         this.bot.makeMove(this.engine.chessboard);
                         this.engine.setWinner(this.engine.chessboard, this.engine.turn, this.engine.playerSide);
-                        (_a = document.getElementById('game')) === null || _a === void 0 ? void 0 : _a.dispatchEvent(new Event('click', { "bubbles": true }));
-                        (_b = document.getElementById('games-preview')) === null || _b === void 0 ? void 0 : _b.dispatchEvent(new Event('click', { "bubbles": true }));
-                        _c.label = 3;
-                    case 3: return [3 /*break*/, 5];
-                    case 4:
+                        _a.label = 2;
+                    case 2: return [3 /*break*/, 4];
+                    case 3:
                         engine.unselectPiece();
-                        _c.label = 5;
-                    case 5: return [2 /*return*/];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });

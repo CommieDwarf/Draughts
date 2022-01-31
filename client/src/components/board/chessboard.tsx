@@ -32,6 +32,7 @@ export default class Chessboard extends React.Component<props, state> {
         id: number,
         label?: string;
         setWinner?: (color: Color) => void;
+        closeGame?: (gameId: number) => void;
     }
 
     chessboardRef: React.RefObject<HTMLDivElement>;
@@ -57,22 +58,41 @@ export default class Chessboard extends React.Component<props, state> {
         }
     }
 
-    componentDidMount() {
-    }
+    
 
     getBgAnimationClass() {
-        if (this.props.engine.turn == this.props.game.playerColor && this.chessboardRef.current) {
+        if (this.props.engine.turn == this.props.game.playerColor) {
             return "bg-animation--green";
         } else  {
             return "bg-animation--white";
         }
     }
 
+    forceUpdateHandler = () => {
+        this.forceUpdate();
+    }
+
+    closeGameHandler = (event: React.MouseEvent) => {
+        const target = event.target as HTMLElement;
+        if (target && this.props.closeGame) {
+            let id = target.closest(".game-preview__close-game")?.id.slice(11)
+            if (id) this.props.closeGame(parseInt(id));
+            
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener("chessboardChanged", this.forceUpdateHandler);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("chessboardChanged", this.forceUpdateHandler);
+    }
+
     render() {
         const {engine} = this.props;
         const {game} = this.props;
         let squares = [];
-
         if (engine.chessboard.length > 0) {
 
             let className = "chessboard__square chessboard__square--black";
@@ -114,7 +134,7 @@ export default class Chessboard extends React.Component<props, state> {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
             closeIcon = (
-                <div id={"close-game-" + id} className="game-preview__close-game">
+                <div id={"close-game-" + id} className="game-preview__close-game" onClick={this.closeGameHandler}>
                     <i className="icon-cancel-circled"></i>
                 </div>)
             label = (

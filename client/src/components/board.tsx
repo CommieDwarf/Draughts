@@ -11,6 +11,7 @@ import WinMenu from "./board/winMenu";
 
 import Game from "../game";
 import { Color } from './board/getPieceJSX';
+import { Engine } from '../engine';
 
 type MyState = {
     contextMenu: {
@@ -63,10 +64,8 @@ export default class Board extends React.Component<MyProps, MyState> {
     }
 
     clickHandler = (event: any) => {
-        this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
+        //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
         this.props.game.clickHandler(event);
-        this.forceUpdate();
-        document.getElementById('games-preview')?.dispatchEvent(new Event("click", {"bubbles": true}))
     }
 
     onContextHandler = (event: any) => {
@@ -104,6 +103,7 @@ export default class Board extends React.Component<MyProps, MyState> {
         return false;
     }
 
+   
 
     componentDidUpdate() {
         let engine = this.props.game.engine;
@@ -123,10 +123,6 @@ export default class Board extends React.Component<MyProps, MyState> {
 
     restartGame() {
 
-    }
-
-    onForceUpdateHandler = () => {
-        this.forceUpdate();
     }
 
     render() {

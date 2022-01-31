@@ -1,0 +1,11 @@
+1. [ ] Online mode
+2. [ ] Optymalization of rendering chessboard (update only when chessboard object changes instead of click events);
+3. [ ] Responsive design
+4. [ ] Add close game functionality
+5. [ ] Add rooms functionality
+6. [ ] Repair context menu
+7. [ ] Repair restart game functionality
+
+
+In the future
+1. [ ] Change class components to functional components

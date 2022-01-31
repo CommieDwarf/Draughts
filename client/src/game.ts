@@ -43,33 +43,36 @@ export default class Game {
   }
 
   async clickHandler(event: any) {
-      let engine = this.engine
-      if (this.gameMode == GAMEMODE.BOT && engine.turn !== this.playerColor) {
-      } else {
-        if (event.target instanceof Element) {
-          let square = event.target.closest(".chessboard__square");
-          if (square) {
-            if (square.getAttribute("id")) {
-              let squareId = square.getAttribute("id");
-              if (squareId) {
-                let board = JSON.stringify(this.engine.chessboard);
-                engine.performAction(parseInt(squareId), engine.chessboard);
-                if (board !== JSON.stringify(this.engine.chessboard)) {
-                  if (engine.turn == this.bot.color && this.gameMode == GAMEMODE.BOT) {
-                    await sleep(2000);
-                    this.bot.makeMove(this.engine.chessboard);
-                    this.engine.setWinner(this.engine.chessboard, this.engine.turn, this.engine.playerSide);
-                    document.getElementById('game')?.dispatchEvent(new Event('click', {"bubbles":true}));
-                    document.getElementById('games-preview')?.dispatchEvent(new Event('click', {"bubbles":true}))
-                  }
-                }
-              }
-            }
-          } else {
-            engine.unselectPiece();
-          }
-        }
+    let engine = this.engine
+    if (!(this.gameMode == GAMEMODE.BOT && engine.turn !== this.playerColor)) {
+      if (!(event.target instanceof Element)) {
+        return;
       }
+      let square = event.target.closest(".chessboard__square");
+      if (square) {
+        if (!square.getAttribute("id")) {
+          return;
+        }
+        let squareId = square.getAttribute("id");
+        if (!squareId) {
+          return
+        }
+        let board = JSON.stringify(this.engine.chessboard);
+        engine.performAction(parseInt(squareId), engine.chessboard);
+        if (board == JSON.stringify(this.engine.chessboard)) {
+          return;
+        }
+        if (engine.turn == this.bot.color && this.gameMode == GAMEMODE.BOT) {
+          await sleep(2000);
+          this.bot.makeMove(this.engine.chessboard);
+          this.engine.setWinner(this.engine.chessboard, this.engine.turn, this.engine.playerSide);
+        }
+
+      } else {
+        engine.unselectPiece();
+      }
+
+    }
 
   }
 }

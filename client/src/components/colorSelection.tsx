@@ -24,7 +24,7 @@ export default class ColorSelection extends React.Component {
         
         let color: Color;
         let side: SIDE;
-        if (target.closest("#choose-white")) {
+        if (target.closest(".game-menu__color--white")) {
             color = "white";
             side = SIDE.NORMAL;
         } else {
@@ -39,10 +39,10 @@ export default class ColorSelection extends React.Component {
         const {visibility} = this.props;
         return (
             <div className="game-menu__color-selection">
-                <div className={"game-menu__color " + visibility} onClick={this.onClickHandler}>
+                <div className={"game-menu__color " + visibility + " game-menu__color--white"} onClick={this.onClickHandler}>
                     Play white
                 </div>
-                <div className={"game-menu__color " + visibility} onClick={this.onClickHandler}>
+                <div className={"game-menu__color " + visibility + " game-menu__color--black"} onClick={this.onClickHandler}>
                     Play black
                 </div>
             </div>

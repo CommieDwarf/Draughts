@@ -30,6 +30,7 @@ export default class App extends React.Component<Props, State> {
 
     menuPosition: "center" | "right";
     gameId: number;
+    justStarted: boolean;
 
     constructor(props: any) {
         super(props);
@@ -43,6 +44,8 @@ export default class App extends React.Component<Props, State> {
         }
         this.menuPosition = 'center';
         this.gameId = 0;
+        this.justStarted = true;
+
     }
 
     setName = (name: string) => {
@@ -64,7 +67,6 @@ export default class App extends React.Component<Props, State> {
 
     connect(name: string) {
         socket.emit("player-connected", name);
-        console.log('player connected')
     }
 
 
@@ -74,12 +76,13 @@ export default class App extends React.Component<Props, State> {
             this.setState({ newGameError: "Name is taken" });
             return false;
         } else if (this.state.games.length < 4 && this.state.name.length > 0) {
-            if (this.gameId == 0) {
+            if (this.justStarted) {
                 this.connect(this.state.name);
             }
             this.setState((state) => {
+                this.justStarted = false;
                 const label = this.getLabel(gameMode);
-                let game = new Game(gameMode, color, side, label, this.gameId++); 
+                let game = new Game(gameMode, color, side, label, this.gameId++);
                 this.menuPosition = "right";
                 return {
                     games: [game, ...state.games],
@@ -119,26 +122,34 @@ export default class App extends React.Component<Props, State> {
         }
     }
 
+    closeGame = (gameId: number) => {
+        this.setState((state) => {
+            return {
+                games: state.games.filter((game) => game.id != gameId),
+                currentGame: null,
+            }
+        })
+    }
+
     componentDidMount() {
         socket.on("get_players", (players) => {
             this.setState({ players })
-            console.log(players)
         })
     }
 
     render() {
         let games = this.state.games;
 
-        if (this.state.currentGame) {
+        if (!this.justStarted) {
             return (
                 <div id="app" className="app">
-                    <GamePreview games={games} switchGame={this.switchGame} />
+                    <GamePreview games={games} switchGame={this.switchGame} closeGame={this.closeGame}/>
                     <Lobby name={this.state.name} />
                     <GameMenu startNewGame={this.startNewGame}
                         centered={false}
                         error={this.state.newGameError}
                     />
-                    <Board game={this.state.currentGame} />
+                    {this.state.currentGame && <Board game={this.state.currentGame} />}
                 </div>
             )
         } else {
