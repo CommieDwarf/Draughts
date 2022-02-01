@@ -6,7 +6,9 @@ const cors = require("cors");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 
-app.use(cors());
+app.use(cors({
+    origin: 'localhost/Draughts/client'
+}));
 
 const io = new Server(server, {
     cors: {

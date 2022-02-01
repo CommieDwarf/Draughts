@@ -82,7 +82,7 @@ export default class App extends React.Component<Props, State> {
             this.setState((state) => {
                 this.justStarted = false;
                 const label = this.getLabel(gameMode);
-                let game = new Game(gameMode, color, side, label, this.gameId++);
+                let game = new Game(gameMode, color, SIDE.CUSTOM, label, this.gameId++);
                 this.menuPosition = "right";
                 return {
                     games: [game, ...state.games],
@@ -130,6 +130,19 @@ export default class App extends React.Component<Props, State> {
             }
         })
     }
+    restartGame =() => {
+        const game = this.state.currentGame;
+
+        if (game) {
+            let index = this.state.games.findIndex((g) => {
+                return g.id == game.id;
+            });
+            let games = this.state.games;
+            const newGame = new Game(game.gameMode, game.playerColor, game.side, game.label, game.id);
+            games[index] = newGame;
+            this.setState({games, currentGame: newGame});
+        }
+    }
 
     componentDidMount() {
         socket.on("get_players", (players) => {
@@ -149,7 +162,7 @@ export default class App extends React.Component<Props, State> {
                         centered={false}
                         error={this.state.newGameError}
                     />
-                    {this.state.currentGame && <Board game={this.state.currentGame} />}
+                    {this.state.currentGame && <Board game={this.state.currentGame} restartGame={this.restartGame} />}
                 </div>
             )
         } else {

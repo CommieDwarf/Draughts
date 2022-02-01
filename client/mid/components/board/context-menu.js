@@ -48,17 +48,37 @@ var ContextMenu = /** @class */ (function (_super) {
                 props.chessboard[props.contextMenu.i]["piece"] = "white";
             }
         };
+        _this.handleOutsideClick = function (event) {
+            var target = event.target;
+            if (target && _this.ctxMenuRef.current && !target.contains(_this.ctxMenuRef.current)) {
+                _this.props.hide();
+            }
+        };
         _this.props = props;
         _this.state = {};
         _this.ctxMenuRef = react_1.default.createRef();
         return _this;
     }
-    ContextMenu.prototype.componentDidUpdate = function () {
+    ContextMenu.prototype.setCordAttributes = function () {
         var contextMenu = this.ctxMenuRef.current;
         if (contextMenu) {
             var attribute = "left: " + this.props.contextMenu.clientX + "px; ";
             attribute += "top: " + this.props.contextMenu.clientY + "px; ";
             contextMenu.setAttribute("style", attribute);
+        }
+    };
+    ContextMenu.prototype.componentDidMount = function () {
+        this.setCordAttributes();
+        var container = document.querySelector(".container");
+        if (container) {
+            container.addEventListener("click", this.handleOutsideClick);
+        }
+    };
+    ContextMenu.prototype.componentDidUpdate = function () {
+        this.setCordAttributes();
+        var container = document.querySelector(".container");
+        if (container) {
+            container.removeEventListener("click", this.handleOutsideClick);
         }
     };
     ContextMenu.prototype.render = function () {
@@ -77,14 +97,7 @@ var ContextMenu = /** @class */ (function (_super) {
             label1 = "black";
             label2 = "white";
         }
-        var visibility;
-        if (props.contextMenu.showMenu) {
-            visibility = "context-menu--visible";
-        }
-        else {
-            visibility = "context-menu--hidden";
-        }
-        return (react_1.default.createElement("div", { className: "context-menu " + visibility, ref: this.ctxMenuRef },
+        return (react_1.default.createElement("div", { className: "context-menu", ref: this.ctxMenuRef },
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickTopHandler }, label1),
             react_1.default.createElement("hr", { className: "context-menu__break-line" }),
             react_1.default.createElement("div", { className: "context-menu__label", onClick: this.onClickBotHandler }, label2),

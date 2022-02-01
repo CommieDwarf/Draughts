@@ -33,7 +33,7 @@ var BotLabel = /** @class */ (function (_super) {
             react_1.default.createElement("div", { className: "board__bot-label-letter" }, "E"),
             react_1.default.createElement("div", { className: "board__bot-label-letter" }, "F"),
             react_1.default.createElement("div", { className: "board__bot-label-letter" }, "G"),
-            react_1.default.createElement("div", { className: "bot-letter" }, "H")));
+            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "H")));
     };
     return BotLabel;
 }(react_1.default.Component));

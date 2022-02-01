@@ -70,6 +70,9 @@ export default class Chessboard extends React.Component<props, state> {
 
     forceUpdateHandler = () => {
         this.forceUpdate();
+        if (this.props.engine.winner && this.props.setWinner) {
+            this.props.setWinner(this.props.engine.winner);
+        }
     }
 
     closeGameHandler = (event: React.MouseEvent) => {

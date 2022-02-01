@@ -14,6 +14,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -39,22 +50,24 @@ var Board = /** @class */ (function (_super) {
             //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
         };
+        _this.hideContextMenu = function () {
+            _this.setState(function (prevState) {
+                return {
+                    contextMenu: __assign(__assign({}, prevState.contextMenu), { showMenu: false })
+                };
+            });
+        };
         _this.onContextHandler = function (event) {
             event.preventDefault();
             var engine = _this.props.game.engine;
-            var square = event.target.closest(".square");
-            var id;
-            var queen;
-            var piece;
-            var clientX;
-            var clientY;
-            if (square && square.className !== "square white") {
-                id = square.getAttribute("id");
-                queen = engine.chessboard[id]["queen"];
-                piece = engine.chessboard[id]["piece"];
+            var square = event.target.closest(".chessboard__square");
+            if (square && square.className !== "chessboard__square chessboard__square--white") {
+                var id = square.getAttribute("id");
+                var queen = engine.chessboard[id]["queen"];
+                var piece = engine.chessboard[id]["piece"];
                 var clientRect = square.getBoundingClientRect();
-                clientX = clientRect.left;
-                clientY = clientRect.top;
+                var clientX = clientRect.left;
+                var clientY = clientRect.top;
                 var width = square.offsetWidth;
                 var height = square.offsetHeight;
                 clientX += width / 2;
@@ -84,39 +97,21 @@ var Board = /** @class */ (function (_super) {
         };
         _this.contextMenuRef = react_1.default.createRef();
         _this.interval = null;
-        _this.restartGame = _this.restartGame.bind(_this);
         return _this;
     }
-    Board.prototype.componentDidUpdate = function () {
-        var engine = this.props.game.engine;
-        // context menu managment
-        // win menu managment
-        var winMenu = document.getElementById('winMenu');
-        if (winMenu) {
-            if (engine.winner) {
-                winMenu.setAttribute("style", "visibility: visible");
-            }
-            else {
-                winMenu.setAttribute("style", "visibility: hidden");
-            }
-        }
-    };
-    Board.prototype.restartGame = function () {
-    };
     Board.prototype.render = function () {
         if (restartFlag) {
             restartFlag = false;
         }
         var engine = this.props.game.engine;
-        var ctxMenu = this.state.contextMenu;
         return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
-            react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.restartGame }),
+            this.props.game.engine.winner && react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame }),
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
             react_1.default.createElement(right_label_1.default, null),
             react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, id: 0, game: this.props.game, setWinner: this.setWinner }),
             react_1.default.createElement(bot_label_1.default, null),
-            react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard })));
+            this.state.contextMenu.showMenu && react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard, hide: this.hideContextMenu })));
     };
     return Board;
 }(react_1.default.Component));

@@ -26,6 +26,9 @@ var Chessboard = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.forceUpdateHandler = function () {
             _this.forceUpdate();
+            if (_this.props.engine.winner && _this.props.setWinner) {
+                _this.props.setWinner(_this.props.engine.winner);
+            }
         };
         _this.closeGameHandler = function (event) {
             var _a;

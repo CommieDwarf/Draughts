@@ -1,0 +1,198 @@
+@media screen and (max-width: 1250px) {
+    .lobby {
+        width: 275px;
+    }
+    .lobby__input {
+        width: 175px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .lobby {
+        width: 225px;
+    }
+    .lobby__input {
+        width: 125px;
+    }
+    .lobby__message-content {
+        max-width: 75px;
+    }
+    .game-menu--float-right {
+        margin-right: 25px;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .game-menu--float-right {
+        margin-right: 0px;
+        position: absolute; 
+        left: 0; 
+        right: 0; 
+        top: 1150px;
+        margin-left: auto; 
+        margin-right: auto;
+    }
+    .board {
+        display: block;
+    }
+    .lobby {
+        position: absolute; 
+        left: 0; 
+        right: 0; 
+        top: 650px;
+        margin-left: auto; 
+        margin-right: auto;
+        width: 500px;
+    }
+    .lobby__message-content {
+        max-width: 320px;
+    }
+    .lobby__input {
+        width: 390px;
+    }
+ }
+
+
+ @media screen and (max-width: 570px) {
+    .game-preview {
+        width: 300px;
+    }
+    .lobby {
+        width: 300px;
+        position: absolute;
+        top: 400px;
+    }
+    .lobby__input {
+        width: 200px;
+    }
+    .lobby__message-content {
+        max-width: 160px;
+    }
+    .board {
+        width: 350px;
+
+    }
+    .chessboard {
+       width: 264px;
+       height: 264px;
+       margin: auto;
+    }
+    .chessboard__square {
+        width: 33px;
+        height: 33px;
+    }
+    .piece {
+        width: 30px;
+        height: 30px;
+        position: relative;
+        bottom: 2px;
+    }
+    .piece__center {
+        width: 15px;
+        height: 15px;
+        position: relative;
+        top: 8px;
+    }
+
+    .piece__vertical-bar-left {
+        width: 3px;
+        height: 12px;
+        top: -5px;
+        left: 0px;
+    }
+    .piece__vertical-bar-mid {
+        top: -5px;
+        height: 12px;
+        width: 3px;
+        left: 6px;
+    }
+
+    .piece__vertical-bar-right {
+        height: 12px;
+        top: -5px;
+        left: 11px;
+        width: 3px;
+    }
+
+    .piece__horizontal-bar {
+        height: 3px;
+        width: 11px;
+        top: 5px;
+    }
+
+    .piece__shadow-bar {
+        height: 6px;
+        width: 1px;
+        top: -1px;
+    }
+    .piece__shadow-bar--1 {
+        left: 7px;
+    }
+    .piece__shadow-bar--2 {
+        left: 2px;
+    }
+    .piece__shadow-bar--3 {
+        left: 12px;
+    }
+    .piece__circle {
+        top: 1px;
+        width: 1px;
+        height: 1px;
+    }
+
+    .piece__circle--2 {
+    left: 5px;
+    }
+    .piece__circle--3  {
+    left: 10px;
+    }
+
+
+    .board__top-label, .board__bot-label {
+        width: 264px;
+    }
+
+    .board__left-label {
+        position: relative;
+        left: 15px;
+    }
+    .board__right-label {
+        position: relative;
+        right: 15px;
+    }
+
+    .board__right-label-num, .board__left-label-num {
+        width: 20px;
+        height: 33px;
+        font-size: 30px;
+    }
+    .board__top-label-letter, .board__bot-label-letter {
+        width: 33px;
+        font-size: 30px;
+    }
+
+    .game-preview {
+        height: 50px;
+    }
+
+    .game-preview__label {
+        width: 200px;
+        font-size: 70px;
+        margin-bottom: 0;
+        height: 90px;
+        position: relative;
+        left: 30px;
+    }
+
+    .game-preview__chessboard-wrapper {
+        margin-left: -12px;
+        width: 100px;
+    }
+    .game-preview__close-game {
+        left: 220px;
+    }
+    .game-menu--float-right {
+        position: absolute;
+        top: 870px;
+    }
+}

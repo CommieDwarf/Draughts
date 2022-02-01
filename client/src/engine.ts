@@ -194,7 +194,7 @@ export class Engine {
       turn: this.turn,
     }
 
-    if (JSON.stringify(oldState) != JSON.stringify(currentState)) {
+    if (JSON.stringify(oldState) != JSON.stringify(currentState) || this.winner) {
       this.dispatchEvent();
     }
   }

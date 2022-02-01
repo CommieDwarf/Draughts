@@ -1,5 +1,4 @@
 import React from 'react';
-import { ReactDOM } from 'react';
 
 import TopLabel from './/labels/top-label';
 import LeftLabel from './labels/left-label';
@@ -11,7 +10,6 @@ import WinMenu from "./board/winMenu";
 
 import Game from "../game";
 import { Color } from './board/getPieceJSX';
-import { Engine } from '../engine';
 
 type MyState = {
     contextMenu: {
@@ -32,7 +30,8 @@ export default class Board extends React.Component<MyProps, MyState> {
     
 
     props: {
-        game: Game
+        game: Game;
+        restartGame: () => void;
     }
 
     interval: ReturnType<typeof setTimeout> | null;
@@ -54,7 +53,6 @@ export default class Board extends React.Component<MyProps, MyState> {
         };
         this.contextMenuRef = React.createRef();
         this.interval = null;
-        this.restartGame = this.restartGame.bind(this);
     }
 
     setWinner = (winner: Color) => {
@@ -68,25 +66,28 @@ export default class Board extends React.Component<MyProps, MyState> {
         this.props.game.clickHandler(event);
     }
 
+    hideContextMenu = () => {
+        this.setState((prevState) => {
+            return {
+                contextMenu: {...prevState.contextMenu, showMenu: false}
+            }
+        })
+    }
+
     onContextHandler = (event: any) => {
         event.preventDefault();
         let engine = this.props.game.engine;
 
-        let square = event.target.closest(".square");
-        let id;
-        let queen;
-        let piece;
-        let clientX
-        let clientY
-        if (square && square.className !== "square white") {
-            id = square.getAttribute("id");
-            queen = engine.chessboard[id]["queen"]
-            piece = engine.chessboard[id]["piece"]
+        let square = event.target.closest(".chessboard__square");
+        if (square && square.className !== "chessboard__square chessboard__square--white") {
+            let id = square.getAttribute("id");
+            const queen = engine.chessboard[id]["queen"]
+            const piece = engine.chessboard[id]["piece"]
             let clientRect = square.getBoundingClientRect();
-            clientX = clientRect.left;
-            clientY = clientRect.top;
-            let width = square.offsetWidth;
-            let height = square.offsetHeight;
+            let clientX = clientRect.left;
+            let clientY = clientRect.top;
+            const width = square.offsetWidth;
+            const height = square.offsetHeight;
             clientX += width / 2;
             clientY += height / 2 + 10;
 
@@ -105,42 +106,24 @@ export default class Board extends React.Component<MyProps, MyState> {
 
    
 
-    componentDidUpdate() {
-        let engine = this.props.game.engine;
-        // context menu managment
-        
 
-        // win menu managment
-        let winMenu = document.getElementById('winMenu');
-        if (winMenu) {
-            if (engine.winner) {
-                winMenu.setAttribute("style", "visibility: visible");
-            } else {
-                winMenu.setAttribute("style", "visibility: hidden");
-            }
-        }
-    }
-
-    restartGame() {
-
-    }
 
     render() {
         if (restartFlag) {
             restartFlag = false;
         }
         let engine = this.props.game.engine;
-        let ctxMenu = this.state.contextMenu;
+
 
         return (
             <div className="board"  onClick={this.clickHandler} onContextMenu={this.onContextHandler}>
-                <WinMenu winner={engine.winner} restart={this.restartGame}/>
+                {this.props.game.engine.winner && <WinMenu winner={engine.winner} restart={this.props.restartGame}/>}
                 <TopLabel/>
                 <LeftLabel/>
                 <RightLabel/>
                 <Chessboard engine = {engine} preview = {false} id={0} game={this.props.game} setWinner={this.setWinner}/>
                 <BotLabel/>
-                <ContextMenu contextMenu={this.state.contextMenu} chessboard={engine.chessboard}/>
+                {this.state.contextMenu.showMenu && <ContextMenu contextMenu={this.state.contextMenu} chessboard={engine.chessboard} hide={this.hideContextMenu}/>}
             </div>
         )
     }

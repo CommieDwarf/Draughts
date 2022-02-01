@@ -12,8 +12,9 @@ export default class ContextMenu extends React.Component {
             i: number,
             clientX: number,
             clientY: number,
-            showMenu: boolean
+            showMenu: boolean,
         }
+        hide: () => void;
         chessboard: IChessboard;
     }
     constructor(props: any) {
@@ -46,17 +47,41 @@ export default class ContextMenu extends React.Component {
         }
     }
     
-    componentDidUpdate() {
+    
+
+    setCordAttributes() {
         let contextMenu = this.ctxMenuRef.current;
         
         if (contextMenu) {
             let attribute = "left: " + this.props.contextMenu.clientX + "px; ";
             attribute += "top: " + this.props.contextMenu.clientY + "px; ";
-           
             contextMenu.setAttribute("style", attribute);
+        }
+        
+    }
+    
+    handleOutsideClick = (event: MouseEvent) => {
+        let target = event.target as HTMLElement;
+        if (target && this.ctxMenuRef.current && !target.contains(this.ctxMenuRef.current)) {
+            this.props.hide();
         }
     }
 
+    componentDidMount() {
+        this.setCordAttributes() 
+        let container = document.querySelector(".container") as HTMLElement;
+        if (container) {
+            container.addEventListener("click", this.handleOutsideClick)
+        }
+    }
+
+    componentDidUpdate() {
+        this.setCordAttributes() 
+        let container = document.querySelector(".container") as HTMLElement;
+        if (container) {
+            container.removeEventListener("click", this.handleOutsideClick)
+        }
+    }
 
     render() {
         let props = this.props;
@@ -75,15 +100,10 @@ export default class ContextMenu extends React.Component {
             label2 = "white";
         }
 
-        let visibility;
-        if (props.contextMenu.showMenu) {
-            visibility = "context-menu--visible";
-        } else {
-            visibility = "context-menu--hidden";
-        }
+  
 
         return (
-            <div className={"context-menu " + visibility} ref={this.ctxMenuRef}>
+            <div className={"context-menu"} ref={this.ctxMenuRef}>
                 <div className="context-menu__label" onClick={this.onClickTopHandler}>
                     {label1}
                 </div>

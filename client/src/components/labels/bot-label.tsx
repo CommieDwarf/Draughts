@@ -18,7 +18,7 @@ export default class BotLabel extends React.Component {
             </div>
             <div  className="board__bot-label-letter">G
             </div>
-            <div  className="bot-letter">H
+            <div  className="board__bot-label-letter">H
             </div>
       </div>
     );

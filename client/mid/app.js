@@ -55,7 +55,7 @@ var App = /** @class */ (function (_super) {
                 _this.setState(function (state) {
                     _this.justStarted = false;
                     var label = _this.getLabel(gameMode);
-                    var game = new game_1.default(gameMode, color, side, label, _this.gameId++);
+                    var game = new game_1.default(gameMode, color, 2 /* CUSTOM */, label, _this.gameId++);
                     _this.menuPosition = "right";
                     return {
                         games: __spreadArray([game], state.games, true),
@@ -89,6 +89,18 @@ var App = /** @class */ (function (_super) {
                     currentGame: null,
                 };
             });
+        };
+        _this.restartGame = function () {
+            var game = _this.state.currentGame;
+            if (game) {
+                var index = _this.state.games.findIndex(function (g) {
+                    return g.id == game.id;
+                });
+                var games = _this.state.games;
+                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.id);
+                games[index] = newGame;
+                _this.setState({ games: games, currentGame: newGame });
+            }
         };
         _this.state = {
             name: "",
@@ -141,7 +153,7 @@ var App = /** @class */ (function (_super) {
                 react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name }),
                 react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: false, error: this.state.newGameError }),
-                this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame })));
+                this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,

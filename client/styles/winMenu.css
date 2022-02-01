@@ -10,16 +10,15 @@
     text-align: center;
     font-size: 35px;
     background: rgba(0, 0, 0, .7);
-    visibility: hidden;
 }
 
-.win-menu--visible {
+/* .win-menu--visible {
     visibility: visible;
 }
 
 .win-menu--hidden {
     visibility: hidden;
-}
+} */
 
 .win-menu__play-again {
 cursor: pointer;
