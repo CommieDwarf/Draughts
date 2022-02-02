@@ -8,7 +8,10 @@ import Emojis  from "./emojis";
 type IMessage = {
     content: string,
     author: IPlayer,
-    room: string,
+    room: {
+        id: string,
+        name: string,
+    },
 }
 
 type Props = {};
@@ -23,7 +26,10 @@ export default class Chat extends React.Component<Props, State> {
 
     props: {
         player: IPlayer;
-        currentRoom: string
+        currentRoom: {
+            name: string,
+            id: string,
+        },
     }
 
     thisPlayerId: string
@@ -147,18 +153,16 @@ export default class Chat extends React.Component<Props, State> {
     }
 
     render() {
-        let messages = this.state.messages.map((msg, id) => {
-            if (msg.room == this.props.currentRoom) {
+        let messages = this.state.messages.map((msg, id) =>  {
+            if (msg.room.id == this.props.currentRoom.id) {
                 return (
                 <Message author={msg.author}
                  content={msg.content} key={id}
                   thisPlayerId={this.thisPlayerId}/>
                   )
-
             }
         })
 
-        
 
         const emoButtonClass = this.state.showEmojis ? "white color-black" : "";
 

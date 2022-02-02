@@ -36,7 +36,6 @@ var Engine = /** @class */ (function () {
     }
     Engine.prototype.dispatchEvent = function () {
         document.dispatchEvent(new Event('chessboardChanged'));
-        console.log('dispatch');
     };
     Engine.prototype.setWinner = function (chessboard, turn, playerSide) {
         var allMoves = this.getAllMoves(chessboard, turn, playerSide);

@@ -141,7 +141,7 @@ var Chat = /** @class */ (function (_super) {
     Chat.prototype.render = function () {
         var _this = this;
         var messages = this.state.messages.map(function (msg, id) {
-            if (msg.room == _this.props.currentRoom) {
+            if (msg.room.id == _this.props.currentRoom.id) {
                 return (react_1.default.createElement(message_1.default, { author: msg.author, content: msg.content, key: id, thisPlayerId: _this.thisPlayerId }));
             }
         });

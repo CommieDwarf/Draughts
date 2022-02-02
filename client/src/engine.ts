@@ -63,7 +63,6 @@ export class Engine {
 
   dispatchEvent() {   // dispatching event in order react to update
     document.dispatchEvent(new Event('chessboardChanged'));
-    console.log('dispatch')
   }
   
   setWinner(chessboard: IChessboard, turn: Turn, playerSide: string) {

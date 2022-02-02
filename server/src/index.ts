@@ -26,13 +26,16 @@ interface Player {
     id: string
 }
 
-type IMessage = {
+export type IMessage = {
     content: string,
     author: Player,
-    room: string,
+    room: Room,
 }
 
-
+type Room = {
+    name: string,
+    id: string
+}
 
 
 let players: Player[] = [];
@@ -41,10 +44,11 @@ let someoneWriting = false;
 
 io.on("connection", (socket: any) => {
 
-
     console.log("User connected", socket.id, socket.handshake.address);
 
     socket.on("player-connected", (name: string) => {
+        socket.join("global")
+       
         if (name.length > 6) {
             name = name.slice(0, 6);
         }
@@ -59,10 +63,19 @@ io.on("connection", (socket: any) => {
         io.emit("players_update", players);
     })
 
-    socket.on("send_message", (msg: IMessage) => {
-        console.log(msg)
-        socket.broadcast.emit(("get_message"), msg);
+    socket.on("join_room", (room: Room) => {
+        socket.join(room.id);
     })
+    socket.on("leave_room", (room: Room) => {
+        socket.leave(room.id);
+    })
+
+    socket.on("send_message", (msg: IMessage) => {
+        socket.broadcast.emit("get_room", {target: msg.room.name, author: msg.author.name, msg});
+        setTimeout(() => {socket.broadcast.to(msg.room.id).emit(("get_message"), msg)}, 100);
+        
+    })
+
 
     socket.on("writing", () => {
         socket.broadcast.emit("someone_writing");

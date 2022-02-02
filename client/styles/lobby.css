@@ -82,6 +82,29 @@
     color: white;
     height: 30px;
     display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.lobby__rooms::-webkit-scrollbar {
+    height: 4px;
+}
+
+/* Track */
+.lobby__rooms::-webkit-scrollbar-track {
+background: black;
+height: 4px;
+}
+
+/* Handle */
+.lobby__rooms::-webkit-scrollbar-thumb {
+background: white;
+height: 4px;
+}
+
+/* Handle on hover */
+.lobby__rooms::-webkit-scrollbar-thumb:hover {
+background: white;
+height: 6px;
 }
 .lobby__room {
     border: 1px solid white;

@@ -9,7 +9,11 @@ export default class Players extends Component {
     props: {
         players: IPlayer[],
         invitable: boolean,
-        handlePlayerInvite: (event: any) => void
+        handlePlayerInvite: (event: any) => void,
+        rooms: {
+            name: string,
+            id: string,
+        }[],
     }
 
     constructor(props: any) {
@@ -19,6 +23,7 @@ export default class Players extends Component {
 
 
     render() {
+        
         const players = this.props.players.map((player, id) => {
             const theme = player.avatar.theme
             const shape = player.avatar.shape 
@@ -28,9 +33,13 @@ export default class Players extends Component {
             if (socket.id == player.id) {
                 spanClass = "lobby__player--current";
             }
+            let canBeInvited = false;
+            if (this.props.invitable && player.id !== socket.id && !this.props.rooms.some((room) => room.name == player.name)) {
+                canBeInvited = true;
+            } 
             return (
                 <div className={"lobby__player "} key={id} id={player.name} onClick={this.props.handlePlayerInvite}>
-                    <Avatar name={name} shape={shape} theme={theme} invitable={this.props.invitable}/>
+                    <Avatar name={name} shape={shape} theme={theme} invitable={canBeInvited}/>
                     <span className={"player-name " + spanClass}>{player.name}</span>
                 </div>
             )

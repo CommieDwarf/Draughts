@@ -1,11 +1,14 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var app = express();
 var http = require("http");
 var cors = require("cors");
 var server = http.createServer(app);
 var Server = require("socket.io").Server;
-app.use(cors());
+app.use(cors({
+    origin: 'localhost/Draughts/client'
+}));
 var io = new Server(server, {
     cors: {
         origin: "http://localhost",
@@ -17,6 +20,7 @@ var someoneWriting = false;
 io.on("connection", function (socket) {
     console.log("User connected", socket.id, socket.handshake.address);
     socket.on("player-connected", function (name) {
+        socket.join("global");
         if (name.length > 6) {
             name = name.slice(0, 6);
         }
@@ -30,9 +34,15 @@ io.on("connection", function (socket) {
         });
         io.emit("players_update", players);
     });
+    socket.on("join_room", function (room) {
+        socket.join(room.id);
+    });
+    socket.on("leave_room", function (room) {
+        socket.leave(room.id);
+    });
     socket.on("send_message", function (msg) {
-        console.log(msg);
-        socket.broadcast.emit(("get_message"), msg);
+        socket.broadcast.emit("get_room", { target: msg.room.name, author: msg.author.name, msg: msg });
+        setTimeout(function () { socket.broadcast.to(msg.room.id).emit(("get_message"), msg); }, 100);
     });
     socket.on("writing", function () {
         socket.broadcast.emit("someone_writing");
