@@ -34,6 +34,9 @@ io.on("connection", function (socket) {
         });
         io.emit("players_update", players);
     });
+    socket.on("create_room", function (room) {
+        socket.broadcast.emit("room_created", room);
+    });
     socket.on("join_room", function (room) {
         socket.join(room.id);
     });
@@ -41,8 +44,7 @@ io.on("connection", function (socket) {
         socket.leave(room.id);
     });
     socket.on("send_message", function (msg) {
-        socket.broadcast.emit("get_room", { target: msg.room.name, author: msg.author.name, msg: msg });
-        setTimeout(function () { socket.broadcast.to(msg.room.id).emit(("get_message"), msg); }, 100);
+        socket.broadcast.to(msg.room.id).emit(("get_message"), msg);
     });
     socket.on("writing", function () {
         socket.broadcast.emit("someone_writing");

@@ -101,6 +101,12 @@ var Chat = /** @class */ (function (_super) {
         }
     };
     Chat.prototype.receiveMessage = function (message) {
+        if (!this.props.rooms.some(function (room) { return room.id == message.room.id; })) {
+            this.props.createRoom(message.author.name);
+        }
+        if (message.room.id !== this.props.currentRoom.id) {
+            this.props.setRoomProperty(message.room.id, "unread", true);
+        }
         this.setState(function (prevState) {
             return {
                 messages: __spreadArray(__spreadArray([], prevState.messages, true), [message], false)

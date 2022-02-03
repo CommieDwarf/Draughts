@@ -21,7 +21,9 @@ type State = {
     players: IPlayer[],
     rooms: {
         name: string,
-        id: string
+        id: string,
+        unread: boolean,
+        hover: boolean,
     }[],
     currentRoom: {
         name: string,
@@ -44,7 +46,7 @@ export default class Lobby extends React.Component<Props, State> {
         this.props = props;
         this.state = {
             players: [],
-            rooms: [{name: "global room", id: "global"}],
+            rooms: [{name: "global room", id: "global", unread: false, hover: false}],
             currentRoom: {name: "global room", id: "global"},
             roomInvitable: false,
         }
@@ -68,15 +70,36 @@ export default class Lobby extends React.Component<Props, State> {
     createRoom = (name: string) => {
         let roomId = this.getRoomId(name);
         if (!this.state.rooms.some((room) => room.name == name) && name !== this.props.name) {
-            socket.emit("join_room", {name, id: roomId});
+            const room = {author: this.props.name, target: name, id: roomId }
+            socket.emit("join_room", room);
+            socket.emit("create_room", room);
             this.setState(prevState => {
                 return {
-                    rooms: [...prevState.rooms, {name, id: roomId}],
+                    rooms: [...prevState.rooms, {name, id: roomId, unread: false, hover: false}],
                     currentRoom: {name, id: roomId},
                     roomInvitable: false,
                 }
             });
         }
+    }
+
+    closeRoom = (name: string) => {
+        this.setState((prevState) => {
+            return {
+                rooms: prevState.rooms.filter((room) => room.name != name)
+            }
+        })
+    }
+
+    handleClickCloseRoom = (event: React.MouseEvent) => {
+        const target = event.target as HTMLElement;
+        const wrapper = target.closest('.lobby__room-wraper')
+        const roomDiv = target.previousSibling;
+        const roomName = roomDiv?.nodeValue;
+        if (roomName) {
+            this.closeRoom(roomName);
+        }
+        console.log(roomDiv)
     }
 
     handlePlayerInvite = (event: React.MouseEvent) => {
@@ -100,7 +123,7 @@ export default class Lobby extends React.Component<Props, State> {
         }
     }
 
-    switchRoomHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+    handleSwitchRoom = (event: React.MouseEvent<HTMLDivElement>) => {
         const target = event.target as HTMLDivElement;
         const room = target.closest(".lobby__room");
         const id = room?.id;
@@ -110,15 +133,50 @@ export default class Lobby extends React.Component<Props, State> {
         } else {
             this.setState({currentRoom: {name: "global room", id: "global"}})
         }
+        if (id) {
+            this.setRoomProperty(id, "unread", false);
+        }
     }
+
+    setRoomProperty = (id: string, propertyName: string, propertyValue: any) => {
+        const rooms = this.state.rooms.filter((room) => room.id == id);
+        const room = rooms[0];
+        if (room instanceof Object && room) {
+            Object.defineProperty(room, propertyName, {value: propertyValue});
+            const index = this.state.rooms.findIndex((room) => room.id == id);
+            this.setState(prevState => {
+                return {
+                    rooms: [...prevState.rooms.slice(0, index), room, ...prevState.rooms.slice(index + 1, prevState.rooms.length)]
+                }
+            })
+        }
+    }
+
+    handleMouseOverRoom = (event: React.MouseEvent) => {
+        this.roomMouseMove(event, true);
+    }
+    handleMouseLeaveRoom = (event: React.MouseEvent) => {
+        this.roomMouseMove(event, false);
+    }
+    roomMouseMove(event: React.MouseEvent, hover: boolean) {
+        const target = event.target as HTMLInputElement;
+        const wrapper = target.closest(".lobby__room-wrapper");
+        const children = wrapper?.children;
+        if (children && children[0]) {
+            const id = children[0].id;
+            this.setRoomProperty(id, "hover", hover);
+        } 
+    }
+
+
 
     componentDidMount = () => {
         socket.on("players_update", (players) => {
             this.setState({ players })
         })
-        socket.on("get_room", (socket) => {
-            if (this.props.name == socket.target) {
-                this.createRoom(socket.author)
+        socket.on("room_created", (room) => {
+            if (this.props.name == room.target) {
+                socket.emit("join_room", room);
             }
         })
         document.addEventListener('click', this.handleOutsidePlayersClick);
@@ -139,7 +197,22 @@ export default class Lobby extends React.Component<Props, State> {
             if (room.name == this.state.currentRoom.name) {
                 roomClass = "lobby__room--current";
             }
-            return <div className={"lobby__room no-select " + roomClass} id={room.id} key={id} onClick={this.switchRoomHandler}>{room.name}</div>
+            if (room.unread) {
+                roomClass += " lobby__room--unread"
+            }
+            let closeRoomClass =  "";
+            if (room.hover) {
+                closeRoomClass = "lobby__close-room--visible"
+            } else {
+                closeRoomClass = "lobby__close-room--hidden"
+            }
+            return <div className="lobby__room-wrapper" key={id} onMouseOver={this.handleMouseOverRoom} onMouseLeave={this.handleMouseLeaveRoom}>
+                        <div className={"lobby__room no-select " + roomClass} id={room.id} key={id} onClick={this.handleSwitchRoom}>{room.name}</div>
+                        {room.id != "global" &&  <div className={"lobby__close-room " + closeRoomClass} onClick={this.handleClickCloseRoom}>
+                            <i className="icon-cancel-circled"></i>    
+                        </div> }  
+                    </div> 
+            
         })
 
         let newRoomButtonClass = "";
@@ -167,7 +240,12 @@ export default class Lobby extends React.Component<Props, State> {
                         <i className="icon-user-plus"></i>
                     </div>
                 </div>
-                {player && <Chat player={player} currentRoom={this.state.currentRoom} />}
+                {player && <Chat player={player}
+                 currentRoom={this.state.currentRoom}
+                  createRoom={this.createRoom} 
+                  rooms={this.state.rooms}
+                  setRoomProperty={this.setRoomProperty}
+                  />}
             </div>
         )
     }

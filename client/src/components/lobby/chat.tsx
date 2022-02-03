@@ -30,6 +30,12 @@ export default class Chat extends React.Component<Props, State> {
             name: string,
             id: string,
         },
+        createRoom: (name: string) => void;
+        rooms: {
+            name: string,
+            id: string
+        }[],
+        setRoomProperty: (id: string, propertyName: string, propertyValue: any) => void;
     }
 
     thisPlayerId: string
@@ -69,6 +75,12 @@ export default class Chat extends React.Component<Props, State> {
     }
 
     receiveMessage(message: IMessage) {
+        if (!this.props.rooms.some((room) => room.id == message.room.id)) {
+            this.props.createRoom(message.author.name);
+        }
+        if (message.room.id !== this.props.currentRoom.id) {
+            this.props.setRoomProperty(message.room.id, "unread", true);
+        }
         this.setState((prevState) => {
             return {
                 messages: [...prevState.messages, message]

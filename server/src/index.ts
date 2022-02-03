@@ -33,7 +33,8 @@ export type IMessage = {
 }
 
 type Room = {
-    name: string,
+    author: string,
+    target: string,
     id: string
 }
 
@@ -63,6 +64,9 @@ io.on("connection", (socket: any) => {
         io.emit("players_update", players);
     })
 
+    socket.on("create_room", (room: Room) => {
+        socket.broadcast.emit("room_created", room);
+    })
     socket.on("join_room", (room: Room) => {
         socket.join(room.id);
     })
@@ -71,9 +75,7 @@ io.on("connection", (socket: any) => {
     })
 
     socket.on("send_message", (msg: IMessage) => {
-        socket.broadcast.emit("get_room", {target: msg.room.name, author: msg.author.name, msg});
-        setTimeout(() => {socket.broadcast.to(msg.room.id).emit(("get_message"), msg)}, 100);
-        
+        socket.broadcast.to(msg.room.id).emit(("get_message"), msg);
     })
 
 

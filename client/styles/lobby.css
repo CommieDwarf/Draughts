@@ -106,20 +106,61 @@ height: 4px;
 background: white;
 height: 6px;
 }
+
+.lobby__room-wrapper {
+    position: relative;
+}
+
 .lobby__room {
     border: 1px solid white;
     border-radius: 5px;
     display: inline-block;
-    padding: 2px;
     margin-top: 5px;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .lobby__room--current {
     color: lightgreen;
 }
+.lobby__room--unread {
 
+    animation-duration: 2s;
+    animation-name: room-animation;
+    animation-iteration-count: infinite;
+}
 
+@keyframes room-animation{
+    0% {
+        -webkit-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        -moz-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        box-shadow: inset 0px 0px 15px 1px lightgreen;
+    }
+    50% {
+        -webkit-box-shadow: inset 0px 0px 1px 1px lightgreen;
+        -moz-box-shadow: inset 0px 0px 1px 1px lightgreen;
+        box-shadow: inset 0px 0px 1px 1px lightgreen;
+    }
+    100% {
+        -webkit-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        -moz-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        box-shadow: inset 0px 0px 15px 1px lightgreen;
+    }
+}
+
+.lobby__close-room {
+    position: absolute;
+    font-size: 14px;
+    color: red;
+    top: 0;
+    right: -2px;
+    cursor: pointer;
+}
+.lobby__close-room--visible {
+    visibility: visible;
+}
+.lobby__close-room--hidden {
+    visibility: hidden;
+}
 .lobby__new-room-button {
     margin-top: 5px;
     margin-right: 5px;
