@@ -14,11 +14,19 @@ type IMessage = {
     },
 }
 
+type Room = {
+    name: string,
+    id: string,
+    unread: boolean,
+    hover: boolean,
+    isWriting: boolean,
+}
+
+
 type Props = {};
 type State = {
     messages: IMessage[],
     message: string,
-    someoneWriting: boolean,
     showEmojis: boolean,
 }
 
@@ -26,15 +34,10 @@ export default class Chat extends React.Component<Props, State> {
 
     props: {
         player: IPlayer;
-        currentRoom: {
-            name: string,
-            id: string,
-        },
+        currentRoom: Room,
         createRoom: (name: string) => void;
-        rooms: {
-            name: string,
-            id: string
-        }[],
+        rooms: Room[],
+        isWriting: boolean,
         setRoomProperty: (id: string, propertyName: string, propertyValue: any) => void;
     }
 
@@ -46,7 +49,6 @@ export default class Chat extends React.Component<Props, State> {
         this.state = {
             messages: [],
             message: "",
-            someoneWriting: false,
             showEmojis: false,
         }
         this.thisPlayerId = socket.id;
@@ -61,8 +63,9 @@ export default class Chat extends React.Component<Props, State> {
 
     sendMesage = () => {
         if (this.state.message.replace(/\s/g, '').length) {
-            socket.emit("done_writing");
-            socket.emit("send_message", {content: this.state.message, author: this.props.player, room: this.props.currentRoom});
+            socket.emit("done_writing", this.props.currentRoom);
+            const message = {content: this.state.message, author: this.props.player, room: this.props.currentRoom}
+            socket.emit("send_message", message);
             this.setState((prev) => {
                 return {
                     messages: [...prev.messages, {content: this.state.message, author: this.props.player, room: this.props.currentRoom}],
@@ -75,6 +78,8 @@ export default class Chat extends React.Component<Props, State> {
     }
 
     receiveMessage(message: IMessage) {
+        console.log(message);
+        console.log(message.room, this.props.rooms);
         if (!this.props.rooms.some((room) => room.id == message.room.id)) {
             this.props.createRoom(message.author.name);
         }
@@ -92,9 +97,9 @@ export default class Chat extends React.Component<Props, State> {
     onChangeHandler = (event: any) => {
         const target = event.target as HTMLInputElement;
         this.setState({message: target.value});
-        socket.emit("writing")
+        socket.emit("writing", this.props.currentRoom)
         setTimeout(() => {
-            socket.emit("done_writing")
+            socket.emit("done_writing", this.props.currentRoom)
         }, 4000)
     }
 
@@ -139,18 +144,10 @@ export default class Chat extends React.Component<Props, State> {
 
 
     componentDidMount() {
+        socket.on("get_message", (msg) => {
+            this.receiveMessage(msg);
+        })
         document.addEventListener("keydown", this.handleEnter);
-
-        socket.on("get_message", (message) => {
-            this.receiveMessage(message);
-        })
-        socket.on("someone_writing", () => {
-            this.setState({someoneWriting: true});
-        })
-        socket.on("done_writing", () => {
-            this.setState({someoneWriting: false});
-        })
-
         document.addEventListener("click", this.handleOutsideClick)
     }
     componentWillUnmount() {
@@ -182,7 +179,7 @@ export default class Chat extends React.Component<Props, State> {
             <div className="lobby__chat">
                     <div className="lobby__messages">
                         {messages}
-                        {this.state.someoneWriting && <div className="lobby__someone-writing">
+                        {this.props.isWriting && <div className="lobby__someone-writing">
                             Someone is writing
                             <div className="lobby__dot-wrapper lobby__dot-wrapper--1">
                                 <div id="dot-1" className="lobby__dot"></div>

@@ -166,7 +166,7 @@ var App = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = App;
 
-},{"./components/board":3,"./components/gameMenu":11,"./components/gamePreview":12,"./components/inputName":13,"./components/lobby/lobby":21,"./game":27,"./main":28,"react":64}],2:[function(require,module,exports){
+},{"./components/board":3,"./components/gameMenu":11,"./components/gamePreview":12,"./components/inputName":13,"./components/lobby/lobby":21,"./game":28,"./main":29,"react":65}],2:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -510,7 +510,7 @@ function getScoreSheet() {
     return scoreSheet;
 }
 
-},{"./utility":29}],3:[function(require,module,exports){
+},{"./utility":30}],3:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -631,7 +631,7 @@ var Board = /** @class */ (function (_super) {
 exports.default = Board;
 var restartFlag = false;
 
-},{".//labels/top-label":17,"./board/chessboard":4,"./board/context-menu":5,"./board/winMenu":9,"./labels/bot-label":14,"./labels/left-label":15,"./labels/right-label":16,"react":64}],4:[function(require,module,exports){
+},{".//labels/top-label":17,"./board/chessboard":4,"./board/context-menu":5,"./board/winMenu":9,"./labels/bot-label":14,"./labels/left-label":15,"./labels/right-label":16,"react":65}],4:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -760,7 +760,7 @@ var Chessboard = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Chessboard;
 
-},{"./square":8,"react":64}],5:[function(require,module,exports){
+},{"./square":8,"react":65}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -870,7 +870,7 @@ var ContextMenu = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = ContextMenu;
 
-},{"react":64}],6:[function(require,module,exports){
+},{"react":65}],6:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -984,7 +984,7 @@ function getSpecialClass(type, color) {
     return [baseClass, centerClass];
 }
 
-},{"react":64}],7:[function(require,module,exports){
+},{"react":65}],7:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1022,7 +1022,7 @@ var Piece = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Piece;
 
-},{"./getPieceJSX":6,"react":64}],8:[function(require,module,exports){
+},{"./getPieceJSX":6,"react":65}],8:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1060,7 +1060,7 @@ var Square = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Square;
 
-},{"./piece":7,"react":64}],9:[function(require,module,exports){
+},{"./piece":7,"react":65}],9:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1109,7 +1109,7 @@ var WinMenu = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = WinMenu;
 
-},{"react":64}],10:[function(require,module,exports){
+},{"react":65}],10:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1162,7 +1162,7 @@ var ColorSelection = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = ColorSelection;
 
-},{"react":64}],11:[function(require,module,exports){
+},{"react":65}],11:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1298,7 +1298,7 @@ var GameMenu = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = GameMenu;
 
-},{"./colorSelection":10,"react":64}],12:[function(require,module,exports){
+},{"./colorSelection":10,"react":65}],12:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1347,7 +1347,7 @@ var GamePreview = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = GamePreview;
 
-},{"./board/chessboard":4,"react":64}],13:[function(require,module,exports){
+},{"./board/chessboard":4,"react":65}],13:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1391,7 +1391,7 @@ var InputName = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = InputName;
 
-},{"react":64}],14:[function(require,module,exports){
+},{"react":65}],14:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1433,7 +1433,7 @@ var BotLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = BotLabel;
 
-},{"react":64}],15:[function(require,module,exports){
+},{"react":65}],15:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1475,7 +1475,7 @@ var leftLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = leftLabel;
 
-},{"react":64}],16:[function(require,module,exports){
+},{"react":65}],16:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1517,7 +1517,7 @@ var RightLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = RightLabel;
 
-},{"react":64}],17:[function(require,module,exports){
+},{"react":65}],17:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1559,7 +1559,7 @@ var TopLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = TopLabel;
 
-},{"react":64}],18:[function(require,module,exports){
+},{"react":65}],18:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1637,7 +1637,7 @@ var Avatar = /** @class */ (function (_super) {
 }(react_1.Component));
 exports.default = Avatar;
 
-},{"react":64}],19:[function(require,module,exports){
+},{"react":65}],19:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1678,8 +1678,9 @@ var Chat = /** @class */ (function (_super) {
         _this.sendMesage = function () {
             var _a;
             if (_this.state.message.replace(/\s/g, '').length) {
-                main_1.socket.emit("done_writing");
-                main_1.socket.emit("send_message", { content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom });
+                main_1.socket.emit("done_writing", _this.props.currentRoom);
+                var message = { content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom };
+                main_1.socket.emit("send_message", message);
                 _this.setState(function (prev) {
                     return {
                         messages: __spreadArray(__spreadArray([], prev.messages, true), [{ content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom }], false),
@@ -1693,9 +1694,9 @@ var Chat = /** @class */ (function (_super) {
         _this.onChangeHandler = function (event) {
             var target = event.target;
             _this.setState({ message: target.value });
-            main_1.socket.emit("writing");
+            main_1.socket.emit("writing", _this.props.currentRoom);
             setTimeout(function () {
-                main_1.socket.emit("done_writing");
+                main_1.socket.emit("done_writing", _this.props.currentRoom);
             }, 4000);
         };
         _this.handleEnter = function (event) {
@@ -1728,7 +1729,6 @@ var Chat = /** @class */ (function (_super) {
         _this.state = {
             messages: [],
             message: "",
-            someoneWriting: false,
             showEmojis: false,
         };
         _this.thisPlayerId = main_1.socket.id;
@@ -1741,6 +1741,8 @@ var Chat = /** @class */ (function (_super) {
         }
     };
     Chat.prototype.receiveMessage = function (message) {
+        console.log(message);
+        console.log(message.room, this.props.rooms);
         if (!this.props.rooms.some(function (room) { return room.id == message.room.id; })) {
             this.props.createRoom(message.author.name);
         }
@@ -1763,16 +1765,10 @@ var Chat = /** @class */ (function (_super) {
     };
     Chat.prototype.componentDidMount = function () {
         var _this = this;
+        main_1.socket.on("get_message", function (msg) {
+            _this.receiveMessage(msg);
+        });
         document.addEventListener("keydown", this.handleEnter);
-        main_1.socket.on("get_message", function (message) {
-            _this.receiveMessage(message);
-        });
-        main_1.socket.on("someone_writing", function () {
-            _this.setState({ someoneWriting: true });
-        });
-        main_1.socket.on("done_writing", function () {
-            _this.setState({ someoneWriting: false });
-        });
         document.addEventListener("click", this.handleOutsideClick);
     };
     Chat.prototype.componentWillUnmount = function () {
@@ -1795,7 +1791,7 @@ var Chat = /** @class */ (function (_super) {
         return (react_1.default.createElement("div", { className: "lobby__chat" },
             react_1.default.createElement("div", { className: "lobby__messages" },
                 messages,
-                this.state.someoneWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
+                this.props.isWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
                     "Someone is writing",
                     react_1.default.createElement("div", { className: "lobby__dot-wrapper lobby__dot-wrapper--1" },
                         react_1.default.createElement("div", { id: "dot-1", className: "lobby__dot" })),
@@ -1814,7 +1810,7 @@ var Chat = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Chat;
 
-},{"../../main":28,"./emojis":20,"./message":22,"react":64}],20:[function(require,module,exports){
+},{"../../main":29,"./emojis":20,"./message":22,"react":65}],20:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1880,7 +1876,7 @@ var Emojis = /** @class */ (function (_super) {
 }(react_1.Component));
 exports.default = Emojis;
 
-},{"react":64}],21:[function(require,module,exports){
+},{"react":65}],21:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1914,6 +1910,7 @@ var react_1 = __importDefault(require("react"));
 var chat_1 = __importDefault(require("./chat"));
 var main_1 = require("../../main");
 var players_1 = __importDefault(require("./players"));
+var room_1 = __importDefault(require("./room"));
 var Lobby = /** @class */ (function (_super) {
     __extends(Lobby, _super);
     function Lobby(props) {
@@ -1925,9 +1922,10 @@ var Lobby = /** @class */ (function (_super) {
                 main_1.socket.emit("join_room", room);
                 main_1.socket.emit("create_room", room);
                 _this.setState(function (prevState) {
+                    var room = { name: name, id: roomId, unread: false, hover: false, isWriting: false };
                     return {
-                        rooms: __spreadArray(__spreadArray([], prevState.rooms, true), [{ name: name, id: roomId, unread: false, hover: false }], false),
-                        currentRoom: { name: name, id: roomId },
+                        rooms: __spreadArray(__spreadArray([], prevState.rooms, true), [room], false),
+                        currentRoom: room,
                         roomInvitable: false,
                     };
                 });
@@ -1939,16 +1937,6 @@ var Lobby = /** @class */ (function (_super) {
                     rooms: prevState.rooms.filter(function (room) { return room.name != name; })
                 };
             });
-        };
-        _this.handleClickCloseRoom = function (event) {
-            var target = event.target;
-            var wrapper = target.closest('.lobby__room-wraper');
-            var roomDiv = target.previousSibling;
-            var roomName = roomDiv === null || roomDiv === void 0 ? void 0 : roomDiv.nodeValue;
-            if (roomName) {
-                _this.closeRoom(roomName);
-            }
-            console.log(roomDiv);
         };
         _this.handlePlayerInvite = function (event) {
             var target = event.target;
@@ -1967,20 +1955,18 @@ var Lobby = /** @class */ (function (_super) {
                 _this.setState({ roomInvitable: false });
             }
         };
-        _this.handleSwitchRoom = function (event) {
-            var target = event.target;
-            var room = target.closest(".lobby__room");
-            var id = room === null || room === void 0 ? void 0 : room.id;
-            var name = room === null || room === void 0 ? void 0 : room.textContent;
-            if (name && id && id !== "global") {
-                _this.setState({ currentRoom: { name: name, id: _this.getRoomId(name) } });
+        _this.switchRoom = function (room) {
+            if (room.id !== "global") {
+                _this.setState({ currentRoom: room });
             }
             else {
-                _this.setState({ currentRoom: { name: "global room", id: "global" } });
+                _this.setState(function (prevState) {
+                    return {
+                        currentRoom: prevState.rooms[0]
+                    };
+                });
             }
-            if (id) {
-                _this.setRoomProperty(id, "unread", false);
-            }
+            _this.setRoomProperty(room.id, "unread", false);
         };
         _this.setRoomProperty = function (id, propertyName, propertyValue) {
             var rooms = _this.state.rooms.filter(function (room) { return room.id == id; });
@@ -1990,16 +1976,13 @@ var Lobby = /** @class */ (function (_super) {
                 var index_1 = _this.state.rooms.findIndex(function (room) { return room.id == id; });
                 _this.setState(function (prevState) {
                     return {
-                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [room], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true)
+                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [room], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true),
                     };
                 });
+                if (room.id == _this.state.currentRoom.id) {
+                    _this.setState({ currentRoom: room });
+                }
             }
-        };
-        _this.handleMouseOverRoom = function (event) {
-            _this.roomMouseMove(event, true);
-        };
-        _this.handleMouseLeaveRoom = function (event) {
-            _this.roomMouseMove(event, false);
         };
         _this.componentDidMount = function () {
             main_1.socket.on("players_update", function (players) {
@@ -2008,15 +1991,22 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("room_created", function (room) {
                 if (_this.props.name == room.target) {
                     main_1.socket.emit("join_room", room);
+                    console.log(room);
                 }
+            });
+            main_1.socket.on("someone_writing", function (room) {
+                _this.setRoomProperty(room.id, 'isWriting', true);
+            });
+            main_1.socket.on("done_writing", function (room) {
+                _this.setRoomProperty(room.id, 'isWriting', false);
             });
             document.addEventListener('click', _this.handleOutsidePlayersClick);
         };
         _this.props = props;
         _this.state = {
             players: [],
-            rooms: [{ name: "global room", id: "global", unread: false, hover: false }],
-            currentRoom: { name: "global room", id: "global" },
+            currentRoom: { name: "global room", id: "global", unread: false, hover: false, isWriting: false },
+            rooms: [{ name: "global room", id: "global", unread: false, hover: false, isWriting: false }],
             roomInvitable: false,
         };
         _this.playersRef = react_1.default.createRef();
@@ -2036,42 +2026,15 @@ var Lobby = /** @class */ (function (_super) {
         }
         return roomIdPart1 + roomIdPart2;
     };
-    Lobby.prototype.roomMouseMove = function (event, hover) {
-        var target = event.target;
-        var wrapper = target.closest(".lobby__room-wrapper");
-        var children = wrapper === null || wrapper === void 0 ? void 0 : wrapper.children;
-        if (children && children[0]) {
-            var id = children[0].id;
-            this.setRoomProperty(id, "hover", hover);
-        }
-    };
     Lobby.prototype.componentWillUnmount = function () {
         document.removeEventListener('click', this.handleOutsidePlayersClick);
-        main_1.socket.off("players_update");
-        main_1.socket.off("get_room");
+        main_1.socket.off();
     };
     Lobby.prototype.render = function () {
         var _this = this;
         var player = this.state.players.find(function (player) { return player.name == _this.props.name; });
         var rooms = this.state.rooms.map(function (room, id) {
-            var roomClass = "";
-            if (room.name == _this.state.currentRoom.name) {
-                roomClass = "lobby__room--current";
-            }
-            if (room.unread) {
-                roomClass += " lobby__room--unread";
-            }
-            var closeRoomClass = "";
-            if (room.hover) {
-                closeRoomClass = "lobby__close-room--visible";
-            }
-            else {
-                closeRoomClass = "lobby__close-room--hidden";
-            }
-            return react_1.default.createElement("div", { className: "lobby__room-wrapper", key: id, onMouseOver: _this.handleMouseOverRoom, onMouseLeave: _this.handleMouseLeaveRoom },
-                react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass, id: room.id, key: id, onClick: _this.handleSwitchRoom }, room.name),
-                room.id != "global" && react_1.default.createElement("div", { className: "lobby__close-room " + closeRoomClass, onClick: _this.handleClickCloseRoom },
-                    react_1.default.createElement("i", { className: "icon-cancel-circled" })));
+            return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
         });
         var newRoomButtonClass = "";
         if (this.state.roomInvitable) {
@@ -2086,13 +2049,13 @@ var Lobby = /** @class */ (function (_super) {
                 rooms,
                 react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
-            player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty })));
+            player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting })));
     };
     return Lobby;
 }(react_1.default.Component));
 exports.default = Lobby;
 
-},{"../../main":28,"./chat":19,"./players":23,"react":64}],22:[function(require,module,exports){
+},{"../../main":29,"./chat":19,"./players":23,"./room":24,"react":65}],22:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2154,7 +2117,7 @@ var Message = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Message;
 
-},{"./avatar":18,"./emojis":20,"react":64}],23:[function(require,module,exports){
+},{"./avatar":18,"./emojis":20,"react":65}],23:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2228,7 +2191,57 @@ var Players = /** @class */ (function (_super) {
 }(react_1.Component));
 exports.default = Players;
 
-},{"../../main":28,"./avatar":18,"react":64}],24:[function(require,module,exports){
+},{"../../main":29,"./avatar":18,"react":65}],24:[function(require,module,exports){
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+function Room(props) {
+    var room = props.room;
+    var handleClickCloseRoom = function (event) {
+        props.closeRoom(room.name);
+    };
+    var handleMouseOver = function (event) {
+        roomMouseMove(event, true);
+    };
+    var handleMouseLeave = function (event) {
+        roomMouseMove(event, false);
+    };
+    var roomMouseMove = function (event, hover) {
+        var target = event.target;
+        var wrapper = target.closest(".lobby__room-wrapper");
+        var children = wrapper === null || wrapper === void 0 ? void 0 : wrapper.children;
+        if (children && children[0]) {
+            props.setRoomProperty(props.room.id, "hover", hover);
+        }
+    };
+    var handleClickRoom = function (event) {
+        props.switchRoom(props.room);
+    };
+    var roomClass = "";
+    if (room.name == props.currentRoom.name) {
+        roomClass = "lobby__room--current";
+    }
+    if (room.unread) {
+        roomClass += " lobby__room--unread";
+    }
+    var closeRoomClass = "";
+    if (room.hover) {
+        closeRoomClass = "lobby__close-room--visible";
+    }
+    else {
+        closeRoomClass = "lobby__close-room--hidden";
+    }
+    return (react_1.default.createElement("div", { className: "lobby__room-wrapper", onMouseOver: handleMouseOver, onMouseLeave: handleMouseLeave },
+        react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass, onClick: handleClickRoom }, room.name),
+        room.id != "global" && react_1.default.createElement("div", { className: "lobby__close-room " + closeRoomClass, onClick: handleClickCloseRoom },
+            react_1.default.createElement("i", { className: "icon-cancel-circled" }))));
+}
+exports.default = Room;
+
+},{"react":65}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPreset = void 0;
@@ -2270,7 +2283,7 @@ function getPreset(side) {
 }
 exports.getPreset = getPreset;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("./config");
@@ -2387,7 +2400,7 @@ function addPiece(i, color, chessboard) {
     chessboard[i]["piece"] = color;
 }
 
-},{"./config":24}],26:[function(require,module,exports){
+},{"./config":25}],27:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -2880,7 +2893,7 @@ var Engine = /** @class */ (function () {
 }());
 exports.Engine = Engine;
 
-},{"./utility":29}],27:[function(require,module,exports){
+},{"./utility":30}],28:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2992,7 +3005,7 @@ function sleep(ms) {
     return new Promise(function (resolve) { return setTimeout(resolve, ms); });
 }
 
-},{"./bot":2,"./createChessboard":25,"./engine":26}],28:[function(require,module,exports){
+},{"./bot":2,"./createChessboard":26,"./engine":27}],29:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -3006,7 +3019,7 @@ var socket_io_client_1 = __importDefault(require("socket.io-client"));
 exports.socket = (0, socket_io_client_1.default)("http://localhost:3001");
 react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.querySelector(".container"));
 
-},{"./App":1,"react":64,"react-dom":61,"socket.io-client":71}],29:[function(require,module,exports){
+},{"./App":1,"react":65,"react-dom":62,"socket.io-client":72}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sleep = exports.filterEverySecondElement = exports.hasOnlyNulls = exports.isEmpty = exports.setIncludesArray = exports.arraysEqual = exports.arrayIncludesArray = exports.filterOutNulls = void 0;
@@ -3078,7 +3091,7 @@ function sleep(ms) {
 }
 exports.sleep = sleep;
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -3256,7 +3269,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -3343,7 +3356,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*
  * base64-arraybuffer 1.0.1 <https://github.com/niklasvh/base64-arraybuffer>
  * Copyright (c) 2021 Niklas von Hertzen <https://hertzen.com>
@@ -3406,7 +3419,7 @@ Backoff.prototype.setJitter = function(jitter){
 })));
 
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -3558,7 +3571,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5339,7 +5352,7 @@ function numberIsNaN (obj) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"base64-js":33,"buffer":34,"ieee754":54}],35:[function(require,module,exports){
+},{"base64-js":34,"buffer":35,"ieee754":55}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = (() => {
@@ -5354,7 +5367,7 @@ exports.default = (() => {
     }
 })();
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.installTimerFunctions = exports.transports = exports.Transport = exports.protocol = exports.Socket = void 0;
@@ -5368,7 +5381,7 @@ Object.defineProperty(exports, "transports", { enumerable: true, get: function (
 var util_js_1 = require("./util.js");
 Object.defineProperty(exports, "installTimerFunctions", { enumerable: true, get: function () { return util_js_1.installTimerFunctions; } });
 
-},{"./socket.js":37,"./transport.js":38,"./transports/index.js":39,"./util.js":45}],37:[function(require,module,exports){
+},{"./socket.js":38,"./transport.js":39,"./transports/index.js":40,"./util.js":46}],38:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -5960,7 +5973,7 @@ function clone(obj) {
     return o;
 }
 
-},{"./transports/index.js":39,"./util.js":45,"@socket.io/component-emitter":30,"debug":46,"engine.io-parser":52,"parseqs":56,"parseuri":57}],38:[function(require,module,exports){
+},{"./transports/index.js":40,"./util.js":46,"@socket.io/component-emitter":31,"debug":47,"engine.io-parser":53,"parseqs":57,"parseuri":58}],39:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6083,7 +6096,7 @@ class Transport extends component_emitter_1.Emitter {
 }
 exports.Transport = Transport;
 
-},{"./util.js":45,"@socket.io/component-emitter":30,"debug":46,"engine.io-parser":52}],39:[function(require,module,exports){
+},{"./util.js":46,"@socket.io/component-emitter":31,"debug":47,"engine.io-parser":53}],40:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transports = void 0;
@@ -6094,7 +6107,7 @@ exports.transports = {
     polling: polling_xhr_js_1.XHR
 };
 
-},{"./polling-xhr.js":40,"./websocket.js":43}],40:[function(require,module,exports){
+},{"./polling-xhr.js":41,"./websocket.js":44}],41:[function(require,module,exports){
 "use strict";
 /* global attachEvent */
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6374,7 +6387,7 @@ function unloadHandler() {
     }
 }
 
-},{"../globalThis.js":35,"../util.js":45,"./polling.js":41,"./xmlhttprequest.js":44,"@socket.io/component-emitter":30,"debug":46}],41:[function(require,module,exports){
+},{"../globalThis.js":36,"../util.js":46,"./polling.js":42,"./xmlhttprequest.js":45,"@socket.io/component-emitter":31,"debug":47}],42:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6560,7 +6573,7 @@ class Polling extends transport_js_1.Transport {
 }
 exports.Polling = Polling;
 
-},{"../transport.js":38,"debug":46,"engine.io-parser":52,"parseqs":56,"yeast":82}],42:[function(require,module,exports){
+},{"../transport.js":39,"debug":47,"engine.io-parser":53,"parseqs":57,"yeast":83}],43:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6581,7 +6594,7 @@ exports.WebSocket = globalThis_js_1.default.WebSocket || globalThis_js_1.default
 exports.usingBrowserWebSocket = true;
 exports.defaultBinaryType = "arraybuffer";
 
-},{"../globalThis.js":35}],43:[function(require,module,exports){
+},{"../globalThis.js":36}],44:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6779,7 +6792,7 @@ class WS extends transport_js_1.Transport {
 exports.WS = WS;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"../transport.js":38,"../util.js":45,"./websocket-constructor.js":42,"buffer":34,"debug":46,"engine.io-parser":52,"parseqs":56,"yeast":82}],44:[function(require,module,exports){
+},{"../transport.js":39,"../util.js":46,"./websocket-constructor.js":43,"buffer":35,"debug":47,"engine.io-parser":53,"parseqs":57,"yeast":83}],45:[function(require,module,exports){
 "use strict";
 // browser shim for xmlhttprequest module
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6806,7 +6819,7 @@ function default_1(opts) {
 }
 exports.default = default_1;
 
-},{"../globalThis.js":35,"has-cors":53}],45:[function(require,module,exports){
+},{"../globalThis.js":36,"has-cors":54}],46:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6838,7 +6851,7 @@ function installTimerFunctions(obj, opts) {
 }
 exports.installTimerFunctions = installTimerFunctions;
 
-},{"./globalThis.js":35}],46:[function(require,module,exports){
+},{"./globalThis.js":36}],47:[function(require,module,exports){
 (function (process){(function (){
 /* eslint-env browser */
 
@@ -7111,7 +7124,7 @@ formatters.j = function (v) {
 };
 
 }).call(this)}).call(this,require('_process'))
-},{"./common":47,"_process":58}],47:[function(require,module,exports){
+},{"./common":48,"_process":59}],48:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -7387,7 +7400,7 @@ function setup(env) {
 
 module.exports = setup;
 
-},{"ms":48}],48:[function(require,module,exports){
+},{"ms":49}],49:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -7551,7 +7564,7 @@ function plural(ms, msAbs, n, name) {
   return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
 }
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ERROR_PACKET = exports.PACKET_TYPES_REVERSE = exports.PACKET_TYPES = void 0;
@@ -7572,7 +7585,7 @@ Object.keys(PACKET_TYPES).forEach(key => {
 const ERROR_PACKET = { type: "error", data: "parser error" };
 exports.ERROR_PACKET = ERROR_PACKET;
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commons_js_1 = require("./commons.js");
@@ -7625,7 +7638,7 @@ const mapBinary = (data, binaryType) => {
 };
 exports.default = decodePacket;
 
-},{"./commons.js":49,"base64-arraybuffer":32}],51:[function(require,module,exports){
+},{"./commons.js":50,"base64-arraybuffer":33}],52:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commons_js_1 = require("./commons.js");
@@ -7670,7 +7683,7 @@ const encodeBlobAsBase64 = (data, callback) => {
 };
 exports.default = encodePacket;
 
-},{"./commons.js":49}],52:[function(require,module,exports){
+},{"./commons.js":50}],53:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decodePayload = exports.decodePacket = exports.encodePayload = exports.encodePacket = exports.protocol = void 0;
@@ -7710,7 +7723,7 @@ const decodePayload = (encodedPayload, binaryType) => {
 exports.decodePayload = decodePayload;
 exports.protocol = 4;
 
-},{"./decodePacket.js":50,"./encodePacket.js":51}],53:[function(require,module,exports){
+},{"./decodePacket.js":51,"./encodePacket.js":52}],54:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -7729,7 +7742,7 @@ try {
   module.exports = false;
 }
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -7816,7 +7829,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -7908,7 +7921,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -7947,7 +7960,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -8017,7 +8030,7 @@ function queryKey(uri, query) {
     return data;
 }
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -8203,7 +8216,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v17.0.2
  * react-dom.development.js
@@ -34469,7 +34482,7 @@ exports.version = ReactVersion;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":58,"object-assign":55,"react":64,"scheduler":69,"scheduler/tracing":70}],60:[function(require,module,exports){
+},{"_process":59,"object-assign":56,"react":65,"scheduler":70,"scheduler/tracing":71}],61:[function(require,module,exports){
 /** @license React v17.0.2
  * react-dom.production.min.js
  *
@@ -34768,7 +34781,7 @@ exports.findDOMNode=function(a){if(null==a)return null;if(1===a.nodeType)return 
 exports.render=function(a,b,c){if(!rk(b))throw Error(y(200));return tk(null,a,b,!1,c)};exports.unmountComponentAtNode=function(a){if(!rk(a))throw Error(y(40));return a._reactRootContainer?(Xj(function(){tk(null,null,a,!1,function(){a._reactRootContainer=null;a[ff]=null})}),!0):!1};exports.unstable_batchedUpdates=Wj;exports.unstable_createPortal=function(a,b){return uk(a,b,2<arguments.length&&void 0!==arguments[2]?arguments[2]:null)};
 exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!rk(c))throw Error(y(200));if(null==a||void 0===a._reactInternals)throw Error(y(38));return tk(a,b,c,!1,d)};exports.version="17.0.2";
 
-},{"object-assign":55,"react":64,"scheduler":69}],61:[function(require,module,exports){
+},{"object-assign":56,"react":65,"scheduler":70}],62:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -34810,7 +34823,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/react-dom.development.js":59,"./cjs/react-dom.production.min.js":60,"_process":58}],62:[function(require,module,exports){
+},{"./cjs/react-dom.development.js":60,"./cjs/react-dom.production.min.js":61,"_process":59}],63:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v17.0.2
  * react.development.js
@@ -37147,7 +37160,7 @@ exports.version = ReactVersion;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":58,"object-assign":55}],63:[function(require,module,exports){
+},{"_process":59,"object-assign":56}],64:[function(require,module,exports){
 /** @license React v17.0.2
  * react.production.min.js
  *
@@ -37172,7 +37185,7 @@ key:d,ref:k,props:e,_owner:h}};exports.createContext=function(a,b){void 0===b&&(
 exports.lazy=function(a){return{$$typeof:v,_payload:{_status:-1,_result:a},_init:Q}};exports.memo=function(a,b){return{$$typeof:u,type:a,compare:void 0===b?null:b}};exports.useCallback=function(a,b){return S().useCallback(a,b)};exports.useContext=function(a,b){return S().useContext(a,b)};exports.useDebugValue=function(){};exports.useEffect=function(a,b){return S().useEffect(a,b)};exports.useImperativeHandle=function(a,b,c){return S().useImperativeHandle(a,b,c)};
 exports.useLayoutEffect=function(a,b){return S().useLayoutEffect(a,b)};exports.useMemo=function(a,b){return S().useMemo(a,b)};exports.useReducer=function(a,b,c){return S().useReducer(a,b,c)};exports.useRef=function(a){return S().useRef(a)};exports.useState=function(a){return S().useState(a)};exports.version="17.0.2";
 
-},{"object-assign":55}],64:[function(require,module,exports){
+},{"object-assign":56}],65:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -37183,7 +37196,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/react.development.js":62,"./cjs/react.production.min.js":63,"_process":58}],65:[function(require,module,exports){
+},{"./cjs/react.development.js":63,"./cjs/react.production.min.js":64,"_process":59}],66:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v0.20.2
  * scheduler-tracing.development.js
@@ -37534,7 +37547,7 @@ exports.unstable_wrap = unstable_wrap;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":58}],66:[function(require,module,exports){
+},{"_process":59}],67:[function(require,module,exports){
 /** @license React v0.20.2
  * scheduler-tracing.production.min.js
  *
@@ -37545,7 +37558,7 @@ exports.unstable_wrap = unstable_wrap;
  */
 'use strict';var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unstable_clear=function(a){return a()};exports.unstable_getCurrent=function(){return null};exports.unstable_getThreadID=function(){return++b};exports.unstable_subscribe=function(){};exports.unstable_trace=function(a,d,c){return c()};exports.unstable_unsubscribe=function(){};exports.unstable_wrap=function(a){return a};
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v0.20.2
  * scheduler.development.js
@@ -38195,7 +38208,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":58}],68:[function(require,module,exports){
+},{"_process":59}],69:[function(require,module,exports){
 /** @license React v0.20.2
  * scheduler.production.min.js
  *
@@ -38217,7 +38230,7 @@ exports.unstable_next=function(a){switch(P){case 1:case 2:case 3:var b=3;break;d
 exports.unstable_scheduleCallback=function(a,b,c){var d=exports.unstable_now();"object"===typeof c&&null!==c?(c=c.delay,c="number"===typeof c&&0<c?d+c:d):c=d;switch(a){case 1:var e=-1;break;case 2:e=250;break;case 5:e=1073741823;break;case 4:e=1E4;break;default:e=5E3}e=c+e;a={id:N++,callback:b,priorityLevel:a,startTime:c,expirationTime:e,sortIndex:-1};c>d?(a.sortIndex=c,H(M,a),null===J(L)&&a===J(M)&&(S?h():S=!0,g(U,c-d))):(a.sortIndex=e,H(L,a),R||Q||(R=!0,f(V)));return a};
 exports.unstable_wrapCallback=function(a){var b=P;return function(){var c=P;P=b;try{return a.apply(this,arguments)}finally{P=c}}};
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -38228,7 +38241,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/scheduler.development.js":67,"./cjs/scheduler.production.min.js":68,"_process":58}],70:[function(require,module,exports){
+},{"./cjs/scheduler.development.js":68,"./cjs/scheduler.production.min.js":69,"_process":59}],71:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -38239,7 +38252,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/scheduler-tracing.development.js":65,"./cjs/scheduler-tracing.production.min.js":66,"_process":58}],71:[function(require,module,exports){
+},{"./cjs/scheduler-tracing.development.js":66,"./cjs/scheduler-tracing.production.min.js":67,"_process":59}],72:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -38310,7 +38323,7 @@ Object.defineProperty(exports, "protocol", { enumerable: true, get: function () 
 
 module.exports = lookup;
 
-},{"./manager.js":72,"./socket.js":74,"./url.js":75,"debug":76,"socket.io-parser":80}],72:[function(require,module,exports){
+},{"./manager.js":73,"./socket.js":75,"./url.js":76,"debug":77,"socket.io-parser":81}],73:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -38707,7 +38720,7 @@ class Manager extends component_emitter_1.Emitter {
 }
 exports.Manager = Manager;
 
-},{"./on.js":73,"./socket.js":74,"@socket.io/component-emitter":30,"backo2":31,"debug":76,"engine.io-client":36,"socket.io-parser":80}],73:[function(require,module,exports){
+},{"./on.js":74,"./socket.js":75,"@socket.io/component-emitter":31,"backo2":32,"debug":77,"engine.io-client":37,"socket.io-parser":81}],74:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.on = void 0;
@@ -38719,7 +38732,7 @@ function on(obj, ev, fn) {
 }
 exports.on = on;
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39229,7 +39242,7 @@ class Socket extends component_emitter_1.Emitter {
 }
 exports.Socket = Socket;
 
-},{"./on.js":73,"@socket.io/component-emitter":30,"debug":76,"socket.io-parser":80}],75:[function(require,module,exports){
+},{"./on.js":74,"@socket.io/component-emitter":31,"debug":77,"socket.io-parser":81}],76:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39301,13 +39314,13 @@ function url(uri, path = "", loc) {
 }
 exports.url = url;
 
-},{"debug":76,"parseuri":57}],76:[function(require,module,exports){
-arguments[4][46][0].apply(exports,arguments)
-},{"./common":77,"_process":58,"dup":46}],77:[function(require,module,exports){
+},{"debug":77,"parseuri":58}],77:[function(require,module,exports){
 arguments[4][47][0].apply(exports,arguments)
-},{"dup":47,"ms":78}],78:[function(require,module,exports){
+},{"./common":78,"_process":59,"dup":47}],78:[function(require,module,exports){
 arguments[4][48][0].apply(exports,arguments)
-},{"dup":48}],79:[function(require,module,exports){
+},{"dup":48,"ms":79}],79:[function(require,module,exports){
+arguments[4][49][0].apply(exports,arguments)
+},{"dup":49}],80:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reconstructPacket = exports.deconstructPacket = void 0;
@@ -39389,7 +39402,7 @@ function _reconstructPacket(data, buffers) {
     return data;
 }
 
-},{"./is-binary.js":81}],80:[function(require,module,exports){
+},{"./is-binary.js":82}],81:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Decoder = exports.Encoder = exports.PacketType = exports.protocol = void 0;
@@ -39672,7 +39685,7 @@ class BinaryReconstructor {
     }
 }
 
-},{"./binary.js":79,"./is-binary.js":81,"@socket.io/component-emitter":30,"debug":76}],81:[function(require,module,exports){
+},{"./binary.js":80,"./is-binary.js":82,"@socket.io/component-emitter":31,"debug":77}],82:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasBinary = exports.isBinary = void 0;
@@ -39729,7 +39742,7 @@ function hasBinary(obj, toJSON) {
 }
 exports.hasBinary = hasBinary;
 
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -39799,4 +39812,4 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}]},{},[28]);
+},{}]},{},[29]);

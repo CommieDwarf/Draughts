@@ -2,7 +2,7 @@ import React, { MouseEvent, Ref } from "react";
 import Chat from "./chat";
 import { socket } from "../../main";
 import Players from "./players";
-
+import Room from "./room";
 
 
 export interface IPlayer {
@@ -14,21 +14,21 @@ export interface IPlayer {
     id: string,
 }
 
+type Room = {
+    name: string,
+    id: string,
+    unread: boolean,
+    hover: boolean,
+    isWriting: boolean,
+}
+
 type Props = {
 
 }
 type State = {
     players: IPlayer[],
-    rooms: {
-        name: string,
-        id: string,
-        unread: boolean,
-        hover: boolean,
-    }[],
-    currentRoom: {
-        name: string,
-        id: string
-    },
+    rooms: Room[],
+    currentRoom: Room,
     roomInvitable: boolean,
 }
 
@@ -46,8 +46,8 @@ export default class Lobby extends React.Component<Props, State> {
         this.props = props;
         this.state = {
             players: [],
-            rooms: [{name: "global room", id: "global", unread: false, hover: false}],
-            currentRoom: {name: "global room", id: "global"},
+            currentRoom: {name: "global room", id: "global", unread: false, hover: false, isWriting: false},
+            rooms: [{name: "global room", id: "global", unread: false, hover: false, isWriting: false}],
             roomInvitable: false,
         }
         this.playersRef = React.createRef();
@@ -74,9 +74,10 @@ export default class Lobby extends React.Component<Props, State> {
             socket.emit("join_room", room);
             socket.emit("create_room", room);
             this.setState(prevState => {
+                const room = {name, id: roomId, unread: false, hover: false, isWriting: false}
                 return {
-                    rooms: [...prevState.rooms, {name, id: roomId, unread: false, hover: false}],
-                    currentRoom: {name, id: roomId},
+                    rooms: [...prevState.rooms, room],
+                    currentRoom: room,
                     roomInvitable: false,
                 }
             });
@@ -91,16 +92,6 @@ export default class Lobby extends React.Component<Props, State> {
         })
     }
 
-    handleClickCloseRoom = (event: React.MouseEvent) => {
-        const target = event.target as HTMLElement;
-        const wrapper = target.closest('.lobby__room-wraper')
-        const roomDiv = target.previousSibling;
-        const roomName = roomDiv?.nodeValue;
-        if (roomName) {
-            this.closeRoom(roomName);
-        }
-        console.log(roomDiv)
-    }
 
     handlePlayerInvite = (event: React.MouseEvent) => {
         const target = event.target as HTMLElement;
@@ -123,20 +114,20 @@ export default class Lobby extends React.Component<Props, State> {
         }
     }
 
-    handleSwitchRoom = (event: React.MouseEvent<HTMLDivElement>) => {
-        const target = event.target as HTMLDivElement;
-        const room = target.closest(".lobby__room");
-        const id = room?.id;
-        const name = room?.textContent;
-        if (name && id && id !== "global") {
-            this.setState({currentRoom: {name, id: this.getRoomId(name)}})
+    switchRoom = (room: Room) => {
+        if (room.id !== "global") {
+            this.setState({currentRoom: room})
         } else {
-            this.setState({currentRoom: {name: "global room", id: "global"}})
+            this.setState(prevState => {
+                return {
+                    currentRoom: prevState.rooms[0]
+                }
+            })
         }
-        if (id) {
-            this.setRoomProperty(id, "unread", false);
-        }
+        this.setRoomProperty(room.id, "unread", false);
     }
+
+    
 
     setRoomProperty = (id: string, propertyName: string, propertyValue: any) => {
         const rooms = this.state.rooms.filter((room) => room.id == id);
@@ -146,30 +137,15 @@ export default class Lobby extends React.Component<Props, State> {
             const index = this.state.rooms.findIndex((room) => room.id == id);
             this.setState(prevState => {
                 return {
-                    rooms: [...prevState.rooms.slice(0, index), room, ...prevState.rooms.slice(index + 1, prevState.rooms.length)]
+                    rooms: [...prevState.rooms.slice(0, index), room, ...prevState.rooms.slice(index + 1, prevState.rooms.length)],
                 }
             })
+            if (room.id == this.state.currentRoom.id) {
+                this.setState({currentRoom: room})
+            }
         }
     }
-
-    handleMouseOverRoom = (event: React.MouseEvent) => {
-        this.roomMouseMove(event, true);
-    }
-    handleMouseLeaveRoom = (event: React.MouseEvent) => {
-        this.roomMouseMove(event, false);
-    }
-    roomMouseMove(event: React.MouseEvent, hover: boolean) {
-        const target = event.target as HTMLInputElement;
-        const wrapper = target.closest(".lobby__room-wrapper");
-        const children = wrapper?.children;
-        if (children && children[0]) {
-            const id = children[0].id;
-            this.setRoomProperty(id, "hover", hover);
-        } 
-    }
-
-
-
+    
     componentDidMount = () => {
         socket.on("players_update", (players) => {
             this.setState({ players })
@@ -177,15 +153,24 @@ export default class Lobby extends React.Component<Props, State> {
         socket.on("room_created", (room) => {
             if (this.props.name == room.target) {
                 socket.emit("join_room", room);
+               console.log(room);
             }
         })
+  
+        socket.on("someone_writing", (room) => {
+            this.setRoomProperty(room.id, 'isWriting', true);
+        })
+        socket.on("done_writing", (room) => {
+            this.setRoomProperty(room.id, 'isWriting', false);
+        })
+
+
         document.addEventListener('click', this.handleOutsidePlayersClick);
 
     }
     componentWillUnmount() {
         document.removeEventListener('click', this.handleOutsidePlayersClick);
-        socket.off("players_update");
-        socket.off("get_room")
+        socket.off();
     }
 
     render() {
@@ -193,33 +178,19 @@ export default class Lobby extends React.Component<Props, State> {
         const player = this.state.players.find((player) => player.name == this.props.name)
 
         let rooms = this.state.rooms.map((room, id) => {
-            let roomClass = "";
-            if (room.name == this.state.currentRoom.name) {
-                roomClass = "lobby__room--current";
-            }
-            if (room.unread) {
-                roomClass += " lobby__room--unread"
-            }
-            let closeRoomClass =  "";
-            if (room.hover) {
-                closeRoomClass = "lobby__close-room--visible"
-            } else {
-                closeRoomClass = "lobby__close-room--hidden"
-            }
-            return <div className="lobby__room-wrapper" key={id} onMouseOver={this.handleMouseOverRoom} onMouseLeave={this.handleMouseLeaveRoom}>
-                        <div className={"lobby__room no-select " + roomClass} id={room.id} key={id} onClick={this.handleSwitchRoom}>{room.name}</div>
-                        {room.id != "global" &&  <div className={"lobby__close-room " + closeRoomClass} onClick={this.handleClickCloseRoom}>
-                            <i className="icon-cancel-circled"></i>    
-                        </div> }  
-                    </div> 
+            return <Room closeRoom={this.closeRoom}
+            setRoomProperty={this.setRoomProperty}
+            switchRoom={this.switchRoom}
+            room={room}
+            currentRoom={this.state.currentRoom}
+            key={id}
+            />
             
         })
-
         let newRoomButtonClass = "";
         if (this.state.roomInvitable) {
             newRoomButtonClass = "lobby__new-room-button--green";
         }
-
         return (
             <div className="lobby">
                 <div className="lobby__invite-button">
@@ -241,11 +212,10 @@ export default class Lobby extends React.Component<Props, State> {
                     </div>
                 </div>
                 {player && <Chat player={player}
-                 currentRoom={this.state.currentRoom}
-                  createRoom={this.createRoom} 
-                  rooms={this.state.rooms}
-                  setRoomProperty={this.setRoomProperty}
-                  />}
+                currentRoom={this.state.currentRoom}
+                createRoom={this.createRoom}
+                rooms={this.state.rooms}
+                setRoomProperty={this.setRoomProperty} isWriting={this.state.currentRoom.isWriting}                  />}
             </div>
         )
     }

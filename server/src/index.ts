@@ -41,7 +41,11 @@ type Room = {
 
 let players: Player[] = [];
 
-let someoneWriting = false;
+interface IsWritingRooms<value> {
+    [key: string]: value,
+}
+
+const isWritingRooms: IsWritingRooms<boolean> = {};
 
 io.on("connection", (socket: any) => {
 
@@ -75,15 +79,16 @@ io.on("connection", (socket: any) => {
     })
 
     socket.on("send_message", (msg: IMessage) => {
+        console.log(msg);
         socket.broadcast.to(msg.room.id).emit(("get_message"), msg);
     })
 
 
-    socket.on("writing", () => {
-        socket.broadcast.emit("someone_writing");
+    socket.on("writing", (room: {name: string, id:string}) => {
+        socket.broadcast.emit("someone_writing", room);
     })
-    socket.on("done_writing", () => {
-        socket.broadcast.emit("done_writing")
+    socket.on("done_writing", (room: {name: string, id:string}) => {
+        socket.broadcast.emit("done_writing", room)
     })
 
     socket.on("request_players_list", () => {

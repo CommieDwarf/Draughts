@@ -31,6 +31,7 @@ var react_1 = __importDefault(require("react"));
 var chat_1 = __importDefault(require("./chat"));
 var main_1 = require("../../main");
 var players_1 = __importDefault(require("./players"));
+var room_1 = __importDefault(require("./room"));
 var Lobby = /** @class */ (function (_super) {
     __extends(Lobby, _super);
     function Lobby(props) {
@@ -42,9 +43,10 @@ var Lobby = /** @class */ (function (_super) {
                 main_1.socket.emit("join_room", room);
                 main_1.socket.emit("create_room", room);
                 _this.setState(function (prevState) {
+                    var room = { name: name, id: roomId, unread: false, hover: false, isWriting: false };
                     return {
-                        rooms: __spreadArray(__spreadArray([], prevState.rooms, true), [{ name: name, id: roomId, unread: false, hover: false }], false),
-                        currentRoom: { name: name, id: roomId },
+                        rooms: __spreadArray(__spreadArray([], prevState.rooms, true), [room], false),
+                        currentRoom: room,
                         roomInvitable: false,
                     };
                 });
@@ -56,16 +58,6 @@ var Lobby = /** @class */ (function (_super) {
                     rooms: prevState.rooms.filter(function (room) { return room.name != name; })
                 };
             });
-        };
-        _this.handleClickCloseRoom = function (event) {
-            var target = event.target;
-            var wrapper = target.closest('.lobby__room-wraper');
-            var roomDiv = target.previousSibling;
-            var roomName = roomDiv === null || roomDiv === void 0 ? void 0 : roomDiv.nodeValue;
-            if (roomName) {
-                _this.closeRoom(roomName);
-            }
-            console.log(roomDiv);
         };
         _this.handlePlayerInvite = function (event) {
             var target = event.target;
@@ -84,20 +76,18 @@ var Lobby = /** @class */ (function (_super) {
                 _this.setState({ roomInvitable: false });
             }
         };
-        _this.handleSwitchRoom = function (event) {
-            var target = event.target;
-            var room = target.closest(".lobby__room");
-            var id = room === null || room === void 0 ? void 0 : room.id;
-            var name = room === null || room === void 0 ? void 0 : room.textContent;
-            if (name && id && id !== "global") {
-                _this.setState({ currentRoom: { name: name, id: _this.getRoomId(name) } });
+        _this.switchRoom = function (room) {
+            if (room.id !== "global") {
+                _this.setState({ currentRoom: room });
             }
             else {
-                _this.setState({ currentRoom: { name: "global room", id: "global" } });
+                _this.setState(function (prevState) {
+                    return {
+                        currentRoom: prevState.rooms[0]
+                    };
+                });
             }
-            if (id) {
-                _this.setRoomProperty(id, "unread", false);
-            }
+            _this.setRoomProperty(room.id, "unread", false);
         };
         _this.setRoomProperty = function (id, propertyName, propertyValue) {
             var rooms = _this.state.rooms.filter(function (room) { return room.id == id; });
@@ -107,16 +97,13 @@ var Lobby = /** @class */ (function (_super) {
                 var index_1 = _this.state.rooms.findIndex(function (room) { return room.id == id; });
                 _this.setState(function (prevState) {
                     return {
-                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [room], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true)
+                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [room], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true),
                     };
                 });
+                if (room.id == _this.state.currentRoom.id) {
+                    _this.setState({ currentRoom: room });
+                }
             }
-        };
-        _this.handleMouseOverRoom = function (event) {
-            _this.roomMouseMove(event, true);
-        };
-        _this.handleMouseLeaveRoom = function (event) {
-            _this.roomMouseMove(event, false);
         };
         _this.componentDidMount = function () {
             main_1.socket.on("players_update", function (players) {
@@ -125,15 +112,22 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("room_created", function (room) {
                 if (_this.props.name == room.target) {
                     main_1.socket.emit("join_room", room);
+                    console.log(room);
                 }
+            });
+            main_1.socket.on("someone_writing", function (room) {
+                _this.setRoomProperty(room.id, 'isWriting', true);
+            });
+            main_1.socket.on("done_writing", function (room) {
+                _this.setRoomProperty(room.id, 'isWriting', false);
             });
             document.addEventListener('click', _this.handleOutsidePlayersClick);
         };
         _this.props = props;
         _this.state = {
             players: [],
-            rooms: [{ name: "global room", id: "global", unread: false, hover: false }],
-            currentRoom: { name: "global room", id: "global" },
+            currentRoom: { name: "global room", id: "global", unread: false, hover: false, isWriting: false },
+            rooms: [{ name: "global room", id: "global", unread: false, hover: false, isWriting: false }],
             roomInvitable: false,
         };
         _this.playersRef = react_1.default.createRef();
@@ -153,42 +147,15 @@ var Lobby = /** @class */ (function (_super) {
         }
         return roomIdPart1 + roomIdPart2;
     };
-    Lobby.prototype.roomMouseMove = function (event, hover) {
-        var target = event.target;
-        var wrapper = target.closest(".lobby__room-wrapper");
-        var children = wrapper === null || wrapper === void 0 ? void 0 : wrapper.children;
-        if (children && children[0]) {
-            var id = children[0].id;
-            this.setRoomProperty(id, "hover", hover);
-        }
-    };
     Lobby.prototype.componentWillUnmount = function () {
         document.removeEventListener('click', this.handleOutsidePlayersClick);
-        main_1.socket.off("players_update");
-        main_1.socket.off("get_room");
+        main_1.socket.off();
     };
     Lobby.prototype.render = function () {
         var _this = this;
         var player = this.state.players.find(function (player) { return player.name == _this.props.name; });
         var rooms = this.state.rooms.map(function (room, id) {
-            var roomClass = "";
-            if (room.name == _this.state.currentRoom.name) {
-                roomClass = "lobby__room--current";
-            }
-            if (room.unread) {
-                roomClass += " lobby__room--unread";
-            }
-            var closeRoomClass = "";
-            if (room.hover) {
-                closeRoomClass = "lobby__close-room--visible";
-            }
-            else {
-                closeRoomClass = "lobby__close-room--hidden";
-            }
-            return react_1.default.createElement("div", { className: "lobby__room-wrapper", key: id, onMouseOver: _this.handleMouseOverRoom, onMouseLeave: _this.handleMouseLeaveRoom },
-                react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass, id: room.id, key: id, onClick: _this.handleSwitchRoom }, room.name),
-                room.id != "global" && react_1.default.createElement("div", { className: "lobby__close-room " + closeRoomClass, onClick: _this.handleClickCloseRoom },
-                    react_1.default.createElement("i", { className: "icon-cancel-circled" })));
+            return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
         });
         var newRoomButtonClass = "";
         if (this.state.roomInvitable) {
@@ -203,7 +170,7 @@ var Lobby = /** @class */ (function (_super) {
                 rooms,
                 react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
-            player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty })));
+            player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting })));
     };
     return Lobby;
 }(react_1.default.Component));

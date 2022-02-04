@@ -16,7 +16,7 @@ var io = new Server(server, {
     }
 });
 var players = [];
-var someoneWriting = false;
+var isWritingRooms = {};
 io.on("connection", function (socket) {
     console.log("User connected", socket.id, socket.handshake.address);
     socket.on("player-connected", function (name) {
@@ -44,13 +44,14 @@ io.on("connection", function (socket) {
         socket.leave(room.id);
     });
     socket.on("send_message", function (msg) {
+        console.log(msg);
         socket.broadcast.to(msg.room.id).emit(("get_message"), msg);
     });
-    socket.on("writing", function () {
-        socket.broadcast.emit("someone_writing");
+    socket.on("writing", function (room) {
+        socket.broadcast.emit("someone_writing", room);
     });
-    socket.on("done_writing", function () {
-        socket.broadcast.emit("done_writing");
+    socket.on("done_writing", function (room) {
+        socket.broadcast.emit("done_writing", room);
     });
     socket.on("request_players_list", function () {
         socket.emit("get_players", players);

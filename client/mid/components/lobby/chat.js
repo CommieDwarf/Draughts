@@ -38,8 +38,9 @@ var Chat = /** @class */ (function (_super) {
         _this.sendMesage = function () {
             var _a;
             if (_this.state.message.replace(/\s/g, '').length) {
-                main_1.socket.emit("done_writing");
-                main_1.socket.emit("send_message", { content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom });
+                main_1.socket.emit("done_writing", _this.props.currentRoom);
+                var message = { content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom };
+                main_1.socket.emit("send_message", message);
                 _this.setState(function (prev) {
                     return {
                         messages: __spreadArray(__spreadArray([], prev.messages, true), [{ content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom }], false),
@@ -53,9 +54,9 @@ var Chat = /** @class */ (function (_super) {
         _this.onChangeHandler = function (event) {
             var target = event.target;
             _this.setState({ message: target.value });
-            main_1.socket.emit("writing");
+            main_1.socket.emit("writing", _this.props.currentRoom);
             setTimeout(function () {
-                main_1.socket.emit("done_writing");
+                main_1.socket.emit("done_writing", _this.props.currentRoom);
             }, 4000);
         };
         _this.handleEnter = function (event) {
@@ -88,7 +89,6 @@ var Chat = /** @class */ (function (_super) {
         _this.state = {
             messages: [],
             message: "",
-            someoneWriting: false,
             showEmojis: false,
         };
         _this.thisPlayerId = main_1.socket.id;
@@ -101,6 +101,8 @@ var Chat = /** @class */ (function (_super) {
         }
     };
     Chat.prototype.receiveMessage = function (message) {
+        console.log(message);
+        console.log(message.room, this.props.rooms);
         if (!this.props.rooms.some(function (room) { return room.id == message.room.id; })) {
             this.props.createRoom(message.author.name);
         }
@@ -123,16 +125,10 @@ var Chat = /** @class */ (function (_super) {
     };
     Chat.prototype.componentDidMount = function () {
         var _this = this;
+        main_1.socket.on("get_message", function (msg) {
+            _this.receiveMessage(msg);
+        });
         document.addEventListener("keydown", this.handleEnter);
-        main_1.socket.on("get_message", function (message) {
-            _this.receiveMessage(message);
-        });
-        main_1.socket.on("someone_writing", function () {
-            _this.setState({ someoneWriting: true });
-        });
-        main_1.socket.on("done_writing", function () {
-            _this.setState({ someoneWriting: false });
-        });
         document.addEventListener("click", this.handleOutsideClick);
     };
     Chat.prototype.componentWillUnmount = function () {
@@ -155,7 +151,7 @@ var Chat = /** @class */ (function (_super) {
         return (react_1.default.createElement("div", { className: "lobby__chat" },
             react_1.default.createElement("div", { className: "lobby__messages" },
                 messages,
-                this.state.someoneWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
+                this.props.isWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
                     "Someone is writing",
                     react_1.default.createElement("div", { className: "lobby__dot-wrapper lobby__dot-wrapper--1" },
                         react_1.default.createElement("div", { id: "dot-1", className: "lobby__dot" })),
