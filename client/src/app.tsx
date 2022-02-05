@@ -1,6 +1,6 @@
 import React from "react";
 import Board from "./components/board";
-import GameMenu from "./components/gameMenu";
+import GameMenu from "./components/gameMenu/gameMenu";
 import Lobby from "./components/lobby/lobby";
 import GamePreview from "./components/gamePreview";
 import Game from "./game";
@@ -8,6 +8,7 @@ import { GAMEMODE } from "./game";
 import InputName from "./components/inputName";
 import { SIDE } from "./config";
 import { IPlayer } from "./components/lobby/lobby";
+import ConnectMenu from "./components/connectMenu";
 
 import { socket } from "./main";
 
@@ -20,7 +21,8 @@ type State = {
     newGameError: string;
     currentGame: Game | null;
     players: IPlayer[];
-    nameTaken: boolean;
+    connected: boolean;
+    nameError: string;
 }
 type Props = {
 
@@ -40,7 +42,8 @@ export default class App extends React.Component<Props, State> {
             newGameError: "",
             currentGame: null,
             players: [],
-            nameTaken: false,
+            connected: false,
+            nameError: "",
         }
         this.menuPosition = 'center';
         this.gameId = 0;
@@ -65,41 +68,37 @@ export default class App extends React.Component<Props, State> {
         }
     }
 
-    connect(name: string) {
-        socket.emit("player-connected", name);
+    connect = () => {
+        if (this.state.name.length == 0) {
+            this.setState({nameError: "Enter your name"})
+        } else if (this.checkNameTaken()) {
+            this.setState({nameError: "This name is taken"})
+        } else {
+            socket.emit("player-connected", this.state.name);
+            this.setState({connected: true});
+        }
+        
     }
 
-
-
-    startNewGame = (gameMode: GAMEMODE, side: SIDE, color: Color) => {
-        if (this.checkNameTaken(this.state.name, this.state.players)) {
-            this.setState({ newGameError: "Name is taken" });
+    startNewGame = (gameMode: GAMEMODE, side: SIDE, color: Color, label: string): boolean => {
+        if (this.state.games.length == 4) {
+            this.setState({newGameError: "Game quantity reached. Close some game"})
             return false;
-        } else if (this.state.games.length < 4 && this.state.name.length > 0) {
-            if (this.justStarted) {
-                this.connect(this.state.name);
-            }
-            this.setState((state) => {
-                this.justStarted = false;
-                const label = this.getLabel(gameMode);
-                let game = new Game(gameMode, color, side, label, this.gameId++);
-                this.menuPosition = "right";
+        } else {
+            const game = new Game(gameMode, color, side, label, this.gameId++);
+            this.setState((prevState) => {
                 return {
-                    games: [game, ...state.games],
                     currentGame: game,
-                    newGameError: "",
+                    games: [...prevState.games, game]
                 }
             })
             return true;
-        } else if (this.state.games.length == 4) {
-            this.setState({ newGameError: "Games max quantity reached. Close a game" });
-            return false;
-
-        } else {
-            this.setState({ newGameError: "Enter your name" });
-            return false;
         }
+        
     }
+
+
+
 
     switchGame = (id: number) => {
         const game = this.state.games.filter((game) => game.id == id)[0];
@@ -113,8 +112,8 @@ export default class App extends React.Component<Props, State> {
     requestPlayerList() {
         socket.emit("request_players_list");
     }
-    checkNameTaken(name: string, players: IPlayer[]) {
-        let taken = players.filter((player) => name == player.name);
+    checkNameTaken() {
+        let taken = this.state.players.filter((player) => this.state.name == player.name);
         if (taken.length > 0) {
             return true;
         } else {
@@ -151,29 +150,25 @@ export default class App extends React.Component<Props, State> {
     }
 
     render() {
+        console.log(this.state.currentGame);
+        console.log(this.state.connected)
         let games = this.state.games;
-
-        if (!this.justStarted) {
+        let gameMenuCentered = this.state.currentGame ? false : true;
+        if (this.state.connected) {
             return (
                 <div id="app" className="app">
                     <GamePreview games={games} switchGame={this.switchGame} closeGame={this.closeGame}/>
                     <Lobby name={this.state.name} />
-                    <GameMenu startNewGame={this.startNewGame}
-                        centered={false}
-                        error={this.state.newGameError}
-                    />
+                    <GameMenu startNewGame={this.startNewGame} centered={gameMenuCentered}/>
                     {this.state.currentGame && <Board game={this.state.currentGame} restartGame={this.restartGame} />}
                 </div>
             )
         } else {
             return (
                 <>
-                <InputName setName={this.setName} />
-                <GameMenu
-                    centered={true}
-                    startNewGame={this.startNewGame}
-                    error={this.state.newGameError}
-                />
+                    <InputName setName={this.setName} error={this.state.nameError}/>
+                    <ConnectMenu connect={this.connect}/>
+
                 </>
             
             )

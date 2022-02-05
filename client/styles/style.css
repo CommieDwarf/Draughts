@@ -23,7 +23,9 @@ body {
   text-align: center;
   margin: auto;
 }
-
+.app__name-error {
+  color: red;
+}
 .board {
   width: 510px;
   height: 520px;

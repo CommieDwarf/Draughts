@@ -123,9 +123,8 @@ var GameMenu = /** @class */ (function (_super) {
             react_1.default.createElement("div", { onClick: this.toggleShowGames, className: "game-menu__new-game " + this.state.newGameSelect },
                 react_1.default.createElement("h3", null, "Start new game")),
             react_1.default.createElement("div", { className: "game-menu__games" },
-                react_1.default.createElement("div", { className: "game-menu__game-type " + gameTypeVisibility, onClick: this.startGame }, "Local"),
-                react_1.default.createElement("div", { className: "game-menu__game-type " + "game-menu__game-type--vsComp " + gameTypeVisibility + " " + this.state.gameSelect, onClick: this.toggleShowColor }, "Versus computer"),
-                react_1.default.createElement("div", { className: "game-menu__game-type " + gameTypeVisibility, onClick: this.startGame }, "Online")),
+                react_1.default.createElement("div", { className: "game-menu__game-type " + gameTypeVisibility, id: "local", onClick: this.startGame }, "Local"),
+                react_1.default.createElement("div", { className: "game-menu__game-type " + "game-menu__game-type--vsComp " + gameTypeVisibility + " " + this.state.gameSelect, onClick: this.toggleShowColor }, "Versus computer")),
             react_1.default.createElement(colorSelection_1.default, { startNewGame: this.props.startNewGame, visibility: colorVisibility }),
             react_1.default.createElement("p", { className: "game-menu__error" }, this.props.error)));
     };

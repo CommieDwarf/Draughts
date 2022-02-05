@@ -1,94 +1,51 @@
 .game-menu {
     width: 240px;
-    height: 250px;
+    height: 400px;
     text-align: center;
     color: white;
+    margin-right: 70px;
+    float: right;
+    font-size: 20px;
+    margin-top: 30px;
 }
 
-.game-menu--float-right {
-  margin-right: 70px;
-  float: right;
-}
 .game-menu--center {
-  margin-top: 50px;
-  margin: auto;
-}
-
-.game-menu__new-game {
-  width: 215px;
-  height: 40px;
-  margin: auto;
-  font-size: 25px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.game-menu__new-game:hover {
-  color: black;
-  background-color: white;
-}
-
-.game-menu__game-type {
-  width: 80px;
-  height: 40px;
-  font-size: 15px;
-  font-weight: bold;
-  float: left;
-  padding-top: 20px;
-  cursor: pointer;
-  margin-top: 10px;
-  border-radius: 5px;
-}
-
-.game-menu__game-type:hover {
-  color: black;
-  background-color: white;
-}
-
-
-.game-menu__game-type--visible {
+  margin-left: auto;
+  margin-right: auto;
   display: block;
-}
-.game-menu__game-type--hidden {
-  display: none;
-}
-
-.game-menu__game-type--selected {
-  color: black;
-  background-color: white;
+  float: none;
 }
 
 
-.game-menu__game-type--vsComp {
-  padding-top: 10px;
-  height: 50px;
-}
-
-.game-menu__color-selection {
-  display: inline-block;
-}
-
-.game-menu__color {
-  height: 30px;
-  font-size: 20px;
-  font-weight: bold;
+.game-menu__start-game {
   color: white;
-  margin-top: 10px;
   border-radius: 5px;
-  padding: 5px;
+  width: 240px;
+  padding: 10px;
 }
-
-.game-menu__color--visible {
-  display: block;
+.game-menu__color {
+  color: white;
+  border: 1px solid white;
+  border-radius: 10px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  cursor: pointer;
 }
-.game-menu__color--hidden {
-  display: none;
-}
-
 
 .game-menu__color:hover {
   color: black;
   background-color: white;
+}
+
+.game-menu__color--white {
+  color: black;
+  background-color: white;
+}
+.game-menu__color--black {
+  color: white;
+  background-color: black;
 }
 
 .game-menu__error {

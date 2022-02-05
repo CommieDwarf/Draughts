@@ -29,11 +29,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var board_1 = __importDefault(require("./components/board"));
-var gameMenu_1 = __importDefault(require("./components/gameMenu"));
+var gameMenu_1 = __importDefault(require("./components/gameMenu/gameMenu"));
 var lobby_1 = __importDefault(require("./components/lobby/lobby"));
 var gamePreview_1 = __importDefault(require("./components/gamePreview"));
 var game_1 = __importDefault(require("./game"));
 var inputName_1 = __importDefault(require("./components/inputName"));
+var connectMenu_1 = __importDefault(require("./components/connectMenu"));
 var main_1 = require("./main");
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
@@ -43,35 +44,32 @@ var App = /** @class */ (function (_super) {
             _this.requestPlayerList();
             _this.setState({ name: name });
         };
-        _this.startNewGame = function (gameMode, side, color) {
-            if (_this.checkNameTaken(_this.state.name, _this.state.players)) {
-                _this.setState({ newGameError: "Name is taken" });
-                return false;
+        _this.connect = function () {
+            if (_this.state.name.length == 0) {
+                _this.setState({ nameError: "Enter your name" });
             }
-            else if (_this.state.games.length < 4 && _this.state.name.length > 0) {
-                if (_this.justStarted) {
-                    _this.connect(_this.state.name);
-                }
-                _this.setState(function (state) {
-                    _this.justStarted = false;
-                    var label = _this.getLabel(gameMode);
-                    var game = new game_1.default(gameMode, color, side, label, _this.gameId++);
-                    _this.menuPosition = "right";
-                    return {
-                        games: __spreadArray([game], state.games, true),
-                        currentGame: game,
-                        newGameError: "",
-                    };
-                });
-                return true;
+            else if (_this.checkNameTaken()) {
+                _this.setState({ nameError: "This name is taken" });
             }
-            else if (_this.state.games.length == 4) {
-                _this.setState({ newGameError: "Games max quantity reached. Close a game" });
+            else {
+                main_1.socket.emit("player-connected", _this.state.name);
+                _this.setState({ connected: true });
+            }
+        };
+        _this.startNewGame = function (gameMode, side, color, label) {
+            if (_this.state.games.length == 4) {
+                _this.setState({ newGameError: "Game quantity reached. Close some game" });
                 return false;
             }
             else {
-                _this.setState({ newGameError: "Enter your name" });
-                return false;
+                var game_2 = new game_1.default(gameMode, color, side, label, _this.gameId++);
+                _this.setState(function (prevState) {
+                    return {
+                        currentGame: game_2,
+                        games: __spreadArray(__spreadArray([], prevState.games, true), [game_2], false)
+                    };
+                });
+                return true;
             }
         };
         _this.switchGame = function (id) {
@@ -108,7 +106,8 @@ var App = /** @class */ (function (_super) {
             newGameError: "",
             currentGame: null,
             players: [],
-            nameTaken: false,
+            connected: false,
+            nameError: "",
         };
         _this.menuPosition = 'center';
         _this.gameId = 0;
@@ -125,14 +124,12 @@ var App = /** @class */ (function (_super) {
                 return "player";
         }
     };
-    App.prototype.connect = function (name) {
-        main_1.socket.emit("player-connected", name);
-    };
     App.prototype.requestPlayerList = function () {
         main_1.socket.emit("request_players_list");
     };
-    App.prototype.checkNameTaken = function (name, players) {
-        var taken = players.filter(function (player) { return name == player.name; });
+    App.prototype.checkNameTaken = function () {
+        var _this = this;
+        var taken = this.state.players.filter(function (player) { return _this.state.name == player.name; });
         if (taken.length > 0) {
             return true;
         }
@@ -147,18 +144,21 @@ var App = /** @class */ (function (_super) {
         });
     };
     App.prototype.render = function () {
+        console.log(this.state.currentGame);
+        console.log(this.state.connected);
         var games = this.state.games;
-        if (!this.justStarted) {
+        var gameMenuCentered = this.state.currentGame ? false : true;
+        if (this.state.connected) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
                 react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name }),
-                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: false, error: this.state.newGameError }),
+                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered }),
                 this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,
-                react_1.default.createElement(inputName_1.default, { setName: this.setName }),
-                react_1.default.createElement(gameMenu_1.default, { centered: true, startNewGame: this.startNewGame, error: this.state.newGameError })));
+                react_1.default.createElement(inputName_1.default, { setName: this.setName, error: this.state.nameError }),
+                react_1.default.createElement(connectMenu_1.default, { connect: this.connect })));
         }
     };
     return App;

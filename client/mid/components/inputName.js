@@ -35,7 +35,8 @@ var InputName = /** @class */ (function (_super) {
             react_1.default.createElement("label", { htmlFor: "name" },
                 react_1.default.createElement("h1", null, "Enter your name:")),
             react_1.default.createElement("br", null),
-            react_1.default.createElement("input", { type: "text", id: "name", maxLength: 6, onChange: this.onChangeHandler })));
+            react_1.default.createElement("input", { type: "text", id: "name", maxLength: 6, onChange: this.onChangeHandler }),
+            react_1.default.createElement("div", { className: "app__name-error" }, this.props.error)));
     };
     return InputName;
 }(react_1.default.Component));

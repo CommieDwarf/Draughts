@@ -4,6 +4,7 @@ export default class InputName extends React.Component{
 
     props: {
         setName: (name: string) => void,
+        error: string,
     }
 
     constructor(props: any) {
@@ -25,6 +26,9 @@ export default class InputName extends React.Component{
                 <br/>
                 <input type="text" id="name" maxLength={6} onChange={this.onChangeHandler}>
                 </input>
+                <div className="app__name-error">
+                    {this.props.error}
+                </div>
             </div>
         )
     }
