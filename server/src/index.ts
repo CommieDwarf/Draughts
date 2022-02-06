@@ -78,6 +78,14 @@ io.on("connection", (socket: any) => {
         socket.leave(room.id);
     })
 
+    socket.on("join_game", (gameId: string) => {
+        socket.join(gameId);
+    })
+
+    socket.on("request_join_game", (author: string) => {
+        socket.broadcast.emit("requested_join_game", author);
+    })
+
     socket.on("send_message", (msg: IMessage) => {
         console.log(msg);
         socket.broadcast.to(msg.room.id).emit(("get_message"), msg);
@@ -99,6 +107,8 @@ io.on("connection", (socket: any) => {
         console.log("user disconnected");
         players = players.filter((player) => player.id !== socket.id);
         io.emit("players_update", players);
+        const player = players.find((player) => player.id == socket.id);
+        io.emit("player_disconnected", player);
     })
 
 })

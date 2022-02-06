@@ -1,13 +1,15 @@
 import React from 'react';
 import { SIDE } from '../../config';
-import { GAMEMODE } from '../../game';
+import Game, { GAMEMODE } from '../../game';
 import StartGame from "./startGame";
 
 type Color = "black" | "white";
 
 type Props = {
     startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string) => boolean;
+    error: string,
     centered: boolean;
+    games: Game[];
 }
 
 export default function gameMenu(props: Props) {
@@ -18,11 +20,11 @@ export default function gameMenu(props: Props) {
             <div>
                 <StartGame title="Start Local Game" 
                 gameMode={GAMEMODE.LOCAL} startNewGame={props.startNewGame}
-                label={"local"}
+                label={"local"} games={props.games}
                 />
                 <StartGame title="Start Vs Computer Game"
                  gameMode={GAMEMODE.BOT} startNewGame={props.startNewGame}
-                 label={"vsComp"}
+                 label={"vsComp"} games={props.games}
                  />
             </div>
             

@@ -7,7 +7,13 @@ var react_1 = __importDefault(require("react"));
 function ColorSelection(props) {
     var side = props.color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
     function handleClick() {
-        props.startNewGame(props.gameMode, side, props.color, props.label);
+        var isStarted = props.startNewGame(props.gameMode, side, props.color, props.label);
+        if (isStarted) {
+            props.setError("");
+        }
+        else {
+            props.setError("Game quantity limit reached. Close some game");
+        }
     }
     return (react_1.default.createElement("div", { className: "game-menu__color", onClick: handleClick }, props.color));
 }

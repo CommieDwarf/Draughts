@@ -3,6 +3,9 @@ import Chat from "./chat";
 import { socket } from "../../main";
 import Players from "./players";
 import Room from "./room";
+import { GAMEMODE } from "../../game";
+import { SIDE } from "../../config";
+import GameInviation from "./gameInvitation"
 
 
 export interface IPlayer {
@@ -22,6 +25,8 @@ type Room = {
     isWriting: boolean,
 }
 
+type Color = "white" | "black";
+
 type Props = {
 
 }
@@ -30,16 +35,19 @@ type State = {
     rooms: Room[],
     currentRoom: Room,
     roomInvitable: boolean,
+    gameInvitable: boolean,
+    gameInvitations: {gameId: string, author: string}[]
 }
-
 
 export default class Lobby extends React.Component<Props, State> {
 
     props: {
         name: string,
+        startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string) => boolean;
     }
     playersRef: React.RefObject<HTMLDivElement>
     createRoomRef: React.RefObject<HTMLDivElement>
+    inviteRef: React.RefObject<HTMLDivElement>
 
     constructor(props: any) {
         super(props);
@@ -49,9 +57,25 @@ export default class Lobby extends React.Component<Props, State> {
             currentRoom: {name: "global room", id: "global", unread: false, hover: false, isWriting: false},
             rooms: [{name: "global room", id: "global", unread: false, hover: false, isWriting: false}],
             roomInvitable: false,
+            gameInvitable: false,
+            gameInvitations: [],
         }
         this.playersRef = React.createRef();
         this.createRoomRef = React.createRef();
+        this.inviteRef = React.createRef();
+    }
+
+    handleClickInvite = () => {
+        this.setState({gameInvitable: true});
+        console.log('invite');
+    }
+
+    getGameId(playerName1: string, playerName2: string) {
+        if (playerName1 > playerName2) {
+            return playerName1 + playerName2 + "-game";
+        }  else {
+            return playerName2 + playerName1 + "-game";
+        }
     }
 
     getRoomId(name: string) {
@@ -92,6 +116,7 @@ export default class Lobby extends React.Component<Props, State> {
         })
     }
 
+   
 
     handlePlayerInvite = (event: React.MouseEvent) => {
         const target = event.target as HTMLElement;
@@ -101,6 +126,11 @@ export default class Lobby extends React.Component<Props, State> {
         if (player && !this.state.rooms.some((room) => {room.name == player.id}) && this.state.roomInvitable) {
             this.createRoom(player.id);
         }
+        if (player && this.state.gameInvitable) {
+            socket.emit("request_join_game", this.props.name);
+            socket.emit("join_game", this.getGameId(player.id, this.props.name));
+        }
+        
     }
 
     handleClickNewRoom = () => {
@@ -109,8 +139,14 @@ export default class Lobby extends React.Component<Props, State> {
 
     handleOutsidePlayersClick = (event: any) => {
         const { target } = event
-        if (!this.playersRef.current?.contains(target) && !this.createRoomRef.current?.contains(target)) {
-            this.setState({ roomInvitable: false });
+        if (!this.playersRef.current?.contains(target) ) {
+            if (!this.createRoomRef.current?.contains(target)) {
+                this.setState({ roomInvitable: false });
+            }
+            if (!this.inviteRef.current?.contains(target)) {
+                this.setState({ gameInvitable: false });
+            }
+
         }
     }
 
@@ -164,10 +200,27 @@ export default class Lobby extends React.Component<Props, State> {
             this.setRoomProperty(room.id, 'isWriting', false);
         })
 
+        socket.on("requested_join_game", (author) => {
+            const gameId = this.getGameId(author, this.props.name);
+            socket.emit("join_game", (gameId))
+            this.setState((prevState) => {
+                return {
+                    gameInvitations: [...prevState.gameInvitations, {author, gameId}]
+                }
+            })
+        })
+
+        socket.on("player_disconected", (player) => {
+            this.setState((prevState) => {
+                
+            })
+        })
 
         document.addEventListener('click', this.handleOutsidePlayersClick);
 
     }
+
+
     componentWillUnmount() {
         document.removeEventListener('click', this.handleOutsidePlayersClick);
         socket.off();
@@ -185,20 +238,35 @@ export default class Lobby extends React.Component<Props, State> {
             currentRoom={this.state.currentRoom}
             key={id}
             />
-            
         })
+
+        const gameInvitations = this.state.gameInvitations.map((inv, i) => {
+            return <GameInviation author={inv.author} gameId={inv.gameId} key={i}/>
+        })
+
+        let inviteClass = "";
+        if (this.state.gameInvitable) {
+            inviteClass = "lobby__invite-button--green";
+        }
+        
         let newRoomButtonClass = "";
         if (this.state.roomInvitable) {
             newRoomButtonClass = "lobby__new-room-button--green";
         }
         return (
             <div className="lobby">
-                <div className="lobby__invite-button">
+                
+                <div className={"lobby__invite-button no-select " + inviteClass} ref={this.inviteRef} 
+                onClick={this.handleClickInvite}>
                     Invite
+                </div>
+                <div className="lobby__game-invitation">
+                    {gameInvitations}
                 </div>
                 <div className="lobby__players" ref={this.playersRef}>
                     <Players players={this.state.players}
-                        invitable={this.state.roomInvitable}
+                        roomInvitable={this.state.roomInvitable}
+                        gameInvitable={this.state.gameInvitable}
                         handlePlayerInvite={this.handlePlayerInvite}
                         rooms={this.state.rooms}
                     />;

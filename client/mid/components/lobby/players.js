@@ -58,7 +58,7 @@ var Players = /** @class */ (function (_super) {
                 spanClass = "lobby__player--current";
             }
             var canBeInvited = false;
-            if (_this.props.invitable && player.id !== main_1.socket.id && !_this.props.rooms.some(function (room) { return room.name == player.name; })) {
+            if ((_this.props.roomInvitable || _this.props.gameInvitable) && player.id !== main_1.socket.id && !_this.props.rooms.some(function (room) { return room.name == player.name; })) {
                 canBeInvited = true;
             }
             return (react_1.default.createElement("div", { className: "lobby__player ", key: id, id: player.name, onClick: _this.props.handlePlayerInvite },

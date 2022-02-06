@@ -8,7 +8,8 @@ export default class Players extends Component {
 
     props: {
         players: IPlayer[],
-        invitable: boolean,
+        roomInvitable: boolean,
+        gameInvitable: boolean,
         handlePlayerInvite: (event: any) => void,
         rooms: {
             name: string,
@@ -34,7 +35,7 @@ export default class Players extends Component {
                 spanClass = "lobby__player--current";
             }
             let canBeInvited = false;
-            if (this.props.invitable && player.id !== socket.id && !this.props.rooms.some((room) => room.name == player.name)) {
+            if ((this.props.roomInvitable || this.props.gameInvitable) && player.id !== socket.id && !this.props.rooms.some((room) => room.name == player.name)) {
                 canBeInvited = true;
             } 
             return (

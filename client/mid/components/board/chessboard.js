@@ -20,6 +20,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var square_1 = __importDefault(require("./square"));
+var CloseGame_1 = __importDefault(require("./CloseGame"));
 var Chessboard = /** @class */ (function (_super) {
     __extends(Chessboard, _super);
     function Chessboard(props) {
@@ -28,15 +29,6 @@ var Chessboard = /** @class */ (function (_super) {
             _this.forceUpdate();
             if (_this.props.engine.winner && _this.props.setWinner) {
                 _this.props.setWinner(_this.props.engine.winner);
-            }
-        };
-        _this.closeGameHandler = function (event) {
-            var _a;
-            var target = event.target;
-            if (target && _this.props.closeGame) {
-                var id = (_a = target.closest(".game-preview__close-game")) === null || _a === void 0 ? void 0 : _a.id.slice(11);
-                if (id)
-                    _this.props.closeGame(parseInt(id));
             }
         };
         _this.props = props;
@@ -88,13 +80,13 @@ var Chessboard = /** @class */ (function (_super) {
                     else {
                         className = "chessboard__square chessboard__square--white";
                     }
-                    var id_1 = (row - 1) * 8 + column - 1;
-                    if (engine.availableMoves.includes(id_1)) {
+                    var id = (row - 1) * 8 + column - 1;
+                    if (engine.availableMoves.includes(id)) {
                         className += " chessboard__square--hightlight";
                     }
-                    pieceColor = engine.chessboard[id_1]['piece'];
-                    var queen = engine.chessboard[id_1]["queen"];
-                    squares.push(react_1.default.createElement(square_1.default, { id: id_1.toString(), className: className, key: id_1, pieceColor: pieceColor, type: this.getPieceType(id_1), queen: queen }));
+                    pieceColor = engine.chessboard[id]['piece'];
+                    var queen = engine.chessboard[id]["queen"];
+                    squares.push(react_1.default.createElement(square_1.default, { id: id.toString(), className: className, key: id, pieceColor: pieceColor, type: this.getPieceType(id), queen: queen }));
                 }
                 if (className == "chessboard__square chessboard__square--white") {
                     className = "chessboard__square chessboard__square--black";
@@ -106,20 +98,19 @@ var Chessboard = /** @class */ (function (_super) {
         }
         var previewWrapperClass = "";
         var previewChessboardClass = "";
-        var id = this.props.id ? this.props.id : 0;
+        var gameCounter = this.props.gameCounter ? this.props.gameCounter : 0;
         var closeIcon = "";
         var label = "";
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = (react_1.default.createElement("div", { id: "close-game-" + id, className: "game-preview__close-game", onClick: this.closeGameHandler },
-                react_1.default.createElement("i", { className: "icon-cancel-circled" })));
-            label = (react_1.default.createElement("div", { id: "game-label-preview-" + id, className: "game-preview__label" }, this.props.label));
+            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameCounter: gameCounter, closeGame: this.props.closeGame });
+            label = (react_1.default.createElement("div", { id: "game-label-preview-" + gameCounter, className: "game-preview__label" }, this.props.label));
         }
         var bgAnimationClass = this.getBgAnimationClass();
         return (react_1.default.createElement("div", { className: previewWrapperClass },
             label,
-            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, id: ("chessboard-" + id), ref: this.chessboardRef }, squares),
+            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, id: ("chessboard-" + gameCounter), ref: this.chessboardRef }, squares),
             closeIcon));
     };
     return Chessboard;

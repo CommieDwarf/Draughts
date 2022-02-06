@@ -109,7 +109,7 @@ var Board = /** @class */ (function (_super) {
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
             react_1.default.createElement(right_label_1.default, null),
-            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, id: 0, game: this.props.game, setWinner: this.setWinner }),
+            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, gameCounter: 0, game: this.props.game, setWinner: this.setWinner }),
             react_1.default.createElement(bot_label_1.default, null),
             this.state.contextMenu.showMenu && react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard, hide: this.hideContextMenu })));
     };

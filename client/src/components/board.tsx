@@ -121,7 +121,7 @@ export default class Board extends React.Component<MyProps, MyState> {
                 <TopLabel/>
                 <LeftLabel/>
                 <RightLabel/>
-                <Chessboard engine = {engine} preview = {false} id={0} game={this.props.game} setWinner={this.setWinner}/>
+                <Chessboard engine = {engine} preview = {false} gameCounter={0} game={this.props.game} setWinner={this.setWinner}/>
                 <BotLabel/>
                 {this.state.contextMenu.showMenu && <ContextMenu contextMenu={this.state.contextMenu} chessboard={engine.chessboard} hide={this.hideContextMenu}/>}
             </div>

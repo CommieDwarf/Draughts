@@ -11,6 +11,7 @@ import { IPlayer } from "./components/lobby/lobby";
 import ConnectMenu from "./components/connectMenu";
 
 import { socket } from "./main";
+import Chessboard from "./components/board/chessboard";
 
 
 type Color = "black" | "white";
@@ -31,7 +32,7 @@ type Props = {
 export default class App extends React.Component<Props, State> {
 
     menuPosition: "center" | "right";
-    gameId: number;
+    gameCounter: number;
     justStarted: boolean;
 
     constructor(props: any) {
@@ -46,10 +47,14 @@ export default class App extends React.Component<Props, State> {
             nameError: "",
         }
         this.menuPosition = 'center';
-        this.gameId = 0;
+        this.gameCounter = 0;
         this.justStarted = true;
 
     }
+
+    
+
+    
 
     setName = (name: string) => {
         this.requestPlayerList()
@@ -85,7 +90,7 @@ export default class App extends React.Component<Props, State> {
             this.setState({newGameError: "Game quantity reached. Close some game"})
             return false;
         } else {
-            const game = new Game(gameMode, color, side, label, this.gameId++);
+            const game = new Game(gameMode, color, side, label, this.gameCounter++);
             this.setState((prevState) => {
                 return {
                     currentGame: game,
@@ -100,8 +105,8 @@ export default class App extends React.Component<Props, State> {
 
 
 
-    switchGame = (id: number) => {
-        const game = this.state.games.filter((game) => game.id == id)[0];
+    switchGame = (count: number) => {
+        const game = this.state.games.filter((game) => game.gameCounter == count)[0];
         if (game) {
             this.setState({
                 currentGame: game
@@ -121,10 +126,11 @@ export default class App extends React.Component<Props, State> {
         }
     }
 
-    closeGame = (gameId: number) => {
+    closeGame = (gameCounter: number) => {
+        console.log(gameCounter);
         this.setState((state) => {
             return {
-                games: state.games.filter((game) => game.id != gameId),
+                games: state.games.filter((game) => game.gameCounter != gameCounter),
                 currentGame: null,
             }
         })
@@ -134,10 +140,10 @@ export default class App extends React.Component<Props, State> {
 
         if (game) {
             let index = this.state.games.findIndex((g) => {
-                return g.id == game.id;
+                return g.gameCounter == game.gameCounter;
             });
             let games = this.state.games;
-            const newGame = new Game(game.gameMode, game.playerColor, game.side, game.label, game.id);
+            const newGame = new Game(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter);
             games[index] = newGame;
             this.setState({games, currentGame: newGame});
         }
@@ -150,16 +156,17 @@ export default class App extends React.Component<Props, State> {
     }
 
     render() {
-        console.log(this.state.currentGame);
-        console.log(this.state.connected)
         let games = this.state.games;
         let gameMenuCentered = this.state.currentGame ? false : true;
         if (this.state.connected) {
             return (
                 <div id="app" className="app">
                     <GamePreview games={games} switchGame={this.switchGame} closeGame={this.closeGame}/>
-                    <Lobby name={this.state.name} />
-                    <GameMenu startNewGame={this.startNewGame} centered={gameMenuCentered}/>
+                    <Lobby name={this.state.name} startNewGame={this.startNewGame}/>
+                    <GameMenu startNewGame={this.startNewGame} 
+                    centered={gameMenuCentered} 
+                    error={this.state.newGameError}
+                    games={this.state.games}/>
                     {this.state.currentGame && <Board game={this.state.currentGame} restartGame={this.restartGame} />}
                 </div>
             )

@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import Square from './square';
 import { IChessboard } from '../../engine';
 import { Color } from './getPieceJSX';
-import Players from '../lobby/players';
+import CloseGame from "./CloseGame"
 
 type props = {
 
@@ -29,10 +29,10 @@ export default class Chessboard extends React.Component<props, state> {
             playerColor: "black" | "white";
         };
         preview: boolean,
-        id: number,
+        gameCounter: number,
         label?: string;
         setWinner?: (color: Color) => void;
-        closeGame?: (gameId: number) => void;
+        closeGame?: (gameCounter: number) => void;
     }
 
     chessboardRef: React.RefObject<HTMLDivElement>;
@@ -75,14 +75,7 @@ export default class Chessboard extends React.Component<props, state> {
         }
     }
 
-    closeGameHandler = (event: React.MouseEvent) => {
-        const target = event.target as HTMLElement;
-        if (target && this.props.closeGame) {
-            let id = target.closest(".game-preview__close-game")?.id.slice(11)
-            if (id) this.props.closeGame(parseInt(id));
-            
-        }
-    }
+   
 
     componentDidMount() {
         document.addEventListener("chessboardChanged", this.forceUpdateHandler);
@@ -128,7 +121,7 @@ export default class Chessboard extends React.Component<props, state> {
 
         let previewWrapperClass = "";
         let previewChessboardClass = "";
-        let id = this.props.id ? this.props.id : 0;
+        let gameCounter = this.props.gameCounter ? this.props.gameCounter : 0;
 
         let closeIcon: ReactElement | "" = "";
         let label: ReactElement | "" = "";
@@ -136,12 +129,10 @@ export default class Chessboard extends React.Component<props, state> {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = (
-                <div id={"close-game-" + id} className="game-preview__close-game" onClick={this.closeGameHandler}>
-                    <i className="icon-cancel-circled"></i>
-                </div>)
+            closeIcon = <CloseGame gameCounter={gameCounter} closeGame={this.props.closeGame}/>
+                
             label = (
-                <div id={"game-label-preview-" + id} className="game-preview__label">
+                <div id={"game-label-preview-" + gameCounter} className="game-preview__label">
                     {this.props.label}
                 </div>
             )
@@ -153,7 +144,8 @@ export default class Chessboard extends React.Component<props, state> {
         return (
             <div className={previewWrapperClass}>
                 {label}
-                <div className={"chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass} id={("chessboard-" + id)} ref={this.chessboardRef}>
+                <div className={"chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass} 
+                id={("chessboard-" + gameCounter)} ref={this.chessboardRef}>
                     {squares}
                 </div>
                 {closeIcon}

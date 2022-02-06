@@ -43,7 +43,7 @@ var bot_1 = __importDefault(require("./bot"));
 var engine_1 = require("./engine");
 var createChessboard_1 = __importDefault(require("./createChessboard"));
 var Game = /** @class */ (function () {
-    function Game(gameMode, playerColor, side, label, id) {
+    function Game(gameMode, playerColor, side, label, gameCounter, id) {
         this.engine = new engine_1.Engine(side);
         this.botColor = playerColor == "white" ? "black" : "white";
         this.bot = new bot_1.default(this.engine, this.botColor);
@@ -52,6 +52,7 @@ var Game = /** @class */ (function () {
         this.side = side;
         this.label = label;
         this.engine.chessboard = this.startNewGame();
+        this.gameCounter = gameCounter;
         this.id = id;
     }
     Game.prototype.startNewGame = function () {

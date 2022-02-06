@@ -62,7 +62,7 @@ var App = /** @class */ (function (_super) {
                 return false;
             }
             else {
-                var game_2 = new game_1.default(gameMode, color, side, label, _this.gameId++);
+                var game_2 = new game_1.default(gameMode, color, side, label, _this.gameCounter++);
                 _this.setState(function (prevState) {
                     return {
                         currentGame: game_2,
@@ -72,18 +72,19 @@ var App = /** @class */ (function (_super) {
                 return true;
             }
         };
-        _this.switchGame = function (id) {
-            var game = _this.state.games.filter(function (game) { return game.id == id; })[0];
+        _this.switchGame = function (count) {
+            var game = _this.state.games.filter(function (game) { return game.gameCounter == count; })[0];
             if (game) {
                 _this.setState({
                     currentGame: game
                 });
             }
         };
-        _this.closeGame = function (gameId) {
+        _this.closeGame = function (gameCounter) {
+            console.log(gameCounter);
             _this.setState(function (state) {
                 return {
-                    games: state.games.filter(function (game) { return game.id != gameId; }),
+                    games: state.games.filter(function (game) { return game.gameCounter != gameCounter; }),
                     currentGame: null,
                 };
             });
@@ -92,10 +93,10 @@ var App = /** @class */ (function (_super) {
             var game = _this.state.currentGame;
             if (game) {
                 var index = _this.state.games.findIndex(function (g) {
-                    return g.id == game.id;
+                    return g.gameCounter == game.gameCounter;
                 });
                 var games = _this.state.games;
-                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.id);
+                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter);
                 games[index] = newGame;
                 _this.setState({ games: games, currentGame: newGame });
             }
@@ -110,7 +111,7 @@ var App = /** @class */ (function (_super) {
             nameError: "",
         };
         _this.menuPosition = 'center';
-        _this.gameId = 0;
+        _this.gameCounter = 0;
         _this.justStarted = true;
         return _this;
     }
@@ -144,15 +145,13 @@ var App = /** @class */ (function (_super) {
         });
     };
     App.prototype.render = function () {
-        console.log(this.state.currentGame);
-        console.log(this.state.connected);
         var games = this.state.games;
         var gameMenuCentered = this.state.currentGame ? false : true;
         if (this.state.connected) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
                 react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
-                react_1.default.createElement(lobby_1.default, { name: this.state.name }),
-                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered }),
+                react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
+                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games }),
                 this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame })));
         }
         else {

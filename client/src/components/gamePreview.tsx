@@ -23,12 +23,10 @@ export default class GamePreview extends React.Component {
         }
 
     }
-
    
-
     render() {
         const games = this.props.games.map((game, i) => {
-            return <Chessboard engine={game.engine} preview={true} key={i} id={game.id} label={game.label} game={game} closeGame={this.props.closeGame}/>
+            return <Chessboard engine={game.engine} preview={true} key={i} gameCounter={game.gameCounter} label={game.label} game={game} closeGame={this.props.closeGame}/>
         });
 
         return (

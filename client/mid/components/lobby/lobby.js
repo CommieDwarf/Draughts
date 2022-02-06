@@ -32,10 +32,15 @@ var chat_1 = __importDefault(require("./chat"));
 var main_1 = require("../../main");
 var players_1 = __importDefault(require("./players"));
 var room_1 = __importDefault(require("./room"));
+var gameInvitation_1 = __importDefault(require("./gameInvitation"));
 var Lobby = /** @class */ (function (_super) {
     __extends(Lobby, _super);
     function Lobby(props) {
         var _this = _super.call(this, props) || this;
+        _this.handleClickInvite = function () {
+            _this.setState({ gameInvitable: true });
+            console.log('invite');
+        };
         _this.createRoom = function (name) {
             var roomId = _this.getRoomId(name);
             if (!_this.state.rooms.some(function (room) { return room.name == name; }) && name !== _this.props.name) {
@@ -65,15 +70,24 @@ var Lobby = /** @class */ (function (_super) {
             if (player && !_this.state.rooms.some(function (room) { room.name == player.id; }) && _this.state.roomInvitable) {
                 _this.createRoom(player.id);
             }
+            if (player && _this.state.gameInvitable) {
+                main_1.socket.emit("request_join_game", _this.props.name);
+                main_1.socket.emit("join_game", _this.getGameId(player.id, _this.props.name));
+            }
         };
         _this.handleClickNewRoom = function () {
             _this.setState({ roomInvitable: true });
         };
         _this.handleOutsidePlayersClick = function (event) {
-            var _a, _b;
+            var _a, _b, _c;
             var target = event.target;
-            if (!((_a = _this.playersRef.current) === null || _a === void 0 ? void 0 : _a.contains(target)) && !((_b = _this.createRoomRef.current) === null || _b === void 0 ? void 0 : _b.contains(target))) {
-                _this.setState({ roomInvitable: false });
+            if (!((_a = _this.playersRef.current) === null || _a === void 0 ? void 0 : _a.contains(target))) {
+                if (!((_b = _this.createRoomRef.current) === null || _b === void 0 ? void 0 : _b.contains(target))) {
+                    _this.setState({ roomInvitable: false });
+                }
+                if (!((_c = _this.inviteRef.current) === null || _c === void 0 ? void 0 : _c.contains(target))) {
+                    _this.setState({ gameInvitable: false });
+                }
             }
         };
         _this.switchRoom = function (room) {
@@ -121,6 +135,19 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("done_writing", function (room) {
                 _this.setRoomProperty(room.id, 'isWriting', false);
             });
+            main_1.socket.on("requested_join_game", function (author) {
+                var gameId = _this.getGameId(author, _this.props.name);
+                main_1.socket.emit("join_game", (gameId));
+                _this.setState(function (prevState) {
+                    return {
+                        gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId }], false)
+                    };
+                });
+            });
+            main_1.socket.on("player_disconected", function (player) {
+                _this.setState(function (prevState) {
+                });
+            });
             document.addEventListener('click', _this.handleOutsidePlayersClick);
         };
         _this.props = props;
@@ -129,11 +156,22 @@ var Lobby = /** @class */ (function (_super) {
             currentRoom: { name: "global room", id: "global", unread: false, hover: false, isWriting: false },
             rooms: [{ name: "global room", id: "global", unread: false, hover: false, isWriting: false }],
             roomInvitable: false,
+            gameInvitable: false,
+            gameInvitations: [],
         };
         _this.playersRef = react_1.default.createRef();
         _this.createRoomRef = react_1.default.createRef();
+        _this.inviteRef = react_1.default.createRef();
         return _this;
     }
+    Lobby.prototype.getGameId = function (playerName1, playerName2) {
+        if (playerName1 > playerName2) {
+            return playerName1 + playerName2 + "-game";
+        }
+        else {
+            return playerName2 + playerName1 + "-game";
+        }
+    };
     Lobby.prototype.getRoomId = function (name) {
         var roomIdPart1;
         var roomIdPart2;
@@ -157,14 +195,22 @@ var Lobby = /** @class */ (function (_super) {
         var rooms = this.state.rooms.map(function (room, id) {
             return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
         });
+        var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
+            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i });
+        });
+        var inviteClass = "";
+        if (this.state.gameInvitable) {
+            inviteClass = "lobby__invite-button--green";
+        }
         var newRoomButtonClass = "";
         if (this.state.roomInvitable) {
             newRoomButtonClass = "lobby__new-room-button--green";
         }
         return (react_1.default.createElement("div", { className: "lobby" },
-            react_1.default.createElement("div", { className: "lobby__invite-button" }, "Invite"),
+            react_1.default.createElement("div", { className: "lobby__invite-button no-select " + inviteClass, ref: this.inviteRef, onClick: this.handleClickInvite }, "Invite"),
+            react_1.default.createElement("div", { className: "lobby__game-invitation" }, gameInvitations),
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
-                react_1.default.createElement(players_1.default, { players: this.state.players, invitable: this.state.roomInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
+                react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),
             react_1.default.createElement("div", { className: "lobby__rooms" },
                 rooms,

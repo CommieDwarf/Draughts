@@ -43,6 +43,12 @@ io.on("connection", function (socket) {
     socket.on("leave_room", function (room) {
         socket.leave(room.id);
     });
+    socket.on("join_game", function (gameId) {
+        socket.join(gameId);
+    });
+    socket.on("request_join_game", function (author) {
+        socket.broadcast.emit("requested_join_game", author);
+    });
     socket.on("send_message", function (msg) {
         console.log(msg);
         socket.broadcast.to(msg.room.id).emit(("get_message"), msg);
@@ -60,6 +66,8 @@ io.on("connection", function (socket) {
         console.log("user disconnected");
         players = players.filter(function (player) { return player.id !== socket.id; });
         io.emit("players_update", players);
+        var player = players.find(function (player) { return player.id == socket.id; });
+        io.emit("player_disconnected", player);
     });
 });
 server.listen(3001, function () {

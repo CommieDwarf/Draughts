@@ -9,8 +9,8 @@ function gameMenu(props) {
     var centerClass = props.centered ? "game-menu--center" : "";
     return (react_1.default.createElement("div", { className: "game-menu no-select " + centerClass },
         react_1.default.createElement("div", null,
-            react_1.default.createElement(startGame_1.default, { title: "Start Local Game", gameMode: 0 /* LOCAL */, startNewGame: props.startNewGame, label: "local" }),
-            react_1.default.createElement(startGame_1.default, { title: "Start Vs Computer Game", gameMode: 1 /* BOT */, startNewGame: props.startNewGame, label: "vsComp" }))));
+            react_1.default.createElement(startGame_1.default, { title: "Start Local Game", gameMode: 0 /* LOCAL */, startNewGame: props.startNewGame, label: "local", games: props.games }),
+            react_1.default.createElement(startGame_1.default, { title: "Start Vs Computer Game", gameMode: 1 /* BOT */, startNewGame: props.startNewGame, label: "vsComp", games: props.games }))));
 }
 exports.default = gameMenu;
 //# sourceMappingURL=gameMenu.js.map
