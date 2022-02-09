@@ -1,9 +1,10 @@
 
 import React, { ReactElement } from 'react';
 import Square from './square';
-import { IChessboard } from '../../engine';
+import { Engine, IChessboard } from '../../engine';
 import { Color } from './getPieceJSX';
 import CloseGame from "./CloseGame"
+import Game, { GAMEMODE } from '../../game';
 
 type props = {
 
@@ -16,18 +17,8 @@ type state = {
 export default class Chessboard extends React.Component<props, state> {
 
     props: {
-        engine: {
-            selectedPiece: number | null,
-            lockedPieces: number[],
-            killablePieces: number[],
-            availableMoves: number[],
-            chessboard: IChessboard,
-            turn: "black" | "white",
-            winner: "" | Color,
-        };
-        game: {
-            playerColor: "black" | "white";
-        };
+        engine: Engine;
+        game: Game;
         preview: boolean,
         gameCounter: number,
         label?: string;
@@ -129,10 +120,14 @@ export default class Chessboard extends React.Component<props, state> {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = <CloseGame gameCounter={gameCounter} closeGame={this.props.closeGame}/>
-                
+            closeIcon = <CloseGame gameCounter={gameCounter} closeGame={this.props.closeGame} game={this.props.game}/>
+            let playerLabelClass = "";
+                if (this.props.game.gameMode == GAMEMODE.ONLINE) {
+                    playerLabelClass = "game-label__label--green";
+                }
             label = (
-                <div id={"game-label-preview-" + gameCounter} className="game-preview__label">
+                <div id={"game-label-preview-" + gameCounter}
+                 className={"game-preview__label " + playerLabelClass}>
                     {this.props.label}
                 </div>
             )

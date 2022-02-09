@@ -36,13 +36,14 @@ var gamePreview_1 = __importDefault(require("./components/gamePreview"));
 var game_1 = __importDefault(require("./game"));
 var inputName_1 = __importDefault(require("./components/inputName"));
 var connectMenu_1 = __importDefault(require("./components/connectMenu"));
+var reverseChessboard_1 = __importDefault(require("./reverseChessboard"));
 var main_1 = require("./main");
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App(props) {
         var _this = _super.call(this, props) || this;
         _this.setName = function (name) {
-            _this.requestPlayerList();
+            main_1.socket.emit("request_players_list");
             _this.setState({ name: name });
         };
         _this.connect = function () {
@@ -57,21 +58,16 @@ var App = /** @class */ (function (_super) {
                 _this.setState({ connected: true });
             }
         };
-        _this.startNewGame = function (gameMode, side, color, label) {
-            if (_this.state.games.length == 4) {
-                _this.setState({ newGameError: "Game quantity reached. Close some game" });
-                return false;
-            }
-            else {
-                var game_2 = new game_1.default(gameMode, color, side, label, _this.gameCounter++);
-                _this.setState(function (prevState) {
-                    return {
-                        currentGame: game_2,
-                        games: __spreadArray(__spreadArray([], prevState.games, true), [game_2], false)
-                    };
-                });
-                return true;
-            }
+        _this.startNewGame = function (gameMode, side, color, label, gameId) {
+            if (gameId === void 0) { gameId = ""; }
+            var game = new game_1.default(gameMode, color, side, label, _this.gameCounter++, gameId);
+            _this.setState(function (prevState) {
+                return {
+                    currentGame: game,
+                    games: __spreadArray(__spreadArray([], prevState.games, true), [game], false)
+                };
+            });
+            return true;
         };
         _this.switchGame = function (count) {
             var game = _this.state.games.filter(function (game) { return game.gameCounter == count; })[0];
@@ -81,23 +77,50 @@ var App = /** @class */ (function (_super) {
                 });
             }
         };
-        _this.closeGame = function (gameCounter) {
-            console.log(gameCounter);
-            _this.setState(function (state) {
-                return {
-                    games: state.games.filter(function (game) { return game.gameCounter != gameCounter; }),
-                    currentGame: null,
-                };
-            });
+        _this.closeGame = function (gameCounter, gameId) {
+            if (gameId === void 0) { gameId = ""; }
+            if (!gameId) {
+                _this.setState(function (state) {
+                    return {
+                        games: state.games.filter(function (game) { return game.gameCounter != gameCounter; }),
+                        currentGame: null,
+                    };
+                });
+            }
+            else {
+                var game = _this.state.games.find(function (g) { return g.id == gameId; });
+                if (game == _this.state.currentGame) {
+                    _this.setState(function (state) {
+                        return {
+                            games: state.games.filter((function (g) { return g.id != gameId; })),
+                            currentGame: null,
+                        };
+                    });
+                }
+                else {
+                    _this.setState(function (state) {
+                        return {
+                            games: state.games.filter((function (g) { return g.id != gameId; })),
+                        };
+                    });
+                }
+            }
         };
-        _this.restartGame = function () {
-            var game = _this.state.currentGame;
+        _this.restartGame = function (gameId) {
+            if (gameId === void 0) { gameId = ""; }
+            var game;
+            if (gameId) {
+                game = _this.state.games.find(function (g) { return g.id == gameId; });
+            }
+            else {
+                game = _this.state.currentGame;
+            }
             if (game) {
                 var index = _this.state.games.findIndex(function (g) {
                     return g.gameCounter == game.gameCounter;
                 });
                 var games = _this.state.games;
-                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter);
+                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter, gameId);
                 games[index] = newGame;
                 _this.setState({ games: games, currentGame: newGame });
             }
@@ -110,6 +133,7 @@ var App = /** @class */ (function (_super) {
             players: [],
             connected: false,
             nameError: "",
+            rematches: [],
         };
         _this.menuPosition = 'center';
         _this.gameCounter = 0;
@@ -126,9 +150,6 @@ var App = /** @class */ (function (_super) {
                 return "player";
         }
     };
-    App.prototype.requestPlayerList = function () {
-        main_1.socket.emit("request_players_list");
-    };
     App.prototype.checkNameTaken = function () {
         var _this = this;
         var taken = this.state.players.filter(function (player) { return _this.state.name == player.name; });
@@ -139,13 +160,64 @@ var App = /** @class */ (function (_super) {
             return false;
         }
     };
+    App.prototype.getPlayer = function (name) {
+        var player = this.state.players.find(function (player) { return player.name == name; });
+        if (!player) {
+            player = this.state.players[0];
+        }
+        return player;
+    };
     App.prototype.componentDidMount = function () {
         var _this = this;
         main_1.socket.on("get_players", function (players) {
             _this.setState({ players: players });
         });
+        main_1.socket.on("player_disconnected", function (player) {
+            var game = _this.state.games.find(function (g) { return g.label == player.name; });
+            if (game) {
+                _this.closeGame(0, game.id);
+            }
+        });
+        main_1.socket.on("move_made", function (_a) {
+            var chessboard = _a.chessboard, id = _a.id, turn = _a.turn, winner = _a.winner;
+            _this.setState(function (prevState) {
+                var _a;
+                var gameIndex = prevState.games.findIndex(function (g) { return g.id == id; });
+                var gamesBefore = prevState.games.slice(0, gameIndex);
+                var gamesAfter = prevState.games.slice(gameIndex + 1, prevState.games.length);
+                var game = prevState.games[gameIndex];
+                game.engine.chessboard = (0, reverseChessboard_1.default)(chessboard);
+                game.engine.turn = turn;
+                game.engine.winner = winner;
+                game.engine.playerSide = "bot";
+                var currentGame = prevState.currentGame;
+                if (((_a = prevState.currentGame) === null || _a === void 0 ? void 0 : _a.id) == id) {
+                    currentGame == game;
+                }
+                return {
+                    games: __spreadArray(__spreadArray(__spreadArray([], gamesBefore, true), [game], false), gamesAfter, true),
+                    currentGame: currentGame,
+                };
+            });
+        });
+        main_1.socket.on("player_wants_rematch", function (_a) {
+            var player = _a.player, gameId = _a.gameId;
+            _this.setState(function (prevState) {
+                var rematch = { player: player, gameId: gameId, requested: true };
+                return {
+                    rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false)
+                };
+            });
+        });
+        main_1.socket.on("game_restarted", function (id) {
+            _this.restartGame(id);
+        });
+        main_1.socket.on("player_closed_game", function (id) {
+            _this.closeGame(0, id);
+        });
     };
     App.prototype.render = function () {
+        var player = this.getPlayer(this.state.name);
         var games = this.state.games;
         var gameMenuCentered = this.state.currentGame ? false : true;
         if (this.state.connected) {
@@ -153,7 +225,8 @@ var App = /** @class */ (function (_super) {
                 react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
                 react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games }),
-                this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame })));
+                this.state.currentGame &&
+                    react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,
@@ -165,7 +238,7 @@ var App = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = App;
 
-},{"./components/board":3,"./components/connectMenu":11,"./components/gameMenu/gameMenu":13,"./components/gamePreview":15,"./components/inputName":16,"./components/lobby/lobby":25,"./game":32,"./main":33,"react":69}],2:[function(require,module,exports){
+},{"./components/board":3,"./components/connectMenu":11,"./components/gameMenu/gameMenu":13,"./components/gamePreview":15,"./components/inputName":16,"./components/lobby/lobby":26,"./game":33,"./main":34,"./reverseChessboard":35,"react":71}],2:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -509,7 +582,7 @@ function getScoreSheet() {
     return scoreSheet;
 }
 
-},{"./utility":34}],3:[function(require,module,exports){
+},{"./utility":36}],3:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -549,6 +622,7 @@ var right_label_1 = __importDefault(require("./labels/right-label"));
 var bot_label_1 = __importDefault(require("./labels/bot-label"));
 var context_menu_1 = __importDefault(require("./board/context-menu"));
 var winMenu_1 = __importDefault(require("./board/winMenu"));
+var main_1 = require("../main");
 var Board = /** @class */ (function (_super) {
     __extends(Board, _super);
     function Board(props) {
@@ -561,6 +635,15 @@ var Board = /** @class */ (function (_super) {
         _this.clickHandler = function (event) {
             //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
+            if (_this.props.game.gameMode == 2 /* ONLINE */) {
+                var gameInfo = {
+                    chessboard: _this.props.game.engine.chessboard,
+                    id: _this.props.game.id,
+                    turn: _this.props.game.engine.turn,
+                    winner: _this.props.game.engine.winner,
+                };
+                main_1.socket.emit("make_move", gameInfo);
+            }
         };
         _this.hideContextMenu = function () {
             _this.setState(function (prevState) {
@@ -584,14 +667,16 @@ var Board = /** @class */ (function (_super) {
                 var height = square.offsetHeight;
                 clientX += width / 2;
                 clientY += height / 2 + 10;
-                _this.setState({ contextMenu: {
+                _this.setState({
+                    contextMenu: {
                         piece: piece,
                         queen: queen,
                         i: id,
                         clientX: clientX,
                         clientY: clientY,
                         showMenu: true,
-                    } });
+                    }
+                });
             }
             return false;
         };
@@ -612,12 +697,15 @@ var Board = /** @class */ (function (_super) {
         return _this;
     }
     Board.prototype.render = function () {
+        var _this = this;
         if (restartFlag) {
             restartFlag = false;
         }
         var engine = this.props.game.engine;
+        var rematch = this.props.rematches.find(function (r) { return r.gameId == _this.props.game.id; });
         return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
-            this.props.game.engine.winner && react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame }),
+            this.props.game.engine.winner &&
+                react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: rematch }),
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
             react_1.default.createElement(right_label_1.default, null),
@@ -630,18 +718,24 @@ var Board = /** @class */ (function (_super) {
 exports.default = Board;
 var restartFlag = false;
 
-},{".//labels/top-label":20,"./board/chessboard":5,"./board/context-menu":6,"./board/winMenu":10,"./labels/bot-label":17,"./labels/left-label":18,"./labels/right-label":19,"react":69}],4:[function(require,module,exports){
+},{"../main":34,".//labels/top-label":20,"./board/chessboard":5,"./board/context-menu":6,"./board/winMenu":10,"./labels/bot-label":17,"./labels/left-label":18,"./labels/right-label":19,"react":71}],4:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
+var main_1 = require("../../main");
 function CloseGame(props) {
     function handleClick() {
         if (props.closeGame) {
-            props.closeGame(props.gameCounter);
-            console.log(props.gameCounter);
+            if (!props.game.id) {
+                props.closeGame(props.gameCounter);
+            }
+            else {
+                props.closeGame(0, props.game.id);
+                main_1.socket.emit("player-close-game", props.game.id);
+            }
         }
     }
     return (react_1.default.createElement("div", { className: "game-preview__close-game", onClick: handleClick },
@@ -649,7 +743,7 @@ function CloseGame(props) {
 }
 exports.default = CloseGame;
 
-},{"react":69}],5:[function(require,module,exports){
+},{"../../main":34,"react":71}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -756,8 +850,12 @@ var Chessboard = /** @class */ (function (_super) {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameCounter: gameCounter, closeGame: this.props.closeGame });
-            label = (react_1.default.createElement("div", { id: "game-label-preview-" + gameCounter, className: "game-preview__label" }, this.props.label));
+            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameCounter: gameCounter, closeGame: this.props.closeGame, game: this.props.game });
+            var playerLabelClass = "";
+            if (this.props.game.gameMode == 2 /* ONLINE */) {
+                playerLabelClass = "game-label__label--green";
+            }
+            label = (react_1.default.createElement("div", { id: "game-label-preview-" + gameCounter, className: "game-preview__label " + playerLabelClass }, this.props.label));
         }
         var bgAnimationClass = this.getBgAnimationClass();
         return (react_1.default.createElement("div", { className: previewWrapperClass },
@@ -769,7 +867,7 @@ var Chessboard = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Chessboard;
 
-},{"./CloseGame":4,"./square":9,"react":69}],6:[function(require,module,exports){
+},{"./CloseGame":4,"./square":9,"react":71}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -879,7 +977,7 @@ var ContextMenu = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = ContextMenu;
 
-},{"react":69}],7:[function(require,module,exports){
+},{"react":71}],7:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -993,7 +1091,7 @@ function getSpecialClass(type, color) {
     return [baseClass, centerClass];
 }
 
-},{"react":69}],8:[function(require,module,exports){
+},{"react":71}],8:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1031,7 +1129,7 @@ var Piece = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Piece;
 
-},{"./getPieceJSX":7,"react":69}],9:[function(require,module,exports){
+},{"./getPieceJSX":7,"react":71}],9:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1069,7 +1167,7 @@ var Square = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Square;
 
-},{"./piece":8,"react":69}],10:[function(require,module,exports){
+},{"./piece":8,"react":71}],10:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1091,34 +1189,76 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
+var main_1 = require("../../main");
+var avatar_1 = __importDefault(require("../lobby/avatar"));
 var WinMenu = /** @class */ (function (_super) {
     __extends(WinMenu, _super);
     function WinMenu(props) {
         var _this = _super.call(this, props) || this;
         _this.handleClick = function () {
-            _this.props.restart();
+            var props = _this.props;
+            if (_this.props.game.gameMode == 2 /* ONLINE */ && !_this.props.rematch) {
+                var rematch = {
+                    gameId: props.game.id,
+                    player: props.player,
+                };
+                main_1.socket.emit("player_wants_rematch", rematch);
+                _this.setState({ rematchSent: true });
+            }
+            else if (_this.props.rematch) {
+                var id = props.game.id ? props.game.id : "";
+                _this.props.restart(id);
+                main_1.socket.emit("restart_game", id);
+            }
+            else {
+                _this.props.restart("");
+            }
         };
         _this.props = props;
+        _this.state = {
+            rematchSent: false,
+        };
         return _this;
     }
+    WinMenu.prototype.componentDidMount = function () {
+        var _this = this;
+        main_1.socket.on("rematch_accepted", function (gameId) {
+            _this.props.restart(gameId);
+        });
+    };
+    WinMenu.prototype.componentWillUnmount = function () {
+        main_1.socket.off();
+    };
     WinMenu.prototype.render = function () {
         var winner = this.props.winner;
-        var visibility = "win-menu--hidden";
-        if (winner) {
-            winner = winner[0].toUpperCase() + winner.slice(1);
-            visibility = "win-menu--visible";
-        }
-        return (react_1.default.createElement("div", { className: "win-menu " + visibility },
+        var playAgainClass = this.state.rematchSent ? "win-menu__play-again--selected" : "";
+        return (react_1.default.createElement("div", { className: "win-menu " },
             react_1.default.createElement("h1", null,
                 winner,
                 " Wins!"),
-            react_1.default.createElement("h2", { className: "win-menu__play-again", onClick: this.handleClick }, "Play Again?")));
+            react_1.default.createElement("h2", { className: "win-menu__play-again " + playAgainClass, onClick: this.handleClick }, "Play Again?"),
+            this.props.rematch &&
+                react_1.default.createElement("div", { className: "win-menu__avatar" },
+                    react_1.default.createElement(avatar_1.default, { name: this.props.player.name, theme: this.props.player.avatar.theme, shape: this.props.player.avatar.shape })),
+            this.props.rematch &&
+                react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                    this.props.rematch.player &&
+                        this.props.player.name + " ",
+                    "wants rematch!"),
+            this.state.rematchSent &&
+                react_1.default.createElement("div", { className: "win-menu__waiting-pawn-div" },
+                    react_1.default.createElement("img", { className: "lobby__avatar-placeholder win-menu__waiting-pawn", src: "./img/pawn.png" })),
+            this.state.rematchSent &&
+                react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                    "Waiting for ",
+                    this.props.player.name,
+                    " to accept")));
     };
     return WinMenu;
 }(react_1.default.Component));
 exports.default = WinMenu;
 
-},{"react":69}],11:[function(require,module,exports){
+},{"../../main":34,"../lobby/avatar":22,"react":71}],11:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1130,7 +1270,7 @@ function ConnectMenu(props) {
 }
 exports.default = ConnectMenu;
 
-},{"react":69}],12:[function(require,module,exports){
+},{"react":71}],12:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1152,7 +1292,7 @@ function ColorSelection(props) {
 }
 exports.default = ColorSelection;
 
-},{"react":69}],13:[function(require,module,exports){
+},{"react":71}],13:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1169,7 +1309,7 @@ function gameMenu(props) {
 }
 exports.default = gameMenu;
 
-},{"./startGame":14,"react":69}],14:[function(require,module,exports){
+},{"./startGame":14,"react":71}],14:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -1211,7 +1351,7 @@ function StartGame(props) {
 }
 exports.default = StartGame;
 
-},{"./colorSelection":12,"react":69}],15:[function(require,module,exports){
+},{"./colorSelection":12,"react":71}],15:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1260,7 +1400,7 @@ var GamePreview = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = GamePreview;
 
-},{"./board/chessboard":5,"react":69}],16:[function(require,module,exports){
+},{"./board/chessboard":5,"react":71}],16:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1305,7 +1445,7 @@ var InputName = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = InputName;
 
-},{"react":69}],17:[function(require,module,exports){
+},{"react":71}],17:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1347,7 +1487,7 @@ var BotLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = BotLabel;
 
-},{"react":69}],18:[function(require,module,exports){
+},{"react":71}],18:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1389,7 +1529,7 @@ var leftLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = leftLabel;
 
-},{"react":69}],19:[function(require,module,exports){
+},{"react":71}],19:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1431,7 +1571,7 @@ var RightLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = RightLabel;
 
-},{"react":69}],20:[function(require,module,exports){
+},{"react":71}],20:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1473,7 +1613,22 @@ var TopLabel = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = TopLabel;
 
-},{"react":69}],21:[function(require,module,exports){
+},{"react":71}],21:[function(require,module,exports){
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+function GameInvitation(props) {
+    return react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("div", { className: "lobby__game-invitation-text" },
+            "You challanged ",
+            props.target));
+}
+exports.default = GameInvitation;
+
+},{"react":71}],22:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1551,7 +1706,7 @@ var Avatar = /** @class */ (function (_super) {
 }(react_1.Component));
 exports.default = Avatar;
 
-},{"react":69}],22:[function(require,module,exports){
+},{"react":71}],23:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1655,8 +1810,6 @@ var Chat = /** @class */ (function (_super) {
         }
     };
     Chat.prototype.receiveMessage = function (message) {
-        console.log(message);
-        console.log(message.room, this.props.rooms);
         if (!this.props.rooms.some(function (room) { return room.id == message.room.id; })) {
             this.props.createRoom(message.author.name);
         }
@@ -1724,7 +1877,7 @@ var Chat = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Chat;
 
-},{"../../main":33,"./emojis":23,"./message":26,"react":69}],23:[function(require,module,exports){
+},{"../../main":34,"./emojis":24,"./message":27,"react":71}],24:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1790,7 +1943,7 @@ var Emojis = /** @class */ (function (_super) {
 }(react_1.Component));
 exports.default = Emojis;
 
-},{"react":69}],24:[function(require,module,exports){
+},{"react":71}],25:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1798,15 +1951,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 function GameInvitation(props) {
+    function handleClick() {
+        props.acceptChallange(props.author, props.gameId);
+    }
     return react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement("div", { className: "lobby__game-invitation-text" },
             props.author,
             " is challenging you"),
-        react_1.default.createElement("div", { className: "lobby__acceptButton" }, "Accept"));
+        react_1.default.createElement("div", { className: "lobby__acceptButton", onClick: handleClick }, "Accept"));
 }
 exports.default = GameInvitation;
 
-},{"react":69}],25:[function(require,module,exports){
+},{"react":71}],26:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1842,13 +1998,13 @@ var main_1 = require("../../main");
 var players_1 = __importDefault(require("./players"));
 var room_1 = __importDefault(require("./room"));
 var gameInvitation_1 = __importDefault(require("./gameInvitation"));
+var GameInvSent_1 = __importDefault(require("./GameInvSent"));
 var Lobby = /** @class */ (function (_super) {
     __extends(Lobby, _super);
     function Lobby(props) {
         var _this = _super.call(this, props) || this;
         _this.handleClickInvite = function () {
             _this.setState({ gameInvitable: true });
-            console.log('invite');
         };
         _this.createRoom = function (name) {
             var roomId = _this.getRoomId(name);
@@ -1873,15 +2029,61 @@ var Lobby = /** @class */ (function (_super) {
                 };
             });
         };
+        _this.acceptChallange = function (name, gameId) {
+            var randomNum = Math.floor(Math.random() * 2);
+            var authorColor;
+            if (randomNum == 0) {
+                authorColor = "white";
+            }
+            else {
+                authorColor = "black";
+            }
+            var side = authorColor == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
+            _this.props.startNewGame(2 /* ONLINE */, side, authorColor, name, gameId);
+            var gameInfo = {
+                gameId: gameId,
+                playerAccepted: _this.props.name,
+                playerAcceptedColor: authorColor
+            };
+            main_1.socket.emit("accept_challange", gameInfo);
+            _this.filterOutGameInvites(name);
+        };
+        _this.filterOutGameInvites = function (name) {
+            _this.setState(function (prevState) {
+                return {
+                    gameInvitations: prevState.gameInvitations.filter(function (inv) { return inv.author != name; }),
+                };
+            });
+        };
+        _this.filterOutSentInvites = function (name) {
+            _this.setState(function (prevState) {
+                return {
+                    gameInvSent: prevState.gameInvSent.filter(function (inv) { return inv.target != name; })
+                };
+            });
+        };
         _this.handlePlayerInvite = function (event) {
             var target = event.target;
             var player = target.closest(".lobby__player");
             if (player && !_this.state.rooms.some(function (room) { room.name == player.id; }) && _this.state.roomInvitable) {
                 _this.createRoom(player.id);
             }
-            if (player && _this.state.gameInvitable) {
+            if (player && _this.state.gameInvitable && player.id != _this.props.name) {
                 main_1.socket.emit("request_join_game", _this.props.name);
                 main_1.socket.emit("join_game", _this.getGameId(player.id, _this.props.name));
+                _this.setState({ gameInvitable: false });
+                if (!_this.state.gameInvSent.some(function (inv) { return inv.target == player.id; })) {
+                    var inv_1 = {
+                        target: player.id,
+                        gameId: _this.getGameId(player.id, _this.props.name),
+                        author: _this.props.name,
+                    };
+                    _this.setState(function (prevState) {
+                        return {
+                            gameInvSent: __spreadArray(__spreadArray([], prevState.gameInvSent, true), [inv_1], false)
+                        };
+                    });
+                }
             }
         };
         _this.handleClickNewRoom = function () {
@@ -1935,7 +2137,6 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("room_created", function (room) {
                 if (_this.props.name == room.target) {
                     main_1.socket.emit("join_room", room);
-                    console.log(room);
                 }
             });
             main_1.socket.on("someone_writing", function (room) {
@@ -1947,15 +2148,24 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("requested_join_game", function (author) {
                 var gameId = _this.getGameId(author, _this.props.name);
                 main_1.socket.emit("join_game", (gameId));
-                _this.setState(function (prevState) {
-                    return {
-                        gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId }], false)
-                    };
-                });
+                if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
+                    _this.setState(function (prevState) {
+                        return {
+                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name }], false)
+                        };
+                    });
+                }
             });
-            main_1.socket.on("player_disconected", function (player) {
-                _this.setState(function (prevState) {
-                });
+            main_1.socket.on("challange_accepted", function (gameInfo) {
+                var color;
+                color = gameInfo.playerAcceptedColor == "white" ? "black" : "white";
+                var side = color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
+                _this.props.startNewGame(2 /* ONLINE */, side, color, gameInfo.playerAccepted, gameInfo.gameId);
+                _this.filterOutSentInvites(gameInfo.playerAccepted);
+            });
+            main_1.socket.on("player_disconnected", function (player) {
+                _this.filterOutGameInvites(player.name);
+                _this.filterOutSentInvites(player.name);
             });
             document.addEventListener('click', _this.handleOutsidePlayersClick);
         };
@@ -1967,6 +2177,7 @@ var Lobby = /** @class */ (function (_super) {
             roomInvitable: false,
             gameInvitable: false,
             gameInvitations: [],
+            gameInvSent: [],
         };
         _this.playersRef = react_1.default.createRef();
         _this.createRoomRef = react_1.default.createRef();
@@ -2005,7 +2216,10 @@ var Lobby = /** @class */ (function (_super) {
             return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i });
+            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange });
+        });
+        var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
+            return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, gameId: inv.gameId, key: i });
         });
         var inviteClass = "";
         if (this.state.gameInvitable) {
@@ -2017,7 +2231,9 @@ var Lobby = /** @class */ (function (_super) {
         }
         return (react_1.default.createElement("div", { className: "lobby" },
             react_1.default.createElement("div", { className: "lobby__invite-button no-select " + inviteClass, ref: this.inviteRef, onClick: this.handleClickInvite }, "Invite"),
-            react_1.default.createElement("div", { className: "lobby__game-invitation" }, gameInvitations),
+            react_1.default.createElement("div", { className: "lobby__game-invitation" },
+                gameInvitations,
+                gameInvSent),
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
                 react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),
@@ -2031,7 +2247,7 @@ var Lobby = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Lobby;
 
-},{"../../main":33,"./chat":22,"./gameInvitation":24,"./players":27,"./room":28,"react":69}],26:[function(require,module,exports){
+},{"../../main":34,"./GameInvSent":21,"./chat":23,"./gameInvitation":25,"./players":28,"./room":29,"react":71}],27:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2093,7 +2309,7 @@ var Message = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Message;
 
-},{"./avatar":21,"./emojis":23,"react":69}],27:[function(require,module,exports){
+},{"./avatar":22,"./emojis":24,"react":71}],28:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2167,7 +2383,7 @@ var Players = /** @class */ (function (_super) {
 }(react_1.Component));
 exports.default = Players;
 
-},{"../../main":33,"./avatar":21,"react":69}],28:[function(require,module,exports){
+},{"../../main":34,"./avatar":22,"react":71}],29:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -2217,7 +2433,7 @@ function Room(props) {
 }
 exports.default = Room;
 
-},{"react":69}],29:[function(require,module,exports){
+},{"react":71}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPreset = void 0;
@@ -2259,7 +2475,7 @@ function getPreset(side) {
 }
 exports.getPreset = getPreset;
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("./config");
@@ -2376,7 +2592,7 @@ function addPiece(i, color, chessboard) {
     chessboard[i]["piece"] = color;
 }
 
-},{"./config":29}],31:[function(require,module,exports){
+},{"./config":30}],32:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -2869,7 +3085,7 @@ var Engine = /** @class */ (function () {
 }());
 exports.Engine = Engine;
 
-},{"./utility":34}],32:[function(require,module,exports){
+},{"./utility":36}],33:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2941,6 +3157,9 @@ var Game = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         engine = this.engine;
+                        if (this.gameMode == 2 /* ONLINE */ && engine.turn !== this.playerColor) {
+                            return [2 /*return*/];
+                        }
                         if (!!(this.gameMode == 1 /* BOT */ && engine.turn !== this.playerColor)) return [3 /*break*/, 4];
                         if (!(event.target instanceof Element)) {
                             return [2 /*return*/];
@@ -2982,7 +3201,7 @@ function sleep(ms) {
     return new Promise(function (resolve) { return setTimeout(resolve, ms); });
 }
 
-},{"./bot":2,"./createChessboard":30,"./engine":31}],33:[function(require,module,exports){
+},{"./bot":2,"./createChessboard":31,"./engine":32}],34:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -2996,7 +3215,20 @@ var socket_io_client_1 = __importDefault(require("socket.io-client"));
 exports.socket = (0, socket_io_client_1.default)("http://localhost:3001");
 react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.querySelector(".container"));
 
-},{"./App":1,"react":69,"react-dom":66,"socket.io-client":76}],34:[function(require,module,exports){
+},{"./App":1,"react":71,"react-dom":68,"socket.io-client":78}],35:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function reverseChessboard(chessboard) {
+    var reversedChessboard = JSON.parse(JSON.stringify(chessboard));
+    for (var i = 0; i < chessboard.length; i++) {
+        reversedChessboard[i].piece = chessboard[chessboard.length - i - 1].piece;
+        reversedChessboard[i].queen = chessboard[chessboard.length - i - 1].queen;
+    }
+    return reversedChessboard;
+}
+exports.default = reverseChessboard;
+
+},{}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sleep = exports.filterEverySecondElement = exports.hasOnlyNulls = exports.isEmpty = exports.setIncludesArray = exports.arraysEqual = exports.arrayIncludesArray = exports.filterOutNulls = void 0;
@@ -3068,7 +3300,7 @@ function sleep(ms) {
 }
 exports.sleep = sleep;
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -3246,7 +3478,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -3333,7 +3565,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /*
  * base64-arraybuffer 1.0.1 <https://github.com/niklasvh/base64-arraybuffer>
  * Copyright (c) 2021 Niklas von Hertzen <https://hertzen.com>
@@ -3396,7 +3628,7 @@ Backoff.prototype.setJitter = function(jitter){
 })));
 
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -3548,7 +3780,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 (function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5329,7 +5561,7 @@ function numberIsNaN (obj) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"base64-js":38,"buffer":39,"ieee754":59}],40:[function(require,module,exports){
+},{"base64-js":40,"buffer":41,"ieee754":61}],42:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = (() => {
@@ -5344,7 +5576,7 @@ exports.default = (() => {
     }
 })();
 
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.installTimerFunctions = exports.transports = exports.Transport = exports.protocol = exports.Socket = void 0;
@@ -5358,7 +5590,7 @@ Object.defineProperty(exports, "transports", { enumerable: true, get: function (
 var util_js_1 = require("./util.js");
 Object.defineProperty(exports, "installTimerFunctions", { enumerable: true, get: function () { return util_js_1.installTimerFunctions; } });
 
-},{"./socket.js":42,"./transport.js":43,"./transports/index.js":44,"./util.js":50}],42:[function(require,module,exports){
+},{"./socket.js":44,"./transport.js":45,"./transports/index.js":46,"./util.js":52}],44:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -5950,7 +6182,7 @@ function clone(obj) {
     return o;
 }
 
-},{"./transports/index.js":44,"./util.js":50,"@socket.io/component-emitter":35,"debug":51,"engine.io-parser":57,"parseqs":61,"parseuri":62}],43:[function(require,module,exports){
+},{"./transports/index.js":46,"./util.js":52,"@socket.io/component-emitter":37,"debug":53,"engine.io-parser":59,"parseqs":63,"parseuri":64}],45:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6073,7 +6305,7 @@ class Transport extends component_emitter_1.Emitter {
 }
 exports.Transport = Transport;
 
-},{"./util.js":50,"@socket.io/component-emitter":35,"debug":51,"engine.io-parser":57}],44:[function(require,module,exports){
+},{"./util.js":52,"@socket.io/component-emitter":37,"debug":53,"engine.io-parser":59}],46:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transports = void 0;
@@ -6084,7 +6316,7 @@ exports.transports = {
     polling: polling_xhr_js_1.XHR
 };
 
-},{"./polling-xhr.js":45,"./websocket.js":48}],45:[function(require,module,exports){
+},{"./polling-xhr.js":47,"./websocket.js":50}],47:[function(require,module,exports){
 "use strict";
 /* global attachEvent */
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6364,7 +6596,7 @@ function unloadHandler() {
     }
 }
 
-},{"../globalThis.js":40,"../util.js":50,"./polling.js":46,"./xmlhttprequest.js":49,"@socket.io/component-emitter":35,"debug":51}],46:[function(require,module,exports){
+},{"../globalThis.js":42,"../util.js":52,"./polling.js":48,"./xmlhttprequest.js":51,"@socket.io/component-emitter":37,"debug":53}],48:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6550,7 +6782,7 @@ class Polling extends transport_js_1.Transport {
 }
 exports.Polling = Polling;
 
-},{"../transport.js":43,"debug":51,"engine.io-parser":57,"parseqs":61,"yeast":87}],47:[function(require,module,exports){
+},{"../transport.js":45,"debug":53,"engine.io-parser":59,"parseqs":63,"yeast":89}],49:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6571,7 +6803,7 @@ exports.WebSocket = globalThis_js_1.default.WebSocket || globalThis_js_1.default
 exports.usingBrowserWebSocket = true;
 exports.defaultBinaryType = "arraybuffer";
 
-},{"../globalThis.js":40}],48:[function(require,module,exports){
+},{"../globalThis.js":42}],50:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6769,7 +7001,7 @@ class WS extends transport_js_1.Transport {
 exports.WS = WS;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"../transport.js":43,"../util.js":50,"./websocket-constructor.js":47,"buffer":39,"debug":51,"engine.io-parser":57,"parseqs":61,"yeast":87}],49:[function(require,module,exports){
+},{"../transport.js":45,"../util.js":52,"./websocket-constructor.js":49,"buffer":41,"debug":53,"engine.io-parser":59,"parseqs":63,"yeast":89}],51:[function(require,module,exports){
 "use strict";
 // browser shim for xmlhttprequest module
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6796,7 +7028,7 @@ function default_1(opts) {
 }
 exports.default = default_1;
 
-},{"../globalThis.js":40,"has-cors":58}],50:[function(require,module,exports){
+},{"../globalThis.js":42,"has-cors":60}],52:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6828,7 +7060,7 @@ function installTimerFunctions(obj, opts) {
 }
 exports.installTimerFunctions = installTimerFunctions;
 
-},{"./globalThis.js":40}],51:[function(require,module,exports){
+},{"./globalThis.js":42}],53:[function(require,module,exports){
 (function (process){(function (){
 /* eslint-env browser */
 
@@ -7101,7 +7333,7 @@ formatters.j = function (v) {
 };
 
 }).call(this)}).call(this,require('_process'))
-},{"./common":52,"_process":63}],52:[function(require,module,exports){
+},{"./common":54,"_process":65}],54:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -7377,7 +7609,7 @@ function setup(env) {
 
 module.exports = setup;
 
-},{"ms":53}],53:[function(require,module,exports){
+},{"ms":55}],55:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -7541,7 +7773,7 @@ function plural(ms, msAbs, n, name) {
   return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
 }
 
-},{}],54:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ERROR_PACKET = exports.PACKET_TYPES_REVERSE = exports.PACKET_TYPES = void 0;
@@ -7562,7 +7794,7 @@ Object.keys(PACKET_TYPES).forEach(key => {
 const ERROR_PACKET = { type: "error", data: "parser error" };
 exports.ERROR_PACKET = ERROR_PACKET;
 
-},{}],55:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commons_js_1 = require("./commons.js");
@@ -7615,7 +7847,7 @@ const mapBinary = (data, binaryType) => {
 };
 exports.default = decodePacket;
 
-},{"./commons.js":54,"base64-arraybuffer":37}],56:[function(require,module,exports){
+},{"./commons.js":56,"base64-arraybuffer":39}],58:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commons_js_1 = require("./commons.js");
@@ -7660,7 +7892,7 @@ const encodeBlobAsBase64 = (data, callback) => {
 };
 exports.default = encodePacket;
 
-},{"./commons.js":54}],57:[function(require,module,exports){
+},{"./commons.js":56}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decodePayload = exports.decodePacket = exports.encodePayload = exports.encodePacket = exports.protocol = void 0;
@@ -7700,7 +7932,7 @@ const decodePayload = (encodedPayload, binaryType) => {
 exports.decodePayload = decodePayload;
 exports.protocol = 4;
 
-},{"./decodePacket.js":55,"./encodePacket.js":56}],58:[function(require,module,exports){
+},{"./decodePacket.js":57,"./encodePacket.js":58}],60:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -7719,7 +7951,7 @@ try {
   module.exports = false;
 }
 
-},{}],59:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -7806,7 +8038,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -7898,7 +8130,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],61:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -7937,7 +8169,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],62:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -8007,7 +8239,7 @@ function queryKey(uri, query) {
     return data;
 }
 
-},{}],63:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -8193,7 +8425,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],64:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v17.0.2
  * react-dom.development.js
@@ -34459,7 +34691,7 @@ exports.version = ReactVersion;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":63,"object-assign":60,"react":69,"scheduler":74,"scheduler/tracing":75}],65:[function(require,module,exports){
+},{"_process":65,"object-assign":62,"react":71,"scheduler":76,"scheduler/tracing":77}],67:[function(require,module,exports){
 /** @license React v17.0.2
  * react-dom.production.min.js
  *
@@ -34758,7 +34990,7 @@ exports.findDOMNode=function(a){if(null==a)return null;if(1===a.nodeType)return 
 exports.render=function(a,b,c){if(!rk(b))throw Error(y(200));return tk(null,a,b,!1,c)};exports.unmountComponentAtNode=function(a){if(!rk(a))throw Error(y(40));return a._reactRootContainer?(Xj(function(){tk(null,null,a,!1,function(){a._reactRootContainer=null;a[ff]=null})}),!0):!1};exports.unstable_batchedUpdates=Wj;exports.unstable_createPortal=function(a,b){return uk(a,b,2<arguments.length&&void 0!==arguments[2]?arguments[2]:null)};
 exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!rk(c))throw Error(y(200));if(null==a||void 0===a._reactInternals)throw Error(y(38));return tk(a,b,c,!1,d)};exports.version="17.0.2";
 
-},{"object-assign":60,"react":69,"scheduler":74}],66:[function(require,module,exports){
+},{"object-assign":62,"react":71,"scheduler":76}],68:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -34800,7 +35032,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/react-dom.development.js":64,"./cjs/react-dom.production.min.js":65,"_process":63}],67:[function(require,module,exports){
+},{"./cjs/react-dom.development.js":66,"./cjs/react-dom.production.min.js":67,"_process":65}],69:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v17.0.2
  * react.development.js
@@ -37137,7 +37369,7 @@ exports.version = ReactVersion;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":63,"object-assign":60}],68:[function(require,module,exports){
+},{"_process":65,"object-assign":62}],70:[function(require,module,exports){
 /** @license React v17.0.2
  * react.production.min.js
  *
@@ -37162,7 +37394,7 @@ key:d,ref:k,props:e,_owner:h}};exports.createContext=function(a,b){void 0===b&&(
 exports.lazy=function(a){return{$$typeof:v,_payload:{_status:-1,_result:a},_init:Q}};exports.memo=function(a,b){return{$$typeof:u,type:a,compare:void 0===b?null:b}};exports.useCallback=function(a,b){return S().useCallback(a,b)};exports.useContext=function(a,b){return S().useContext(a,b)};exports.useDebugValue=function(){};exports.useEffect=function(a,b){return S().useEffect(a,b)};exports.useImperativeHandle=function(a,b,c){return S().useImperativeHandle(a,b,c)};
 exports.useLayoutEffect=function(a,b){return S().useLayoutEffect(a,b)};exports.useMemo=function(a,b){return S().useMemo(a,b)};exports.useReducer=function(a,b,c){return S().useReducer(a,b,c)};exports.useRef=function(a){return S().useRef(a)};exports.useState=function(a){return S().useState(a)};exports.version="17.0.2";
 
-},{"object-assign":60}],69:[function(require,module,exports){
+},{"object-assign":62}],71:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -37173,7 +37405,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/react.development.js":67,"./cjs/react.production.min.js":68,"_process":63}],70:[function(require,module,exports){
+},{"./cjs/react.development.js":69,"./cjs/react.production.min.js":70,"_process":65}],72:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v0.20.2
  * scheduler-tracing.development.js
@@ -37524,7 +37756,7 @@ exports.unstable_wrap = unstable_wrap;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":63}],71:[function(require,module,exports){
+},{"_process":65}],73:[function(require,module,exports){
 /** @license React v0.20.2
  * scheduler-tracing.production.min.js
  *
@@ -37535,7 +37767,7 @@ exports.unstable_wrap = unstable_wrap;
  */
 'use strict';var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unstable_clear=function(a){return a()};exports.unstable_getCurrent=function(){return null};exports.unstable_getThreadID=function(){return++b};exports.unstable_subscribe=function(){};exports.unstable_trace=function(a,d,c){return c()};exports.unstable_unsubscribe=function(){};exports.unstable_wrap=function(a){return a};
 
-},{}],72:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v0.20.2
  * scheduler.development.js
@@ -38185,7 +38417,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":63}],73:[function(require,module,exports){
+},{"_process":65}],75:[function(require,module,exports){
 /** @license React v0.20.2
  * scheduler.production.min.js
  *
@@ -38207,7 +38439,7 @@ exports.unstable_next=function(a){switch(P){case 1:case 2:case 3:var b=3;break;d
 exports.unstable_scheduleCallback=function(a,b,c){var d=exports.unstable_now();"object"===typeof c&&null!==c?(c=c.delay,c="number"===typeof c&&0<c?d+c:d):c=d;switch(a){case 1:var e=-1;break;case 2:e=250;break;case 5:e=1073741823;break;case 4:e=1E4;break;default:e=5E3}e=c+e;a={id:N++,callback:b,priorityLevel:a,startTime:c,expirationTime:e,sortIndex:-1};c>d?(a.sortIndex=c,H(M,a),null===J(L)&&a===J(M)&&(S?h():S=!0,g(U,c-d))):(a.sortIndex=e,H(L,a),R||Q||(R=!0,f(V)));return a};
 exports.unstable_wrapCallback=function(a){var b=P;return function(){var c=P;P=b;try{return a.apply(this,arguments)}finally{P=c}}};
 
-},{}],74:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -38218,7 +38450,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/scheduler.development.js":72,"./cjs/scheduler.production.min.js":73,"_process":63}],75:[function(require,module,exports){
+},{"./cjs/scheduler.development.js":74,"./cjs/scheduler.production.min.js":75,"_process":65}],77:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -38229,7 +38461,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/scheduler-tracing.development.js":70,"./cjs/scheduler-tracing.production.min.js":71,"_process":63}],76:[function(require,module,exports){
+},{"./cjs/scheduler-tracing.development.js":72,"./cjs/scheduler-tracing.production.min.js":73,"_process":65}],78:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -38300,7 +38532,7 @@ Object.defineProperty(exports, "protocol", { enumerable: true, get: function () 
 
 module.exports = lookup;
 
-},{"./manager.js":77,"./socket.js":79,"./url.js":80,"debug":81,"socket.io-parser":85}],77:[function(require,module,exports){
+},{"./manager.js":79,"./socket.js":81,"./url.js":82,"debug":83,"socket.io-parser":87}],79:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -38697,7 +38929,7 @@ class Manager extends component_emitter_1.Emitter {
 }
 exports.Manager = Manager;
 
-},{"./on.js":78,"./socket.js":79,"@socket.io/component-emitter":35,"backo2":36,"debug":81,"engine.io-client":41,"socket.io-parser":85}],78:[function(require,module,exports){
+},{"./on.js":80,"./socket.js":81,"@socket.io/component-emitter":37,"backo2":38,"debug":83,"engine.io-client":43,"socket.io-parser":87}],80:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.on = void 0;
@@ -38709,7 +38941,7 @@ function on(obj, ev, fn) {
 }
 exports.on = on;
 
-},{}],79:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39219,7 +39451,7 @@ class Socket extends component_emitter_1.Emitter {
 }
 exports.Socket = Socket;
 
-},{"./on.js":78,"@socket.io/component-emitter":35,"debug":81,"socket.io-parser":85}],80:[function(require,module,exports){
+},{"./on.js":80,"@socket.io/component-emitter":37,"debug":83,"socket.io-parser":87}],82:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39291,13 +39523,13 @@ function url(uri, path = "", loc) {
 }
 exports.url = url;
 
-},{"debug":81,"parseuri":62}],81:[function(require,module,exports){
-arguments[4][51][0].apply(exports,arguments)
-},{"./common":82,"_process":63,"dup":51}],82:[function(require,module,exports){
-arguments[4][52][0].apply(exports,arguments)
-},{"dup":52,"ms":83}],83:[function(require,module,exports){
+},{"debug":83,"parseuri":64}],83:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"dup":53}],84:[function(require,module,exports){
+},{"./common":84,"_process":65,"dup":53}],84:[function(require,module,exports){
+arguments[4][54][0].apply(exports,arguments)
+},{"dup":54,"ms":85}],85:[function(require,module,exports){
+arguments[4][55][0].apply(exports,arguments)
+},{"dup":55}],86:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reconstructPacket = exports.deconstructPacket = void 0;
@@ -39379,7 +39611,7 @@ function _reconstructPacket(data, buffers) {
     return data;
 }
 
-},{"./is-binary.js":86}],85:[function(require,module,exports){
+},{"./is-binary.js":88}],87:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Decoder = exports.Encoder = exports.PacketType = exports.protocol = void 0;
@@ -39662,7 +39894,7 @@ class BinaryReconstructor {
     }
 }
 
-},{"./binary.js":84,"./is-binary.js":86,"@socket.io/component-emitter":35,"debug":81}],86:[function(require,module,exports){
+},{"./binary.js":86,"./is-binary.js":88,"@socket.io/component-emitter":37,"debug":83}],88:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasBinary = exports.isBinary = void 0;
@@ -39719,7 +39951,7 @@ function hasBinary(obj, toJSON) {
 }
 exports.hasBinary = hasBinary;
 
-},{}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -39789,4 +40021,4 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}]},{},[33]);
+},{}]},{},[34]);

@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var app = express();
@@ -6,6 +9,7 @@ var http = require("http");
 var cors = require("cors");
 var server = http.createServer(app);
 var Server = require("socket.io").Server;
+var reverseChessboard_1 = __importDefault(require("./reverseChessboard"));
 app.use(cors({
     origin: 'localhost/Draughts/client'
 }));
@@ -16,8 +20,10 @@ var io = new Server(server, {
     }
 });
 var players = [];
+var isWritingRooms = {};
 io.on("connection", function (socket) {
-    console.log("User connected", socket.id, socket.handshake.address);
+    console.log("User bbb", socket.id, socket.handshake.address);
+    console.log('dupa');
     socket.on("player-connected", function (name) {
         socket.join("global");
         if (name.length > 6) {
@@ -59,22 +65,16 @@ io.on("connection", function (socket) {
         socket.broadcast.emit("done_writing", room);
     });
     socket.on("request_players_list", function () {
-        io.emit("get_players", players);
+        socket.emit("get_players", players);
     });
     socket.on("accept_challange", function (gameInfo) {
         socket.broadcast.to(gameInfo.gameId).emit("challange_accepted", gameInfo);
     });
-    socket.on("make_move", function (gameInfo) {
-        socket.broadcast.to(gameInfo.id).emit("move_made", gameInfo);
-    });
-    socket.on("player_wants_rematch", function (gameInfo) {
-        socket.broadcast.to(gameInfo.gameId).emit("player_wants_rematch", gameInfo);
-    });
-    socket.on("restart_game", function (id) {
-        socket.broadcast.to(id).emit("game_restarted");
-    });
-    socket.on("player-close-game", function (id) {
-        socket.broadcast.to(id).emit("player_closed_game", id);
+    socket.on("make_move", function (game) {
+        console.log("move make");
+        var reversed = (0, reverseChessboard_1.default)(game.engine.chessboard);
+        game.engine.chessboard = reversed;
+        socket.broadcast.to(game.id).emit("move_made", game);
     });
     socket.on("disconnect", function () {
         console.log("user disconnected");
@@ -95,4 +95,16 @@ var avatarShapes = ["squares", "isogrids", "spaceinvaders", "labs/isogrids/hexa"
 function getRandomElement(array) {
     return array[Math.floor(Math.random() * (array.length - 1))];
 }
+// const cacheDir = // where to put cache files
+// const cacheKey = // calculate cache key for the input
+// const cacheFile = path.join(cacheDir, cacheKey);
+// if (exists(cacheFile)) {
+// 	// the result is cached
+// 	return fs.readFile(cacheFile);
+// }else {
+// 	// calculate the result and store it
+// 	const result = // run the process
+// 	await fs.writeFile(cacheFile, result);
+// 	return result;
+// }
 //# sourceMappingURL=index.js.map

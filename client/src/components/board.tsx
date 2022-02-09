@@ -8,30 +8,45 @@ import BotLabel from './labels/bot-label';
 import ContextMenu from "./board/context-menu";
 import WinMenu from "./board/winMenu";
 
-import Game from "../game";
+import Game, { GAMEMODE } from "../game";
 import { Color } from './board/getPieceJSX';
+import { socket } from '../main';
+import { ISquare } from '../engine';
+import { IPlayer } from './lobby/lobby';
+import { Rematch } from '../App';
+import gameMenu from './gameMenu/gameMenu';
+import tsify from 'tsify';
+
+export type GameInfo = {
+    chessboard: ISquare[],
+    id: string | undefined,
+    turn: "black" | "white",
+    winner: "black" | "white" | "",
+}
 
 type MyState = {
     contextMenu: {
         piece: string,
         queen: boolean,
         i: number,
-        clientX : number,
+        clientX: number,
         clientY: number,
         showMenu: boolean
     },
     winner: "" | Color
 }
 type MyProps = {
-    
+
 }
 
 export default class Board extends React.Component<MyProps, MyState> {
-    
+
 
     props: {
         game: Game;
-        restartGame: () => void;
+        restartGame: (gameId: string) => void;
+        player: IPlayer;
+        rematches: Rematch[]
     }
 
     interval: ReturnType<typeof setTimeout> | null;
@@ -40,14 +55,14 @@ export default class Board extends React.Component<MyProps, MyState> {
     constructor(props: any) {
         super(props);
         this.props = props;
-        this.state = { 
+        this.state = {
             contextMenu: {
                 piece: "",
-                queen : false, 
-                i : 0,
-                clientX : 0, 
-                clientY : 0,
-                showMenu : false,
+                queen: false,
+                i: 0,
+                clientX: 0,
+                clientY: 0,
+                showMenu: false,
             },
             winner: "",
         };
@@ -61,15 +76,26 @@ export default class Board extends React.Component<MyProps, MyState> {
         })
     }
 
+
+
     clickHandler = (event: any) => {
         //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
         this.props.game.clickHandler(event);
+        if (this.props.game.gameMode == GAMEMODE.ONLINE) {
+            let gameInfo: GameInfo = {
+                chessboard: this.props.game.engine.chessboard,
+                id: this.props.game.id,
+                turn: this.props.game.engine.turn,
+                winner: this.props.game.engine.winner,
+            }
+            socket.emit("make_move", gameInfo);
+        }
     }
 
     hideContextMenu = () => {
         this.setState((prevState) => {
             return {
-                contextMenu: {...prevState.contextMenu, showMenu: false}
+                contextMenu: { ...prevState.contextMenu, showMenu: false }
             }
         })
     }
@@ -91,20 +117,22 @@ export default class Board extends React.Component<MyProps, MyState> {
             clientX += width / 2;
             clientY += height / 2 + 10;
 
-            this.setState({contextMenu: {
-                piece: piece,
-                queen : queen, 
-                i : id,
-                clientX : clientX, 
-                clientY : clientY,
-                showMenu : true,
-            }})
+            this.setState({
+                contextMenu: {
+                    piece: piece,
+                    queen: queen,
+                    i: id,
+                    clientX: clientX,
+                    clientY: clientY,
+                    showMenu: true,
+                }
+            })
         }
-        
+
         return false;
     }
 
-   
+
 
 
 
@@ -113,17 +141,23 @@ export default class Board extends React.Component<MyProps, MyState> {
             restartFlag = false;
         }
         let engine = this.props.game.engine;
-
+        const rematch = this.props.rematches.find((r) => r.gameId == this.props.game.id)
 
         return (
-            <div className="board"  onClick={this.clickHandler} onContextMenu={this.onContextHandler}>
-                {this.props.game.engine.winner && <WinMenu winner={engine.winner} restart={this.props.restartGame}/>}
-                <TopLabel/>
-                <LeftLabel/>
-                <RightLabel/>
-                <Chessboard engine = {engine} preview = {false} gameCounter={0} game={this.props.game} setWinner={this.setWinner}/>
-                <BotLabel/>
-                {this.state.contextMenu.showMenu && <ContextMenu contextMenu={this.state.contextMenu} chessboard={engine.chessboard} hide={this.hideContextMenu}/>}
+            <div className="board" onClick={this.clickHandler} onContextMenu={this.onContextHandler}>
+                {this.props.game.engine.winner &&
+                    <WinMenu winner={engine.winner}
+                        restart={this.props.restartGame}
+                        game={this.props.game}
+                        player={this.props.player}
+                        rematch={rematch}
+                    />}
+                <TopLabel />
+                <LeftLabel />
+                <RightLabel />
+                <Chessboard engine={engine} preview={false} gameCounter={0} game={this.props.game} setWinner={this.setWinner} />
+                <BotLabel />
+                {this.state.contextMenu.showMenu && <ContextMenu contextMenu={this.state.contextMenu} chessboard={engine.chessboard} hide={this.hideContextMenu} />}
             </div>
         )
     }

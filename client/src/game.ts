@@ -46,6 +46,10 @@ export default class Game {
 
   async clickHandler(event: any) {
     let engine = this.engine
+    if (this.gameMode == GAMEMODE.ONLINE && engine.turn !== this.playerColor) {
+      return;
+    }
+
     if (!(this.gameMode == GAMEMODE.BOT && engine.turn !== this.playerColor)) {
       if (!(event.target instanceof Element)) {
         return;

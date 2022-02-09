@@ -38,19 +38,20 @@ type Room = {
     id: string
 }
 
+type GameInfo = {
+    gameId: string,
+    playerAccepted: string,
+    playerAcceptedColor: string
+}
 
 let players: Player[] = [];
 
-interface IsWritingRooms<value> {
-    [key: string]: value,
-}
 
-const isWritingRooms: IsWritingRooms<boolean> = {};
+
 
 io.on("connection", (socket: any) => {
 
     console.log("User connected", socket.id, socket.handshake.address);
-
     socket.on("player-connected", (name: string) => {
         socket.join("global")
        
@@ -100,15 +101,33 @@ io.on("connection", (socket: any) => {
     })
 
     socket.on("request_players_list", () => {
-        socket.emit("get_players", players);
+        io.emit("get_players", players);
+    })
+
+    socket.on("accept_challange", (gameInfo: GameInfo) => {
+        socket.broadcast.to(gameInfo.gameId).emit("challange_accepted", gameInfo);
+    })
+    socket.on("make_move", (gameInfo: any) => {
+            socket.broadcast.to(gameInfo.id).emit("move_made", gameInfo);
+    })
+    socket.on("player_wants_rematch", (gameInfo: any) => {
+        socket.broadcast.to(gameInfo.gameId).emit("player_wants_rematch", gameInfo)
+    })
+    socket.on("restart_game", (id: string) => {
+        socket.broadcast.to(id).emit("game_restarted")
+    })
+    socket.on("player-close-game", (id: string) => {
+        socket.broadcast.to(id).emit("player_closed_game", id);
     })
 
     socket.on("disconnect", () => {
         console.log("user disconnected");
+        const player = players.find((player) => player.id == socket.id);
         players = players.filter((player) => player.id !== socket.id);
         io.emit("players_update", players);
-        const player = players.find((player) => player.id == socket.id);
-        io.emit("player_disconnected", player);
+        if (player) {
+            io.emit("player_disconnected", player);
+        }
     })
 
 })
@@ -129,16 +148,3 @@ function getRandomElement<T>(array: T[]): T {
 }
 
 
-// const cacheDir = // where to put cache files
-// const cacheKey = // calculate cache key for the input
-
-// const cacheFile = path.join(cacheDir, cacheKey);
-// if (exists(cacheFile)) {
-// 	// the result is cached
-// 	return fs.readFile(cacheFile);
-// }else {
-// 	// calculate the result and store it
-// 	const result = // run the process
-// 	await fs.writeFile(cacheFile, result);
-// 	return result;
-// }

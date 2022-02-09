@@ -29,6 +29,7 @@
 .lobby__game-invitation {
     display: inline-block;
     height: 60px;
+    width: 230px;
     overflow-y: scroll;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none; 
@@ -41,8 +42,8 @@
 .lobby__game-invitation-text {
     display: inline-block;
     font-size: 13px;
-    width: 160px;
-    margin-left: 10px;
+    width: 150px;
+    margin-left: 10px;;
     animation-name: invitation-glow;
     animation-duration: 1s;
     animation-iteration-count: infinite;
@@ -58,6 +59,7 @@
     color: white;
     display: inline-block;
     width: 50px;
+    text-align: center;
     border: 1px solid white;
     border-radius: 5px;
     padding-left: 5px;

@@ -101,8 +101,6 @@ var Chat = /** @class */ (function (_super) {
         }
     };
     Chat.prototype.receiveMessage = function (message) {
-        console.log(message);
-        console.log(message.room, this.props.rooms);
         if (!this.props.rooms.some(function (room) { return room.id == message.room.id; })) {
             this.props.createRoom(message.author.name);
         }

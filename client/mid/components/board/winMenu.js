@@ -19,28 +19,70 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
+var main_1 = require("../../main");
+var avatar_1 = __importDefault(require("../lobby/avatar"));
 var WinMenu = /** @class */ (function (_super) {
     __extends(WinMenu, _super);
     function WinMenu(props) {
         var _this = _super.call(this, props) || this;
         _this.handleClick = function () {
-            _this.props.restart();
+            var props = _this.props;
+            if (_this.props.game.gameMode == 2 /* ONLINE */ && !_this.props.rematch) {
+                var rematch = {
+                    gameId: props.game.id,
+                    player: props.player,
+                };
+                main_1.socket.emit("player_wants_rematch", rematch);
+                _this.setState({ rematchSent: true });
+            }
+            else if (_this.props.rematch) {
+                var id = props.game.id ? props.game.id : "";
+                _this.props.restart(id);
+                main_1.socket.emit("restart_game", id);
+            }
+            else {
+                _this.props.restart("");
+            }
         };
         _this.props = props;
+        _this.state = {
+            rematchSent: false,
+        };
         return _this;
     }
+    WinMenu.prototype.componentDidMount = function () {
+        var _this = this;
+        main_1.socket.on("rematch_accepted", function (gameId) {
+            _this.props.restart(gameId);
+        });
+    };
+    WinMenu.prototype.componentWillUnmount = function () {
+        main_1.socket.off();
+    };
     WinMenu.prototype.render = function () {
         var winner = this.props.winner;
-        var visibility = "win-menu--hidden";
-        if (winner) {
-            winner = winner[0].toUpperCase() + winner.slice(1);
-            visibility = "win-menu--visible";
-        }
-        return (react_1.default.createElement("div", { className: "win-menu " + visibility },
+        var playAgainClass = this.state.rematchSent ? "win-menu__play-again--selected" : "";
+        return (react_1.default.createElement("div", { className: "win-menu " },
             react_1.default.createElement("h1", null,
                 winner,
                 " Wins!"),
-            react_1.default.createElement("h2", { className: "win-menu__play-again", onClick: this.handleClick }, "Play Again?")));
+            react_1.default.createElement("h2", { className: "win-menu__play-again " + playAgainClass, onClick: this.handleClick }, "Play Again?"),
+            this.props.rematch &&
+                react_1.default.createElement("div", { className: "win-menu__avatar" },
+                    react_1.default.createElement(avatar_1.default, { name: this.props.player.name, theme: this.props.player.avatar.theme, shape: this.props.player.avatar.shape })),
+            this.props.rematch &&
+                react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                    this.props.rematch.player &&
+                        this.props.player.name + " ",
+                    "wants rematch!"),
+            this.state.rematchSent &&
+                react_1.default.createElement("div", { className: "win-menu__waiting-pawn-div" },
+                    react_1.default.createElement("img", { className: "lobby__avatar-placeholder win-menu__waiting-pawn", src: "./img/pawn.png" })),
+            this.state.rematchSent &&
+                react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                    "Waiting for ",
+                    this.props.player.name,
+                    " to accept")));
     };
     return WinMenu;
 }(react_1.default.Component));

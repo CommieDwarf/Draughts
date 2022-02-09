@@ -37,6 +37,7 @@ var right_label_1 = __importDefault(require("./labels/right-label"));
 var bot_label_1 = __importDefault(require("./labels/bot-label"));
 var context_menu_1 = __importDefault(require("./board/context-menu"));
 var winMenu_1 = __importDefault(require("./board/winMenu"));
+var main_1 = require("../main");
 var Board = /** @class */ (function (_super) {
     __extends(Board, _super);
     function Board(props) {
@@ -49,6 +50,15 @@ var Board = /** @class */ (function (_super) {
         _this.clickHandler = function (event) {
             //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
+            if (_this.props.game.gameMode == 2 /* ONLINE */) {
+                var gameInfo = {
+                    chessboard: _this.props.game.engine.chessboard,
+                    id: _this.props.game.id,
+                    turn: _this.props.game.engine.turn,
+                    winner: _this.props.game.engine.winner,
+                };
+                main_1.socket.emit("make_move", gameInfo);
+            }
         };
         _this.hideContextMenu = function () {
             _this.setState(function (prevState) {
@@ -72,14 +82,16 @@ var Board = /** @class */ (function (_super) {
                 var height = square.offsetHeight;
                 clientX += width / 2;
                 clientY += height / 2 + 10;
-                _this.setState({ contextMenu: {
+                _this.setState({
+                    contextMenu: {
                         piece: piece,
                         queen: queen,
                         i: id,
                         clientX: clientX,
                         clientY: clientY,
                         showMenu: true,
-                    } });
+                    }
+                });
             }
             return false;
         };
@@ -100,12 +112,15 @@ var Board = /** @class */ (function (_super) {
         return _this;
     }
     Board.prototype.render = function () {
+        var _this = this;
         if (restartFlag) {
             restartFlag = false;
         }
         var engine = this.props.game.engine;
+        var rematch = this.props.rematches.find(function (r) { return r.gameId == _this.props.game.id; });
         return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
-            this.props.game.engine.winner && react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame }),
+            this.props.game.engine.winner &&
+                react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: rematch }),
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
             react_1.default.createElement(right_label_1.default, null),

@@ -33,13 +33,13 @@ var main_1 = require("../../main");
 var players_1 = __importDefault(require("./players"));
 var room_1 = __importDefault(require("./room"));
 var gameInvitation_1 = __importDefault(require("./gameInvitation"));
+var GameInvSent_1 = __importDefault(require("./GameInvSent"));
 var Lobby = /** @class */ (function (_super) {
     __extends(Lobby, _super);
     function Lobby(props) {
         var _this = _super.call(this, props) || this;
         _this.handleClickInvite = function () {
             _this.setState({ gameInvitable: true });
-            console.log('invite');
         };
         _this.createRoom = function (name) {
             var roomId = _this.getRoomId(name);
@@ -64,15 +64,61 @@ var Lobby = /** @class */ (function (_super) {
                 };
             });
         };
+        _this.acceptChallange = function (name, gameId) {
+            var randomNum = Math.floor(Math.random() * 2);
+            var authorColor;
+            if (randomNum == 0) {
+                authorColor = "white";
+            }
+            else {
+                authorColor = "black";
+            }
+            var side = authorColor == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
+            _this.props.startNewGame(2 /* ONLINE */, side, authorColor, name, gameId);
+            var gameInfo = {
+                gameId: gameId,
+                playerAccepted: _this.props.name,
+                playerAcceptedColor: authorColor
+            };
+            main_1.socket.emit("accept_challange", gameInfo);
+            _this.filterOutGameInvites(name);
+        };
+        _this.filterOutGameInvites = function (name) {
+            _this.setState(function (prevState) {
+                return {
+                    gameInvitations: prevState.gameInvitations.filter(function (inv) { return inv.author != name; }),
+                };
+            });
+        };
+        _this.filterOutSentInvites = function (name) {
+            _this.setState(function (prevState) {
+                return {
+                    gameInvSent: prevState.gameInvSent.filter(function (inv) { return inv.target != name; })
+                };
+            });
+        };
         _this.handlePlayerInvite = function (event) {
             var target = event.target;
             var player = target.closest(".lobby__player");
             if (player && !_this.state.rooms.some(function (room) { room.name == player.id; }) && _this.state.roomInvitable) {
                 _this.createRoom(player.id);
             }
-            if (player && _this.state.gameInvitable) {
+            if (player && _this.state.gameInvitable && player.id != _this.props.name) {
                 main_1.socket.emit("request_join_game", _this.props.name);
                 main_1.socket.emit("join_game", _this.getGameId(player.id, _this.props.name));
+                _this.setState({ gameInvitable: false });
+                if (!_this.state.gameInvSent.some(function (inv) { return inv.target == player.id; })) {
+                    var inv_1 = {
+                        target: player.id,
+                        gameId: _this.getGameId(player.id, _this.props.name),
+                        author: _this.props.name,
+                    };
+                    _this.setState(function (prevState) {
+                        return {
+                            gameInvSent: __spreadArray(__spreadArray([], prevState.gameInvSent, true), [inv_1], false)
+                        };
+                    });
+                }
             }
         };
         _this.handleClickNewRoom = function () {
@@ -126,7 +172,6 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("room_created", function (room) {
                 if (_this.props.name == room.target) {
                     main_1.socket.emit("join_room", room);
-                    console.log(room);
                 }
             });
             main_1.socket.on("someone_writing", function (room) {
@@ -138,15 +183,24 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("requested_join_game", function (author) {
                 var gameId = _this.getGameId(author, _this.props.name);
                 main_1.socket.emit("join_game", (gameId));
-                _this.setState(function (prevState) {
-                    return {
-                        gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId }], false)
-                    };
-                });
+                if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
+                    _this.setState(function (prevState) {
+                        return {
+                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name }], false)
+                        };
+                    });
+                }
             });
-            main_1.socket.on("player_disconected", function (player) {
-                _this.setState(function (prevState) {
-                });
+            main_1.socket.on("challange_accepted", function (gameInfo) {
+                var color;
+                color = gameInfo.playerAcceptedColor == "white" ? "black" : "white";
+                var side = color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
+                _this.props.startNewGame(2 /* ONLINE */, side, color, gameInfo.playerAccepted, gameInfo.gameId);
+                _this.filterOutSentInvites(gameInfo.playerAccepted);
+            });
+            main_1.socket.on("player_disconnected", function (player) {
+                _this.filterOutGameInvites(player.name);
+                _this.filterOutSentInvites(player.name);
             });
             document.addEventListener('click', _this.handleOutsidePlayersClick);
         };
@@ -158,6 +212,7 @@ var Lobby = /** @class */ (function (_super) {
             roomInvitable: false,
             gameInvitable: false,
             gameInvitations: [],
+            gameInvSent: [],
         };
         _this.playersRef = react_1.default.createRef();
         _this.createRoomRef = react_1.default.createRef();
@@ -196,7 +251,10 @@ var Lobby = /** @class */ (function (_super) {
             return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i });
+            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange });
+        });
+        var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
+            return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, gameId: inv.gameId, key: i });
         });
         var inviteClass = "";
         if (this.state.gameInvitable) {
@@ -208,7 +266,9 @@ var Lobby = /** @class */ (function (_super) {
         }
         return (react_1.default.createElement("div", { className: "lobby" },
             react_1.default.createElement("div", { className: "lobby__invite-button no-select " + inviteClass, ref: this.inviteRef, onClick: this.handleClickInvite }, "Invite"),
-            react_1.default.createElement("div", { className: "lobby__game-invitation" }, gameInvitations),
+            react_1.default.createElement("div", { className: "lobby__game-invitation" },
+                gameInvitations,
+                gameInvSent),
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
                 react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),

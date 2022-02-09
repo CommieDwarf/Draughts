@@ -104,8 +104,12 @@ var Chessboard = /** @class */ (function (_super) {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameCounter: gameCounter, closeGame: this.props.closeGame });
-            label = (react_1.default.createElement("div", { id: "game-label-preview-" + gameCounter, className: "game-preview__label" }, this.props.label));
+            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameCounter: gameCounter, closeGame: this.props.closeGame, game: this.props.game });
+            var playerLabelClass = "";
+            if (this.props.game.gameMode == 2 /* ONLINE */) {
+                playerLabelClass = "game-label__label--green";
+            }
+            label = (react_1.default.createElement("div", { id: "game-label-preview-" + gameCounter, className: "game-preview__label " + playerLabelClass }, this.props.label));
         }
         var bgAnimationClass = this.getBgAnimationClass();
         return (react_1.default.createElement("div", { className: previewWrapperClass },

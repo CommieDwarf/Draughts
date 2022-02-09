@@ -35,13 +35,14 @@ var gamePreview_1 = __importDefault(require("./components/gamePreview"));
 var game_1 = __importDefault(require("./game"));
 var inputName_1 = __importDefault(require("./components/inputName"));
 var connectMenu_1 = __importDefault(require("./components/connectMenu"));
+var reverseChessboard_1 = __importDefault(require("./reverseChessboard"));
 var main_1 = require("./main");
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App(props) {
         var _this = _super.call(this, props) || this;
         _this.setName = function (name) {
-            _this.requestPlayerList();
+            main_1.socket.emit("request_players_list");
             _this.setState({ name: name });
         };
         _this.connect = function () {
@@ -56,21 +57,16 @@ var App = /** @class */ (function (_super) {
                 _this.setState({ connected: true });
             }
         };
-        _this.startNewGame = function (gameMode, side, color, label) {
-            if (_this.state.games.length == 4) {
-                _this.setState({ newGameError: "Game quantity reached. Close some game" });
-                return false;
-            }
-            else {
-                var game_2 = new game_1.default(gameMode, color, side, label, _this.gameCounter++);
-                _this.setState(function (prevState) {
-                    return {
-                        currentGame: game_2,
-                        games: __spreadArray(__spreadArray([], prevState.games, true), [game_2], false)
-                    };
-                });
-                return true;
-            }
+        _this.startNewGame = function (gameMode, side, color, label, gameId) {
+            if (gameId === void 0) { gameId = ""; }
+            var game = new game_1.default(gameMode, color, side, label, _this.gameCounter++, gameId);
+            _this.setState(function (prevState) {
+                return {
+                    currentGame: game,
+                    games: __spreadArray(__spreadArray([], prevState.games, true), [game], false)
+                };
+            });
+            return true;
         };
         _this.switchGame = function (count) {
             var game = _this.state.games.filter(function (game) { return game.gameCounter == count; })[0];
@@ -80,23 +76,50 @@ var App = /** @class */ (function (_super) {
                 });
             }
         };
-        _this.closeGame = function (gameCounter) {
-            console.log(gameCounter);
-            _this.setState(function (state) {
-                return {
-                    games: state.games.filter(function (game) { return game.gameCounter != gameCounter; }),
-                    currentGame: null,
-                };
-            });
+        _this.closeGame = function (gameCounter, gameId) {
+            if (gameId === void 0) { gameId = ""; }
+            if (!gameId) {
+                _this.setState(function (state) {
+                    return {
+                        games: state.games.filter(function (game) { return game.gameCounter != gameCounter; }),
+                        currentGame: null,
+                    };
+                });
+            }
+            else {
+                var game = _this.state.games.find(function (g) { return g.id == gameId; });
+                if (game == _this.state.currentGame) {
+                    _this.setState(function (state) {
+                        return {
+                            games: state.games.filter((function (g) { return g.id != gameId; })),
+                            currentGame: null,
+                        };
+                    });
+                }
+                else {
+                    _this.setState(function (state) {
+                        return {
+                            games: state.games.filter((function (g) { return g.id != gameId; })),
+                        };
+                    });
+                }
+            }
         };
-        _this.restartGame = function () {
-            var game = _this.state.currentGame;
+        _this.restartGame = function (gameId) {
+            if (gameId === void 0) { gameId = ""; }
+            var game;
+            if (gameId) {
+                game = _this.state.games.find(function (g) { return g.id == gameId; });
+            }
+            else {
+                game = _this.state.currentGame;
+            }
             if (game) {
                 var index = _this.state.games.findIndex(function (g) {
                     return g.gameCounter == game.gameCounter;
                 });
                 var games = _this.state.games;
-                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter);
+                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter, gameId);
                 games[index] = newGame;
                 _this.setState({ games: games, currentGame: newGame });
             }
@@ -109,6 +132,7 @@ var App = /** @class */ (function (_super) {
             players: [],
             connected: false,
             nameError: "",
+            rematches: [],
         };
         _this.menuPosition = 'center';
         _this.gameCounter = 0;
@@ -125,9 +149,6 @@ var App = /** @class */ (function (_super) {
                 return "player";
         }
     };
-    App.prototype.requestPlayerList = function () {
-        main_1.socket.emit("request_players_list");
-    };
     App.prototype.checkNameTaken = function () {
         var _this = this;
         var taken = this.state.players.filter(function (player) { return _this.state.name == player.name; });
@@ -138,13 +159,64 @@ var App = /** @class */ (function (_super) {
             return false;
         }
     };
+    App.prototype.getPlayer = function (name) {
+        var player = this.state.players.find(function (player) { return player.name == name; });
+        if (!player) {
+            player = this.state.players[0];
+        }
+        return player;
+    };
     App.prototype.componentDidMount = function () {
         var _this = this;
         main_1.socket.on("get_players", function (players) {
             _this.setState({ players: players });
         });
+        main_1.socket.on("player_disconnected", function (player) {
+            var game = _this.state.games.find(function (g) { return g.label == player.name; });
+            if (game) {
+                _this.closeGame(0, game.id);
+            }
+        });
+        main_1.socket.on("move_made", function (_a) {
+            var chessboard = _a.chessboard, id = _a.id, turn = _a.turn, winner = _a.winner;
+            _this.setState(function (prevState) {
+                var _a;
+                var gameIndex = prevState.games.findIndex(function (g) { return g.id == id; });
+                var gamesBefore = prevState.games.slice(0, gameIndex);
+                var gamesAfter = prevState.games.slice(gameIndex + 1, prevState.games.length);
+                var game = prevState.games[gameIndex];
+                game.engine.chessboard = (0, reverseChessboard_1.default)(chessboard);
+                game.engine.turn = turn;
+                game.engine.winner = winner;
+                game.engine.playerSide = "bot";
+                var currentGame = prevState.currentGame;
+                if (((_a = prevState.currentGame) === null || _a === void 0 ? void 0 : _a.id) == id) {
+                    currentGame == game;
+                }
+                return {
+                    games: __spreadArray(__spreadArray(__spreadArray([], gamesBefore, true), [game], false), gamesAfter, true),
+                    currentGame: currentGame,
+                };
+            });
+        });
+        main_1.socket.on("player_wants_rematch", function (_a) {
+            var player = _a.player, gameId = _a.gameId;
+            _this.setState(function (prevState) {
+                var rematch = { player: player, gameId: gameId, requested: true };
+                return {
+                    rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false)
+                };
+            });
+        });
+        main_1.socket.on("game_restarted", function (id) {
+            _this.restartGame(id);
+        });
+        main_1.socket.on("player_closed_game", function (id) {
+            _this.closeGame(0, id);
+        });
     };
     App.prototype.render = function () {
+        var player = this.getPlayer(this.state.name);
         var games = this.state.games;
         var gameMenuCentered = this.state.currentGame ? false : true;
         if (this.state.connected) {
@@ -152,7 +224,8 @@ var App = /** @class */ (function (_super) {
                 react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
                 react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games }),
-                this.state.currentGame && react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame })));
+                this.state.currentGame &&
+                    react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,

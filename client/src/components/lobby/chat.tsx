@@ -78,8 +78,6 @@ export default class Chat extends React.Component<Props, State> {
     }
 
     receiveMessage(message: IMessage) {
-        console.log(message);
-        console.log(message.room, this.props.rooms);
         if (!this.props.rooms.some((room) => room.id == message.room.id)) {
             this.props.createRoom(message.author.name);
         }

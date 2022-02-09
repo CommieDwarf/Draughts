@@ -6,7 +6,7 @@ export default class GamePreview extends React.Component {
     props: {
         games: Game[];
         switchGame: (id: number) => void;
-        closeGame: (gameId: number) => void;
+        closeGame: (counter: number, gameId?: string) => void;
     }
 
     constructor(props: any) {
