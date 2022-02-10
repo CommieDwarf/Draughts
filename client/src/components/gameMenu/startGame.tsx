@@ -8,7 +8,7 @@ type Color = "black" | "white";
 type Props = {
     title: string,
     gameMode: GAMEMODE,
-    startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string) => boolean;
+    startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, id: number) => boolean;
     label: string,
     games: Game[],
 }

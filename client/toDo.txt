@@ -1,4 +1,4 @@
-1. [ ] Online mode
+1. [x] Online mode
 2. [x] Optymalization of rendering the chessboard (update only when chessboard object changes instead of click events);
 3. [ ] Responsive design
 4. [x] Add close game functionality

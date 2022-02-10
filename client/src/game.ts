@@ -20,10 +20,10 @@ export default class Game {
   botColor: Color;
   side: SIDE;
   label: string;
-  gameCounter: number
-  id?: string;
+  id: number;
+  roomId?: string;
 
-  constructor(gameMode: GAMEMODE, playerColor: Color, side: SIDE, label: string, gameCounter: number, id?: string) {
+  constructor(gameMode: GAMEMODE, playerColor: Color, side: SIDE, label: string, id: number, roomId?: string) {
     this.engine = new Engine(side);
     this.botColor = playerColor == "white" ? "black" : "white";
     this.bot = new Bot(this.engine, this.botColor);
@@ -32,8 +32,8 @@ export default class Game {
     this.side = side;
     this.label = label;
     this.engine.chessboard = this.startNewGame();
-    this.gameCounter = gameCounter;
     this.id = id;
+    this.roomId = roomId;
   }
 
   startNewGame() {

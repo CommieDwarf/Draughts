@@ -5,6 +5,7 @@ import { IPlayer } from "../lobby/lobby";
 import { Rematch } from "../../App";
 import Avatar from "../lobby/avatar";
 import Players from "../lobby/players";
+import gameMenu from "../gameMenu/gameMenu";
 
 type Props = {}
 type State = {
@@ -15,7 +16,7 @@ export default class WinMenu extends React.Component<Props, State> {
 
     props: {
         winner: "white" | "black" | "";
-        restart: (gameId: string) => void,
+        restart: (gameId: number) => void,
         game: Game,
         player: IPlayer
         rematch: Rematch | undefined,
@@ -34,21 +35,23 @@ export default class WinMenu extends React.Component<Props, State> {
             const rematch = {
                 gameId: props.game.id,
                 player: props.player,
+                requested: true,
+                roomId: props.game.roomId
             }
             socket.emit("player_wants_rematch", rematch)
             this.setState({ rematchSent: true });
         } else if (this.props.rematch) {
-            const id = props.game.id ? props.game.id : "";
+            const id = props.game.id ? props.game.id : 0;
             this.props.restart(id);
             socket.emit("restart_game", id);
         } else {
-            this.props.restart("");
+            this.props.restart(0);
         }
     }
 
     componentDidMount() {
 
-        socket.on("rematch_accepted", (gameId: string) => {
+        socket.on("rematch_accepted", (gameId: number) => {
             this.props.restart(gameId);
         })
     }

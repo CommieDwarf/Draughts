@@ -6,7 +6,7 @@ type Color = "black" | "white";
 type Props = {
     color: "white" | "black";
     gameMode: GAMEMODE;
-    startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string) => boolean;
+    startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, id: number) => boolean;
     label: string;
     setError: Dispatch<SetStateAction<string>>;
 }
@@ -17,7 +17,8 @@ export default function ColorSelection(props: Props) {
 
     
     function handleClick() {
-        const isStarted = props.startNewGame(props.gameMode, side, props.color, props.label);
+        const id = Date.now();
+        const isStarted = props.startNewGame(props.gameMode, side, props.color, props.label, id);
         if (isStarted) {
             props.setError("");
         } else {

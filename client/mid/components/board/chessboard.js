@@ -31,6 +31,12 @@ var Chessboard = /** @class */ (function (_super) {
                 _this.props.setWinner(_this.props.engine.winner);
             }
         };
+        _this.handleClick = function () {
+            if (_this.props.switchGame) {
+                _this.props.switchGame(_this.props.game.id);
+            }
+            console.log("handle");
+        };
         _this.props = props;
         _this.chessboardRef = react_1.default.createRef();
         _this.timeout = null;
@@ -98,23 +104,22 @@ var Chessboard = /** @class */ (function (_super) {
         }
         var previewWrapperClass = "";
         var previewChessboardClass = "";
-        var gameCounter = this.props.gameCounter ? this.props.gameCounter : 0;
         var closeIcon = "";
         var label = "";
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameCounter: gameCounter, closeGame: this.props.closeGame, game: this.props.game });
+            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameId: game.id, closeGame: this.props.closeGame, game: this.props.game });
             var playerLabelClass = "";
             if (this.props.game.gameMode == 2 /* ONLINE */) {
                 playerLabelClass = "game-label__label--green";
             }
-            label = (react_1.default.createElement("div", { id: "game-label-preview-" + gameCounter, className: "game-preview__label " + playerLabelClass }, this.props.label));
+            label = (react_1.default.createElement("div", { className: "game-preview__label " + playerLabelClass }, this.props.label));
         }
         var bgAnimationClass = this.getBgAnimationClass();
-        return (react_1.default.createElement("div", { className: previewWrapperClass },
+        return (react_1.default.createElement("div", { className: previewWrapperClass, onClick: this.handleClick },
             label,
-            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, id: ("chessboard-" + gameCounter), ref: this.chessboardRef }, squares),
+            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, ref: this.chessboardRef }, squares),
             closeIcon));
     };
     return Chessboard;

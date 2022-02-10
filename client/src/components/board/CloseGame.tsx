@@ -1,25 +1,23 @@
 import React from 'react';
-import Game from '../../game';
+import Game, { GAMEMODE } from '../../game';
 import { socket } from '../../main';
 
 
 type Props = {
-    gameCounter: number,
-    closeGame?: (GameCounter: number, gameId?: string) => void;
+    closeGame?: (gameId: number) => void;
     game: Game;
+    gameId: number;
 }
 
 export default function CloseGame(props: Props) {
 
     function handleClick() {
         if (props.closeGame) {
-            if (!props.game.id) {
-                props.closeGame(props.gameCounter);
-
-            } else {
-                props.closeGame(0, props.game.id);
-                socket.emit("player-close-game", props.game.id)
-            }
+                props.closeGame(props.gameId);
+                if (props.game.gameMode == GAMEMODE.ONLINE) {
+                    socket.emit("player-close-game", {gameId: props.game.id, roomId: props.game.roomId})
+                }
+            
         }
     }
 

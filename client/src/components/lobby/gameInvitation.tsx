@@ -2,16 +2,17 @@ import React from 'react';
 
 
 type Props = {
-    gameId: string,
+    gameId: number,
     author: string,
     target: string,
-    acceptChallange: (name: string, gameId: string) => void;
+    roomId: string,
+    acceptChallange: (name: string, gameId: number, roomId: string) => void;
 }
 
 export default function GameInvitation(props: Props) {
 
     function handleClick() {
-        props.acceptChallange(props.author, props.gameId);
+        props.acceptChallange(props.author, props.gameId, props.roomId);
     }
 
     return <>

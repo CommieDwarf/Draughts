@@ -3,7 +3,6 @@ import React from 'react';
 
 type Props = {
     target: string,
-    gameId: string
 }
 
 export default function GameInvitation(props: Props) {

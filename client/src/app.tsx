@@ -19,7 +19,8 @@ type Color = "black" | "white";
 export type Rematch = {
     requested: boolean,
     player: IPlayer | null,
-    gameId: string,
+    gameId: number,
+    roomId: string,
 }
 
 type State = {
@@ -94,9 +95,9 @@ export default class App extends React.Component<Props, State> {
         
     }
 
-    startNewGame = (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, gameId = ""): boolean => {
+    startNewGame = (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, gameId: number, roomId = ""): boolean => {
       
-            const game = new Game(gameMode, color, side, label, this.gameCounter++, gameId);
+            const game = new Game(gameMode, color, SIDE.CUSTOM, label, gameId, roomId);
             this.setState((prevState) => {
                 return {
                     currentGame: game,
@@ -109,8 +110,8 @@ export default class App extends React.Component<Props, State> {
 
 
 
-    switchGame = (count: number) => {
-        const game = this.state.games.filter((game) => game.gameCounter == count)[0];
+    switchGame = (id: number) => {
+        const game = this.state.games.find((game) => game.id == id);
         if (game) {
             this.setState({
                 currentGame: game
@@ -128,15 +129,8 @@ export default class App extends React.Component<Props, State> {
         }
     }
 
-    closeGame = (gameCounter: number, gameId="") => {
-        if (!gameId) {
-            this.setState((state) => {
-                return {
-                    games: state.games.filter((game) => game.gameCounter != gameCounter),
-                    currentGame: null,
-                }
-            })
-        } else {
+    closeGame = (gameId: number) => {
+       
             const game = this.state.games.find((g) => g.id == gameId);
             if (game == this.state.currentGame) {
                 this.setState((state) => {
@@ -152,13 +146,13 @@ export default class App extends React.Component<Props, State> {
                     }
                 }) 
             }
-        }
+        
 
 
             
         
     }
-    restartGame =(gameId: string = "") => {
+    restartGame =(gameId: number = 0) => {
         let game: any;
         if (gameId) {
             game = this.state.games.find((g) => g.id == gameId);
@@ -168,10 +162,10 @@ export default class App extends React.Component<Props, State> {
 
         if (game) {
             let index = this.state.games.findIndex((g) => {
-                return g.gameCounter == game.gameCounter;
+                return g.id == game.id;
             });
             let games = this.state.games;
-            const newGame = new Game(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter, gameId);
+            const newGame = new Game(game.gameMode, game.playerColor, game.side, game.label, gameId, game.roomId);
             games[index] = newGame;
             this.setState({games, currentGame: newGame});
         }
@@ -193,11 +187,11 @@ export default class App extends React.Component<Props, State> {
         socket.on("player_disconnected", (player: IPlayer) => {
             const game = this.state.games.find((g) => g.label == player.name);
             if (game) {
-                this.closeGame(0, game.id);
+                this.closeGame(game.id);
             }
         })
 
-        socket.on("move_made", ({chessboard, id, turn, winner}) => {
+        socket.on("move_made", ({chessboard, id, turn, winner, gameRoomId}) => {
                 this.setState((prevState) => {
                     const gameIndex = prevState.games.findIndex((g) => g.id == id)
                     let gamesBefore = prevState.games.slice(0, gameIndex)
@@ -219,21 +213,25 @@ export default class App extends React.Component<Props, State> {
                
         })
 
-        socket.on("player_wants_rematch", ({player, gameId}) => {
+        socket.on("player_wants_rematch", (rematch: Rematch) => {
             this.setState((prevState) => {
-                const rematch = {player, gameId, requested: true}
                 return {
                     rematches: [...prevState.rematches, rematch]
                 }
             })
         })
-        socket.on("game_restarted", (id: string) => {
+        socket.on("game_restarted", (id: number) => {
             this.restartGame(id);
         })
 
-        socket.on("player_closed_game", (id: string) => {
-            this.closeGame(0, id);
+        socket.on("player_closed_game", (info) => {
+            console.log(info);
+            this.closeGame(info.gameId);
         })
+    }
+
+    componentWillUnmount() {
+        socket.off();
     }
 
     render() {

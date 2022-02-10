@@ -19,9 +19,10 @@ import tsify from 'tsify';
 
 export type GameInfo = {
     chessboard: ISquare[],
-    id: string | undefined,
+    id: number | undefined,
     turn: "black" | "white",
     winner: "black" | "white" | "",
+    roomId: string,
 }
 
 type MyState = {
@@ -44,9 +45,9 @@ export default class Board extends React.Component<MyProps, MyState> {
 
     props: {
         game: Game;
-        restartGame: (gameId: string) => void;
+        restartGame: (gameId: number) => void;
         player: IPlayer;
-        rematches: Rematch[]
+        rematches: Rematch[],
     }
 
     interval: ReturnType<typeof setTimeout> | null;
@@ -81,12 +82,14 @@ export default class Board extends React.Component<MyProps, MyState> {
     clickHandler = (event: any) => {
         //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
         this.props.game.clickHandler(event);
-        if (this.props.game.gameMode == GAMEMODE.ONLINE) {
+        console.log(this.props.game.roomId);
+        if (this.props.game.gameMode == GAMEMODE.ONLINE && this.props.game.roomId) {
             let gameInfo: GameInfo = {
                 chessboard: this.props.game.engine.chessboard,
                 id: this.props.game.id,
                 turn: this.props.game.engine.turn,
                 winner: this.props.game.engine.winner,
+                roomId: this.props.game.roomId,
             }
             socket.emit("make_move", gameInfo);
         }
@@ -155,7 +158,7 @@ export default class Board extends React.Component<MyProps, MyState> {
                 <TopLabel />
                 <LeftLabel />
                 <RightLabel />
-                <Chessboard engine={engine} preview={false} gameCounter={0} game={this.props.game} setWinner={this.setWinner} />
+                <Chessboard engine={engine} preview={false} game={this.props.game} setWinner={this.setWinner} />
                 <BotLabel />
                 {this.state.contextMenu.showMenu && <ContextMenu contextMenu={this.state.contextMenu} chessboard={engine.chessboard} hide={this.hideContextMenu} />}
             </div>

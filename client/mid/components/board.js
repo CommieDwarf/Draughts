@@ -50,12 +50,14 @@ var Board = /** @class */ (function (_super) {
         _this.clickHandler = function (event) {
             //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
-            if (_this.props.game.gameMode == 2 /* ONLINE */) {
+            console.log(_this.props.game.roomId);
+            if (_this.props.game.gameMode == 2 /* ONLINE */ && _this.props.game.roomId) {
                 var gameInfo = {
                     chessboard: _this.props.game.engine.chessboard,
                     id: _this.props.game.id,
                     turn: _this.props.game.engine.turn,
                     winner: _this.props.game.engine.winner,
+                    roomId: _this.props.game.roomId,
                 };
                 main_1.socket.emit("make_move", gameInfo);
             }
@@ -124,7 +126,7 @@ var Board = /** @class */ (function (_super) {
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
             react_1.default.createElement(right_label_1.default, null),
-            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, gameCounter: 0, game: this.props.game, setWinner: this.setWinner }),
+            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner }),
             react_1.default.createElement(bot_label_1.default, null),
             this.state.contextMenu.showMenu && react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard, hide: this.hideContextMenu })));
     };

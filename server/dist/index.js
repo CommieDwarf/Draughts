@@ -42,11 +42,13 @@ io.on("connection", function (socket) {
     socket.on("leave_room", function (room) {
         socket.leave(room.id);
     });
-    socket.on("join_game", function (gameId) {
-        socket.join(gameId);
+    socket.on("join_game", function (roomId) {
+        socket.join(roomId);
+        socket.broadcast.to(roomId).emit("get_gameId");
     });
-    socket.on("request_join_game", function (author) {
-        socket.broadcast.emit("requested_join_game", author);
+    socket.on("request_join_game", function (_a) {
+        var author = _a.author, gameId = _a.gameId;
+        socket.broadcast.emit("requested_join_game", { author: author, gameId: gameId });
     });
     socket.on("send_message", function (msg) {
         console.log(msg);
@@ -62,19 +64,20 @@ io.on("connection", function (socket) {
         io.emit("get_players", players);
     });
     socket.on("accept_challange", function (gameInfo) {
-        socket.broadcast.to(gameInfo.gameId).emit("challange_accepted", gameInfo);
+        socket.broadcast.to(gameInfo.roomId).emit("challange_accepted", gameInfo);
     });
     socket.on("make_move", function (gameInfo) {
-        socket.broadcast.to(gameInfo.id).emit("move_made", gameInfo);
+        socket.broadcast.to(gameInfo.roomId).emit("move_made", gameInfo);
     });
-    socket.on("player_wants_rematch", function (gameInfo) {
-        socket.broadcast.to(gameInfo.gameId).emit("player_wants_rematch", gameInfo);
+    socket.on("player_wants_rematch", function (rematch) {
+        socket.broadcast.to(rematch.roomId).emit("player_wants_rematch", rematch);
     });
-    socket.on("restart_game", function (id) {
-        socket.broadcast.to(id).emit("game_restarted");
+    socket.on("restart_game", function (gameInfo) {
+        socket.broadcast.to(gameInfo.roomId).emit("game_restarted");
     });
-    socket.on("player-close-game", function (id) {
-        socket.broadcast.to(id).emit("player_closed_game", id);
+    socket.on("player-close-game", function (gameInfo) {
+        socket.broadcast.to(gameInfo.roomId).emit("player_closed_game", gameInfo);
+        console.log("close", gameInfo.roomId, gameInfo.gameId);
     });
     socket.on("disconnect", function () {
         console.log("user disconnected");

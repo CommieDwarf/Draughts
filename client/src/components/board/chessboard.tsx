@@ -20,10 +20,10 @@ export default class Chessboard extends React.Component<props, state> {
         engine: Engine;
         game: Game;
         preview: boolean,
-        gameCounter: number,
         label?: string;
         setWinner?: (color: Color) => void;
-        closeGame?: (gameCounter: number) => void;
+        closeGame?: (gameId: number) => void;
+        switchGame?: (gameId: number) => void;
     }
 
     chessboardRef: React.RefObject<HTMLDivElement>;
@@ -66,7 +66,12 @@ export default class Chessboard extends React.Component<props, state> {
         }
     }
 
-   
+    handleClick = () => {
+        if (this.props.switchGame) {
+            this.props.switchGame(this.props.game.id);
+        }
+        console.log("handle");
+    }
 
     componentDidMount() {
         document.addEventListener("chessboardChanged", this.forceUpdateHandler);
@@ -112,7 +117,6 @@ export default class Chessboard extends React.Component<props, state> {
 
         let previewWrapperClass = "";
         let previewChessboardClass = "";
-        let gameCounter = this.props.gameCounter ? this.props.gameCounter : 0;
 
         let closeIcon: ReactElement | "" = "";
         let label: ReactElement | "" = "";
@@ -120,14 +124,13 @@ export default class Chessboard extends React.Component<props, state> {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = <CloseGame gameCounter={gameCounter} closeGame={this.props.closeGame} game={this.props.game}/>
+            closeIcon = <CloseGame gameId={game.id} closeGame={this.props.closeGame} game={this.props.game}/>
             let playerLabelClass = "";
                 if (this.props.game.gameMode == GAMEMODE.ONLINE) {
                     playerLabelClass = "game-label__label--green";
                 }
             label = (
-                <div id={"game-label-preview-" + gameCounter}
-                 className={"game-preview__label " + playerLabelClass}>
+                <div className={"game-preview__label " + playerLabelClass}>
                     {this.props.label}
                 </div>
             )
@@ -137,10 +140,10 @@ export default class Chessboard extends React.Component<props, state> {
         const bgAnimationClass = this.getBgAnimationClass();
 
         return (
-            <div className={previewWrapperClass}>
+            <div className={previewWrapperClass} onClick={this.handleClick}>
                 {label}
                 <div className={"chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass} 
-                id={("chessboard-" + gameCounter)} ref={this.chessboardRef}>
+                 ref={this.chessboardRef}>
                     {squares}
                 </div>
                 {closeIcon}

@@ -57,9 +57,9 @@ var App = /** @class */ (function (_super) {
                 _this.setState({ connected: true });
             }
         };
-        _this.startNewGame = function (gameMode, side, color, label, gameId) {
-            if (gameId === void 0) { gameId = ""; }
-            var game = new game_1.default(gameMode, color, side, label, _this.gameCounter++, gameId);
+        _this.startNewGame = function (gameMode, side, color, label, gameId, roomId) {
+            if (roomId === void 0) { roomId = ""; }
+            var game = new game_1.default(gameMode, color, 2 /* CUSTOM */, label, gameId, roomId);
             _this.setState(function (prevState) {
                 return {
                     currentGame: game,
@@ -68,45 +68,34 @@ var App = /** @class */ (function (_super) {
             });
             return true;
         };
-        _this.switchGame = function (count) {
-            var game = _this.state.games.filter(function (game) { return game.gameCounter == count; })[0];
+        _this.switchGame = function (id) {
+            var game = _this.state.games.find(function (game) { return game.id == id; });
             if (game) {
                 _this.setState({
                     currentGame: game
                 });
             }
         };
-        _this.closeGame = function (gameCounter, gameId) {
-            if (gameId === void 0) { gameId = ""; }
-            if (!gameId) {
+        _this.closeGame = function (gameId) {
+            var game = _this.state.games.find(function (g) { return g.id == gameId; });
+            if (game == _this.state.currentGame) {
                 _this.setState(function (state) {
                     return {
-                        games: state.games.filter(function (game) { return game.gameCounter != gameCounter; }),
+                        games: state.games.filter((function (g) { return g.id != gameId; })),
                         currentGame: null,
                     };
                 });
             }
             else {
-                var game = _this.state.games.find(function (g) { return g.id == gameId; });
-                if (game == _this.state.currentGame) {
-                    _this.setState(function (state) {
-                        return {
-                            games: state.games.filter((function (g) { return g.id != gameId; })),
-                            currentGame: null,
-                        };
-                    });
-                }
-                else {
-                    _this.setState(function (state) {
-                        return {
-                            games: state.games.filter((function (g) { return g.id != gameId; })),
-                        };
-                    });
-                }
+                _this.setState(function (state) {
+                    return {
+                        games: state.games.filter((function (g) { return g.id != gameId; })),
+                    };
+                });
             }
         };
         _this.restartGame = function (gameId) {
-            if (gameId === void 0) { gameId = ""; }
+            if (gameId === void 0) { gameId = 0; }
             var game;
             if (gameId) {
                 game = _this.state.games.find(function (g) { return g.id == gameId; });
@@ -116,10 +105,10 @@ var App = /** @class */ (function (_super) {
             }
             if (game) {
                 var index = _this.state.games.findIndex(function (g) {
-                    return g.gameCounter == game.gameCounter;
+                    return g.id == game.id;
                 });
                 var games = _this.state.games;
-                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter, gameId);
+                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, gameId, game.roomId);
                 games[index] = newGame;
                 _this.setState({ games: games, currentGame: newGame });
             }
@@ -174,11 +163,11 @@ var App = /** @class */ (function (_super) {
         main_1.socket.on("player_disconnected", function (player) {
             var game = _this.state.games.find(function (g) { return g.label == player.name; });
             if (game) {
-                _this.closeGame(0, game.id);
+                _this.closeGame(game.id);
             }
         });
         main_1.socket.on("move_made", function (_a) {
-            var chessboard = _a.chessboard, id = _a.id, turn = _a.turn, winner = _a.winner;
+            var chessboard = _a.chessboard, id = _a.id, turn = _a.turn, winner = _a.winner, gameRoomId = _a.gameRoomId;
             _this.setState(function (prevState) {
                 var _a;
                 var gameIndex = prevState.games.findIndex(function (g) { return g.id == id; });
@@ -199,10 +188,8 @@ var App = /** @class */ (function (_super) {
                 };
             });
         });
-        main_1.socket.on("player_wants_rematch", function (_a) {
-            var player = _a.player, gameId = _a.gameId;
+        main_1.socket.on("player_wants_rematch", function (rematch) {
             _this.setState(function (prevState) {
-                var rematch = { player: player, gameId: gameId, requested: true };
                 return {
                     rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false)
                 };
@@ -211,9 +198,13 @@ var App = /** @class */ (function (_super) {
         main_1.socket.on("game_restarted", function (id) {
             _this.restartGame(id);
         });
-        main_1.socket.on("player_closed_game", function (id) {
-            _this.closeGame(0, id);
+        main_1.socket.on("player_closed_game", function (info) {
+            console.log(info);
+            _this.closeGame(info.gameId);
         });
+    };
+    App.prototype.componentWillUnmount = function () {
+        main_1.socket.off();
     };
     App.prototype.render = function () {
         var player = this.getPlayer(this.state.name);

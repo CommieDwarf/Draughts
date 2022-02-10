@@ -6,7 +6,7 @@ export default class GamePreview extends React.Component {
     props: {
         games: Game[];
         switchGame: (id: number) => void;
-        closeGame: (counter: number, gameId?: string) => void;
+        closeGame: (counter: number, gameId?: number) => void;
     }
 
     constructor(props: any) {
@@ -14,23 +14,18 @@ export default class GamePreview extends React.Component {
         this.props = props;
     }
 
-    onClickHandler = (event: any) => {
-        const {target} = event;
-        const chessboard = target.closest('.chessboard');
-        if (chessboard) {
-            const id = chessboard.id.slice(-1);
-            this.props.switchGame(id);
-        }
-
-    }
+    
    
     render() {
         const games = this.props.games.map((game, i) => {
-            return <Chessboard engine={game.engine} preview={true} key={i} gameCounter={game.gameCounter} label={game.label} game={game} closeGame={this.props.closeGame}/>
+            return <Chessboard engine={game.engine} preview={true} key={i} 
+            label={game.label} game={game} closeGame={this.props.closeGame}
+            switchGame={this.props.switchGame}
+            />
         });
 
         return (
-            <div className="game-preview" onClick={this.onClickHandler}>
+            <div className="game-preview" >
                 {games}
             </div>
         )

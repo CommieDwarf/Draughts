@@ -31,17 +31,19 @@ var WinMenu = /** @class */ (function (_super) {
                 var rematch = {
                     gameId: props.game.id,
                     player: props.player,
+                    requested: true,
+                    roomId: props.game.roomId
                 };
                 main_1.socket.emit("player_wants_rematch", rematch);
                 _this.setState({ rematchSent: true });
             }
             else if (_this.props.rematch) {
-                var id = props.game.id ? props.game.id : "";
+                var id = props.game.id ? props.game.id : 0;
                 _this.props.restart(id);
                 main_1.socket.emit("restart_game", id);
             }
             else {
-                _this.props.restart("");
+                _this.props.restart(0);
             }
         };
         _this.props = props;

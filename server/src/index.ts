@@ -39,16 +39,21 @@ type Room = {
 }
 
 type GameInfo = {
-    gameId: string,
+    gameId: number,
     playerAccepted: string,
-    playerAcceptedColor: string
+    playerAcceptedColor: string,
+    roomId : string,
 }
 
+type Rematch = {
+    requested: boolean,
+    player: Player | null,
+    gameId: number,
+    roomId: string,
+}
+
+
 let players: Player[] = [];
-
-
-
-
 io.on("connection", (socket: any) => {
 
     console.log("User connected", socket.id, socket.handshake.address);
@@ -79,12 +84,13 @@ io.on("connection", (socket: any) => {
         socket.leave(room.id);
     })
 
-    socket.on("join_game", (gameId: string) => {
-        socket.join(gameId);
+    socket.on("join_game", (roomId: string) => {
+        socket.join(roomId);
+        socket.broadcast.to(roomId).emit("get_gameId");
     })
 
-    socket.on("request_join_game", (author: string) => {
-        socket.broadcast.emit("requested_join_game", author);
+    socket.on("request_join_game", ({author, gameId}: {gameId: number, author:string}) => {
+        socket.broadcast.emit("requested_join_game", {author, gameId});
     })
 
     socket.on("send_message", (msg: IMessage) => {
@@ -105,19 +111,20 @@ io.on("connection", (socket: any) => {
     })
 
     socket.on("accept_challange", (gameInfo: GameInfo) => {
-        socket.broadcast.to(gameInfo.gameId).emit("challange_accepted", gameInfo);
+        socket.broadcast.to(gameInfo.roomId).emit("challange_accepted", gameInfo);
     })
-    socket.on("make_move", (gameInfo: any) => {
-            socket.broadcast.to(gameInfo.id).emit("move_made", gameInfo);
+    socket.on("make_move", (gameInfo: GameInfo) => {
+            socket.broadcast.to(gameInfo.roomId).emit("move_made", gameInfo);
     })
-    socket.on("player_wants_rematch", (gameInfo: any) => {
-        socket.broadcast.to(gameInfo.gameId).emit("player_wants_rematch", gameInfo)
+    socket.on("player_wants_rematch", (rematch: Rematch) => {
+        socket.broadcast.to(rematch.roomId).emit("player_wants_rematch", rematch)
     })
-    socket.on("restart_game", (id: string) => {
-        socket.broadcast.to(id).emit("game_restarted")
+    socket.on("restart_game", (gameInfo: GameInfo) => {
+        socket.broadcast.to(gameInfo.roomId).emit("game_restarted")
     })
-    socket.on("player-close-game", (id: string) => {
-        socket.broadcast.to(id).emit("player_closed_game", id);
+    socket.on("player-close-game", (gameInfo: GameInfo) => {
+        socket.broadcast.to(gameInfo.roomId).emit("player_closed_game", gameInfo);
+        console.log("close", gameInfo.roomId, gameInfo.gameId)
     })
 
     socket.on("disconnect", () => {

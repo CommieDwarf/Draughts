@@ -24,23 +24,15 @@ var GamePreview = /** @class */ (function (_super) {
     __extends(GamePreview, _super);
     function GamePreview(props) {
         var _this = _super.call(this, props) || this;
-        _this.onClickHandler = function (event) {
-            var target = event.target;
-            var chessboard = target.closest('.chessboard');
-            if (chessboard) {
-                var id = chessboard.id.slice(-1);
-                _this.props.switchGame(id);
-            }
-        };
         _this.props = props;
         return _this;
     }
     GamePreview.prototype.render = function () {
         var _this = this;
         var games = this.props.games.map(function (game, i) {
-            return react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, gameCounter: game.gameCounter, label: game.label, game: game, closeGame: _this.props.closeGame });
+            return react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame });
         });
-        return (react_1.default.createElement("div", { className: "game-preview", onClick: this.onClickHandler }, games));
+        return (react_1.default.createElement("div", { className: "game-preview" }, games));
     };
     return GamePreview;
 }(react_1.default.Component));

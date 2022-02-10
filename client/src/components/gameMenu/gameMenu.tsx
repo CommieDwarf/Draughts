@@ -6,7 +6,7 @@ import StartGame from "./startGame";
 type Color = "black" | "white";
 
 type Props = {
-    startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string) => boolean;
+    startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, id: number) => boolean;
     error: string,
     centered: boolean;
     games: Game[];

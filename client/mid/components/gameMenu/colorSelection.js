@@ -7,7 +7,8 @@ var react_1 = __importDefault(require("react"));
 function ColorSelection(props) {
     var side = props.color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
     function handleClick() {
-        var isStarted = props.startNewGame(props.gameMode, side, props.color, props.label);
+        var id = Date.now();
+        var isStarted = props.startNewGame(props.gameMode, side, props.color, props.label, id);
         if (isStarted) {
             props.setError("");
         }

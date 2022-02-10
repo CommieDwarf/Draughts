@@ -64,7 +64,7 @@ var Lobby = /** @class */ (function (_super) {
                 };
             });
         };
-        _this.acceptChallange = function (name, gameId) {
+        _this.acceptChallange = function (name, gameId, roomId) {
             var randomNum = Math.floor(Math.random() * 2);
             var authorColor;
             if (randomNum == 0) {
@@ -74,8 +74,9 @@ var Lobby = /** @class */ (function (_super) {
                 authorColor = "black";
             }
             var side = authorColor == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
-            _this.props.startNewGame(2 /* ONLINE */, side, authorColor, name, gameId);
+            _this.props.startNewGame(2 /* ONLINE */, side, authorColor, name, gameId, roomId);
             var gameInfo = {
+                roomId: roomId,
                 gameId: gameId,
                 playerAccepted: _this.props.name,
                 playerAcceptedColor: authorColor
@@ -104,14 +105,17 @@ var Lobby = /** @class */ (function (_super) {
                 _this.createRoom(player.id);
             }
             if (player && _this.state.gameInvitable && player.id != _this.props.name) {
-                main_1.socket.emit("request_join_game", _this.props.name);
-                main_1.socket.emit("join_game", _this.getGameId(player.id, _this.props.name));
+                var gameRoomId = _this.getGameRoomId(player.id, _this.props.name);
+                var gameId = _this.getGameId();
+                main_1.socket.emit("request_join_game", { author: _this.props.name, gameId: gameId });
+                main_1.socket.emit("join_game", gameRoomId);
                 _this.setState({ gameInvitable: false });
                 if (!_this.state.gameInvSent.some(function (inv) { return inv.target == player.id; })) {
                     var inv_1 = {
                         target: player.id,
-                        gameId: _this.getGameId(player.id, _this.props.name),
+                        gameId: gameId,
                         author: _this.props.name,
+                        roomId: gameRoomId,
                     };
                     _this.setState(function (prevState) {
                         return {
@@ -180,13 +184,15 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("done_writing", function (room) {
                 _this.setRoomProperty(room.id, 'isWriting', false);
             });
-            main_1.socket.on("requested_join_game", function (author) {
-                var gameId = _this.getGameId(author, _this.props.name);
-                main_1.socket.emit("join_game", (gameId));
+            main_1.socket.on("requested_join_game", function (_a) {
+                var author = _a.author, gameId = _a.gameId;
+                var roomId = _this.getGameRoomId(author, _this.props.name);
+                main_1.socket.emit("join_game", roomId);
+                console.log(roomId);
                 if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
                     _this.setState(function (prevState) {
                         return {
-                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name }], false)
+                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name, roomId: roomId }], false)
                         };
                     });
                 }
@@ -195,7 +201,7 @@ var Lobby = /** @class */ (function (_super) {
                 var color;
                 color = gameInfo.playerAcceptedColor == "white" ? "black" : "white";
                 var side = color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
-                _this.props.startNewGame(2 /* ONLINE */, side, color, gameInfo.playerAccepted, gameInfo.gameId);
+                _this.props.startNewGame(2 /* ONLINE */, side, color, gameInfo.playerAccepted, gameInfo.gameId, gameInfo.roomId);
                 _this.filterOutSentInvites(gameInfo.playerAccepted);
             });
             main_1.socket.on("player_disconnected", function (player) {
@@ -219,7 +225,7 @@ var Lobby = /** @class */ (function (_super) {
         _this.inviteRef = react_1.default.createRef();
         return _this;
     }
-    Lobby.prototype.getGameId = function (playerName1, playerName2) {
+    Lobby.prototype.getGameRoomId = function (playerName1, playerName2) {
         if (playerName1 > playerName2) {
             return playerName1 + playerName2 + "-game";
         }
@@ -240,6 +246,9 @@ var Lobby = /** @class */ (function (_super) {
         }
         return roomIdPart1 + roomIdPart2;
     };
+    Lobby.prototype.getGameId = function () {
+        return Date.now();
+    };
     Lobby.prototype.componentWillUnmount = function () {
         document.removeEventListener('click', this.handleOutsidePlayersClick);
         main_1.socket.off();
@@ -251,10 +260,10 @@ var Lobby = /** @class */ (function (_super) {
             return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange });
+            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId });
         });
         var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
-            return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, gameId: inv.gameId, key: i });
+            return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, key: i });
         });
         var inviteClass = "";
         if (this.state.gameInvitable) {

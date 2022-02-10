@@ -58,9 +58,9 @@ var App = /** @class */ (function (_super) {
                 _this.setState({ connected: true });
             }
         };
-        _this.startNewGame = function (gameMode, side, color, label, gameId) {
-            if (gameId === void 0) { gameId = ""; }
-            var game = new game_1.default(gameMode, color, side, label, _this.gameCounter++, gameId);
+        _this.startNewGame = function (gameMode, side, color, label, gameId, roomId) {
+            if (roomId === void 0) { roomId = ""; }
+            var game = new game_1.default(gameMode, color, 2 /* CUSTOM */, label, gameId, roomId);
             _this.setState(function (prevState) {
                 return {
                     currentGame: game,
@@ -69,45 +69,34 @@ var App = /** @class */ (function (_super) {
             });
             return true;
         };
-        _this.switchGame = function (count) {
-            var game = _this.state.games.filter(function (game) { return game.gameCounter == count; })[0];
+        _this.switchGame = function (id) {
+            var game = _this.state.games.find(function (game) { return game.id == id; });
             if (game) {
                 _this.setState({
                     currentGame: game
                 });
             }
         };
-        _this.closeGame = function (gameCounter, gameId) {
-            if (gameId === void 0) { gameId = ""; }
-            if (!gameId) {
+        _this.closeGame = function (gameId) {
+            var game = _this.state.games.find(function (g) { return g.id == gameId; });
+            if (game == _this.state.currentGame) {
                 _this.setState(function (state) {
                     return {
-                        games: state.games.filter(function (game) { return game.gameCounter != gameCounter; }),
+                        games: state.games.filter((function (g) { return g.id != gameId; })),
                         currentGame: null,
                     };
                 });
             }
             else {
-                var game = _this.state.games.find(function (g) { return g.id == gameId; });
-                if (game == _this.state.currentGame) {
-                    _this.setState(function (state) {
-                        return {
-                            games: state.games.filter((function (g) { return g.id != gameId; })),
-                            currentGame: null,
-                        };
-                    });
-                }
-                else {
-                    _this.setState(function (state) {
-                        return {
-                            games: state.games.filter((function (g) { return g.id != gameId; })),
-                        };
-                    });
-                }
+                _this.setState(function (state) {
+                    return {
+                        games: state.games.filter((function (g) { return g.id != gameId; })),
+                    };
+                });
             }
         };
         _this.restartGame = function (gameId) {
-            if (gameId === void 0) { gameId = ""; }
+            if (gameId === void 0) { gameId = 0; }
             var game;
             if (gameId) {
                 game = _this.state.games.find(function (g) { return g.id == gameId; });
@@ -117,10 +106,10 @@ var App = /** @class */ (function (_super) {
             }
             if (game) {
                 var index = _this.state.games.findIndex(function (g) {
-                    return g.gameCounter == game.gameCounter;
+                    return g.id == game.id;
                 });
                 var games = _this.state.games;
-                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, game.gameCounter, gameId);
+                var newGame = new game_1.default(game.gameMode, game.playerColor, game.side, game.label, gameId, game.roomId);
                 games[index] = newGame;
                 _this.setState({ games: games, currentGame: newGame });
             }
@@ -175,11 +164,11 @@ var App = /** @class */ (function (_super) {
         main_1.socket.on("player_disconnected", function (player) {
             var game = _this.state.games.find(function (g) { return g.label == player.name; });
             if (game) {
-                _this.closeGame(0, game.id);
+                _this.closeGame(game.id);
             }
         });
         main_1.socket.on("move_made", function (_a) {
-            var chessboard = _a.chessboard, id = _a.id, turn = _a.turn, winner = _a.winner;
+            var chessboard = _a.chessboard, id = _a.id, turn = _a.turn, winner = _a.winner, gameRoomId = _a.gameRoomId;
             _this.setState(function (prevState) {
                 var _a;
                 var gameIndex = prevState.games.findIndex(function (g) { return g.id == id; });
@@ -200,10 +189,8 @@ var App = /** @class */ (function (_super) {
                 };
             });
         });
-        main_1.socket.on("player_wants_rematch", function (_a) {
-            var player = _a.player, gameId = _a.gameId;
+        main_1.socket.on("player_wants_rematch", function (rematch) {
             _this.setState(function (prevState) {
-                var rematch = { player: player, gameId: gameId, requested: true };
                 return {
                     rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false)
                 };
@@ -212,9 +199,13 @@ var App = /** @class */ (function (_super) {
         main_1.socket.on("game_restarted", function (id) {
             _this.restartGame(id);
         });
-        main_1.socket.on("player_closed_game", function (id) {
-            _this.closeGame(0, id);
+        main_1.socket.on("player_closed_game", function (info) {
+            console.log(info);
+            _this.closeGame(info.gameId);
         });
+    };
+    App.prototype.componentWillUnmount = function () {
+        main_1.socket.off();
     };
     App.prototype.render = function () {
         var player = this.getPlayer(this.state.name);
@@ -635,12 +626,14 @@ var Board = /** @class */ (function (_super) {
         _this.clickHandler = function (event) {
             //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
-            if (_this.props.game.gameMode == 2 /* ONLINE */) {
+            console.log(_this.props.game.roomId);
+            if (_this.props.game.gameMode == 2 /* ONLINE */ && _this.props.game.roomId) {
                 var gameInfo = {
                     chessboard: _this.props.game.engine.chessboard,
                     id: _this.props.game.id,
                     turn: _this.props.game.engine.turn,
                     winner: _this.props.game.engine.winner,
+                    roomId: _this.props.game.roomId,
                 };
                 main_1.socket.emit("make_move", gameInfo);
             }
@@ -709,7 +702,7 @@ var Board = /** @class */ (function (_super) {
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
             react_1.default.createElement(right_label_1.default, null),
-            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, gameCounter: 0, game: this.props.game, setWinner: this.setWinner }),
+            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner }),
             react_1.default.createElement(bot_label_1.default, null),
             this.state.contextMenu.showMenu && react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard, hide: this.hideContextMenu })));
     };
@@ -729,12 +722,9 @@ var main_1 = require("../../main");
 function CloseGame(props) {
     function handleClick() {
         if (props.closeGame) {
-            if (!props.game.id) {
-                props.closeGame(props.gameCounter);
-            }
-            else {
-                props.closeGame(0, props.game.id);
-                main_1.socket.emit("player-close-game", props.game.id);
+            props.closeGame(props.gameId);
+            if (props.game.gameMode == 2 /* ONLINE */) {
+                main_1.socket.emit("player-close-game", { gameId: props.game.id, roomId: props.game.roomId });
             }
         }
     }
@@ -776,6 +766,12 @@ var Chessboard = /** @class */ (function (_super) {
             if (_this.props.engine.winner && _this.props.setWinner) {
                 _this.props.setWinner(_this.props.engine.winner);
             }
+        };
+        _this.handleClick = function () {
+            if (_this.props.switchGame) {
+                _this.props.switchGame(_this.props.game.id);
+            }
+            console.log("handle");
         };
         _this.props = props;
         _this.chessboardRef = react_1.default.createRef();
@@ -844,23 +840,22 @@ var Chessboard = /** @class */ (function (_super) {
         }
         var previewWrapperClass = "";
         var previewChessboardClass = "";
-        var gameCounter = this.props.gameCounter ? this.props.gameCounter : 0;
         var closeIcon = "";
         var label = "";
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameCounter: gameCounter, closeGame: this.props.closeGame, game: this.props.game });
+            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameId: game.id, closeGame: this.props.closeGame, game: this.props.game });
             var playerLabelClass = "";
             if (this.props.game.gameMode == 2 /* ONLINE */) {
                 playerLabelClass = "game-label__label--green";
             }
-            label = (react_1.default.createElement("div", { id: "game-label-preview-" + gameCounter, className: "game-preview__label " + playerLabelClass }, this.props.label));
+            label = (react_1.default.createElement("div", { className: "game-preview__label " + playerLabelClass }, this.props.label));
         }
         var bgAnimationClass = this.getBgAnimationClass();
-        return (react_1.default.createElement("div", { className: previewWrapperClass },
+        return (react_1.default.createElement("div", { className: previewWrapperClass, onClick: this.handleClick },
             label,
-            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, id: ("chessboard-" + gameCounter), ref: this.chessboardRef }, squares),
+            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, ref: this.chessboardRef }, squares),
             closeIcon));
     };
     return Chessboard;
@@ -1201,17 +1196,19 @@ var WinMenu = /** @class */ (function (_super) {
                 var rematch = {
                     gameId: props.game.id,
                     player: props.player,
+                    requested: true,
+                    roomId: props.game.roomId
                 };
                 main_1.socket.emit("player_wants_rematch", rematch);
                 _this.setState({ rematchSent: true });
             }
             else if (_this.props.rematch) {
-                var id = props.game.id ? props.game.id : "";
+                var id = props.game.id ? props.game.id : 0;
                 _this.props.restart(id);
                 main_1.socket.emit("restart_game", id);
             }
             else {
-                _this.props.restart("");
+                _this.props.restart(0);
             }
         };
         _this.props = props;
@@ -1280,7 +1277,8 @@ var react_1 = __importDefault(require("react"));
 function ColorSelection(props) {
     var side = props.color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
     function handleClick() {
-        var isStarted = props.startNewGame(props.gameMode, side, props.color, props.label);
+        var id = Date.now();
+        var isStarted = props.startNewGame(props.gameMode, side, props.color, props.label, id);
         if (isStarted) {
             props.setError("");
         }
@@ -1378,23 +1376,15 @@ var GamePreview = /** @class */ (function (_super) {
     __extends(GamePreview, _super);
     function GamePreview(props) {
         var _this = _super.call(this, props) || this;
-        _this.onClickHandler = function (event) {
-            var target = event.target;
-            var chessboard = target.closest('.chessboard');
-            if (chessboard) {
-                var id = chessboard.id.slice(-1);
-                _this.props.switchGame(id);
-            }
-        };
         _this.props = props;
         return _this;
     }
     GamePreview.prototype.render = function () {
         var _this = this;
         var games = this.props.games.map(function (game, i) {
-            return react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, gameCounter: game.gameCounter, label: game.label, game: game, closeGame: _this.props.closeGame });
+            return react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame });
         });
-        return (react_1.default.createElement("div", { className: "game-preview", onClick: this.onClickHandler }, games));
+        return (react_1.default.createElement("div", { className: "game-preview" }, games));
     };
     return GamePreview;
 }(react_1.default.Component));
@@ -1952,7 +1942,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 function GameInvitation(props) {
     function handleClick() {
-        props.acceptChallange(props.author, props.gameId);
+        props.acceptChallange(props.author, props.gameId, props.roomId);
     }
     return react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement("div", { className: "lobby__game-invitation-text" },
@@ -2029,7 +2019,7 @@ var Lobby = /** @class */ (function (_super) {
                 };
             });
         };
-        _this.acceptChallange = function (name, gameId) {
+        _this.acceptChallange = function (name, gameId, roomId) {
             var randomNum = Math.floor(Math.random() * 2);
             var authorColor;
             if (randomNum == 0) {
@@ -2039,8 +2029,9 @@ var Lobby = /** @class */ (function (_super) {
                 authorColor = "black";
             }
             var side = authorColor == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
-            _this.props.startNewGame(2 /* ONLINE */, side, authorColor, name, gameId);
+            _this.props.startNewGame(2 /* ONLINE */, side, authorColor, name, gameId, roomId);
             var gameInfo = {
+                roomId: roomId,
                 gameId: gameId,
                 playerAccepted: _this.props.name,
                 playerAcceptedColor: authorColor
@@ -2069,14 +2060,17 @@ var Lobby = /** @class */ (function (_super) {
                 _this.createRoom(player.id);
             }
             if (player && _this.state.gameInvitable && player.id != _this.props.name) {
-                main_1.socket.emit("request_join_game", _this.props.name);
-                main_1.socket.emit("join_game", _this.getGameId(player.id, _this.props.name));
+                var gameRoomId = _this.getGameRoomId(player.id, _this.props.name);
+                var gameId = _this.getGameId();
+                main_1.socket.emit("request_join_game", { author: _this.props.name, gameId: gameId });
+                main_1.socket.emit("join_game", gameRoomId);
                 _this.setState({ gameInvitable: false });
                 if (!_this.state.gameInvSent.some(function (inv) { return inv.target == player.id; })) {
                     var inv_1 = {
                         target: player.id,
-                        gameId: _this.getGameId(player.id, _this.props.name),
+                        gameId: gameId,
                         author: _this.props.name,
+                        roomId: gameRoomId,
                     };
                     _this.setState(function (prevState) {
                         return {
@@ -2145,13 +2139,15 @@ var Lobby = /** @class */ (function (_super) {
             main_1.socket.on("done_writing", function (room) {
                 _this.setRoomProperty(room.id, 'isWriting', false);
             });
-            main_1.socket.on("requested_join_game", function (author) {
-                var gameId = _this.getGameId(author, _this.props.name);
-                main_1.socket.emit("join_game", (gameId));
+            main_1.socket.on("requested_join_game", function (_a) {
+                var author = _a.author, gameId = _a.gameId;
+                var roomId = _this.getGameRoomId(author, _this.props.name);
+                main_1.socket.emit("join_game", roomId);
+                console.log(roomId);
                 if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
                     _this.setState(function (prevState) {
                         return {
-                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name }], false)
+                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name, roomId: roomId }], false)
                         };
                     });
                 }
@@ -2160,7 +2156,7 @@ var Lobby = /** @class */ (function (_super) {
                 var color;
                 color = gameInfo.playerAcceptedColor == "white" ? "black" : "white";
                 var side = color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
-                _this.props.startNewGame(2 /* ONLINE */, side, color, gameInfo.playerAccepted, gameInfo.gameId);
+                _this.props.startNewGame(2 /* ONLINE */, side, color, gameInfo.playerAccepted, gameInfo.gameId, gameInfo.roomId);
                 _this.filterOutSentInvites(gameInfo.playerAccepted);
             });
             main_1.socket.on("player_disconnected", function (player) {
@@ -2184,7 +2180,7 @@ var Lobby = /** @class */ (function (_super) {
         _this.inviteRef = react_1.default.createRef();
         return _this;
     }
-    Lobby.prototype.getGameId = function (playerName1, playerName2) {
+    Lobby.prototype.getGameRoomId = function (playerName1, playerName2) {
         if (playerName1 > playerName2) {
             return playerName1 + playerName2 + "-game";
         }
@@ -2205,6 +2201,9 @@ var Lobby = /** @class */ (function (_super) {
         }
         return roomIdPart1 + roomIdPart2;
     };
+    Lobby.prototype.getGameId = function () {
+        return Date.now();
+    };
     Lobby.prototype.componentWillUnmount = function () {
         document.removeEventListener('click', this.handleOutsidePlayersClick);
         main_1.socket.off();
@@ -2216,10 +2215,10 @@ var Lobby = /** @class */ (function (_super) {
             return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange });
+            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId });
         });
         var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
-            return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, gameId: inv.gameId, key: i });
+            return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, key: i });
         });
         var inviteClass = "";
         if (this.state.gameInvitable) {
@@ -3131,7 +3130,7 @@ var bot_1 = __importDefault(require("./bot"));
 var engine_1 = require("./engine");
 var createChessboard_1 = __importDefault(require("./createChessboard"));
 var Game = /** @class */ (function () {
-    function Game(gameMode, playerColor, side, label, gameCounter, id) {
+    function Game(gameMode, playerColor, side, label, id, roomId) {
         this.engine = new engine_1.Engine(side);
         this.botColor = playerColor == "white" ? "black" : "white";
         this.bot = new bot_1.default(this.engine, this.botColor);
@@ -3140,8 +3139,8 @@ var Game = /** @class */ (function () {
         this.side = side;
         this.label = label;
         this.engine.chessboard = this.startNewGame();
-        this.gameCounter = gameCounter;
         this.id = id;
+        this.roomId = roomId;
     }
     Game.prototype.startNewGame = function () {
         this.engine.chessboard = (0, createChessboard_1.default)(this.side);

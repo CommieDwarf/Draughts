@@ -26,9 +26,10 @@ type Room = {
 }
 
 type GameInfo = {
-    gameId: string,
+    gameId: number,
     playerAccepted: string,
-    playerAcceptedColor: string
+    playerAcceptedColor: string,
+    roomId: string,
 }
 
 type Color = "white" | "black";
@@ -42,15 +43,15 @@ type State = {
     currentRoom: Room,
     roomInvitable: boolean,
     gameInvitable: boolean,
-    gameInvitations: { gameId: string, author: string, target: string}[]
-    gameInvSent: { gameId: string, author: string, target: string }[]
+    gameInvitations: { gameId: number, author: string, target: string, roomId: string}[]
+    gameInvSent: { gameId: number, author: string, target: string, roomId: string}[]
 }
 
 export default class Lobby extends React.Component<Props, State> {
 
     props: {
         name: string,
-        startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, gameId: string) => boolean;
+        startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, gameId: number, roomId: string) => boolean;
     }
     playersRef: React.RefObject<HTMLDivElement>
     createRoomRef: React.RefObject<HTMLDivElement>
@@ -77,7 +78,7 @@ export default class Lobby extends React.Component<Props, State> {
         this.setState({ gameInvitable: true });
     }
 
-    getGameId(playerName1: string, playerName2: string) {
+    getGameRoomId(playerName1: string, playerName2: string) {
         if (playerName1 > playerName2) {
             return playerName1 + playerName2 + "-game";
         } else {
@@ -96,6 +97,10 @@ export default class Lobby extends React.Component<Props, State> {
             roomIdPart2 = name;
         }
         return roomIdPart1 + roomIdPart2;
+    }
+
+    getGameId() {
+        return Date.now();
     }
 
     createRoom = (name: string) => {
@@ -123,7 +128,7 @@ export default class Lobby extends React.Component<Props, State> {
         })
     }
 
-    acceptChallange = (name: string, gameId: string) => {
+    acceptChallange = (name: string, gameId: number, roomId: string) => {
         let randomNum = Math.floor(Math.random() * 2);
         let authorColor : Color;
         if (randomNum == 0) {
@@ -132,8 +137,9 @@ export default class Lobby extends React.Component<Props, State> {
             authorColor = "black";
         }
         let side = authorColor == "white" ? SIDE.NORMAL : SIDE.REVERSED;
-        this.props.startNewGame(GAMEMODE.ONLINE, side, authorColor, name, gameId);
+        this.props.startNewGame(GAMEMODE.ONLINE, side, authorColor, name, gameId, roomId);
         let gameInfo = {
+            roomId,
             gameId,
             playerAccepted: this.props.name,
             playerAcceptedColor: authorColor
@@ -166,14 +172,17 @@ export default class Lobby extends React.Component<Props, State> {
             this.createRoom(player.id);
         }
         if (player && this.state.gameInvitable && player.id != this.props.name) {
-            socket.emit("request_join_game", this.props.name);
-            socket.emit("join_game", this.getGameId(player.id, this.props.name));
+            const gameRoomId = this.getGameRoomId(player.id, this.props.name)
+            const gameId = this.getGameId();
+            socket.emit("request_join_game", {author: this.props.name, gameId});
+            socket.emit("join_game", gameRoomId);
             this.setState({gameInvitable: false});
             if (!this.state.gameInvSent.some((inv) => inv.target == player.id)) {
                 const inv = {
                     target: player.id, 
-                    gameId: this.getGameId(player.id, this.props.name),
+                    gameId,
                     author: this.props.name,
+                    roomId: gameRoomId,
                 }
                 this.setState((prevState) => {
                     return {
@@ -251,13 +260,14 @@ export default class Lobby extends React.Component<Props, State> {
             this.setRoomProperty(room.id, 'isWriting', false);
         })
 
-        socket.on("requested_join_game", (author) => {
-            const gameId = this.getGameId(author, this.props.name);
-            socket.emit("join_game", (gameId))
+        socket.on("requested_join_game", ({author, gameId}) => {
+            const roomId = this.getGameRoomId(author, this.props.name);
+            socket.emit("join_game", roomId)
+            console.log(roomId)
             if (!this.state.gameInvitations.some((inv) => inv.gameId == gameId)) {
                 this.setState((prevState) => {
                     return {
-                        gameInvitations: [...prevState.gameInvitations, { author, gameId, target: this.props.name }]
+                        gameInvitations: [...prevState.gameInvitations, { author, gameId, target: this.props.name, roomId }]
                     }
                 })
             }
@@ -268,7 +278,7 @@ export default class Lobby extends React.Component<Props, State> {
             color = gameInfo.playerAcceptedColor == "white" ? "black" : "white";
             let side = color == "white" ? SIDE.NORMAL : SIDE.REVERSED;
            
-            this.props.startNewGame(GAMEMODE.ONLINE, side, color, gameInfo.playerAccepted, gameInfo.gameId);
+            this.props.startNewGame(GAMEMODE.ONLINE, side, color, gameInfo.playerAccepted, gameInfo.gameId, gameInfo.roomId);
             this.filterOutSentInvites(gameInfo.playerAccepted);
         })
 
@@ -305,11 +315,12 @@ export default class Lobby extends React.Component<Props, State> {
             return <GameInviation author={inv.author} 
             gameId={inv.gameId} key={i} target={inv.target}
             acceptChallange={this.acceptChallange}
+            roomId={inv.roomId}
             />
         })
 
         const gameInvSent = this.state.gameInvSent.map((inv, i) => {
-            return <GameInvSent target={inv.target} gameId={inv.gameId} key={i}/>
+            return <GameInvSent target={inv.target} key={i}/>
         })
 
         let inviteClass = "";
