@@ -33,6 +33,7 @@ export default class ContextMenu extends React.Component {
         } else {
             props.chessboard[props.contextMenu.i]["piece"] = "black";
         }
+        document.dispatchEvent(new Event("chessboardChanged"));
     }
 
     onClickBotHandler = () => {
@@ -45,6 +46,7 @@ export default class ContextMenu extends React.Component {
         } else {
             props.chessboard[props.contextMenu.i]["piece"] = "white";
         }
+        document.dispatchEvent(new Event("chessboardChanged"));
     }
     
     

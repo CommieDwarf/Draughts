@@ -1,77 +1,67 @@
-@media screen and (max-width: 1250px) {
-    .lobby {
-        width: 275px;
-    }
-    .lobby__input {
-        width: 175px;
-    }
-}
 
-@media screen and (max-width: 1200px) {
-    .lobby {
-        width: 225px;
-    }
+@media screen and (max-width: 1010px) {
     .lobby__input {
-        width: 125px;
+        width: 60%;
     }
     .lobby__message-content {
-        max-width: 75px;
-    }
-    .game-menu--float-right {
-        margin-right: 25px;
+        max-width: 55%;
     }
 }
 
-@media screen and (max-width: 1100px) {
-    .game-menu--float-right {
-        margin-right: 0px;
-        position: absolute; 
-        left: 0; 
-        right: 0; 
-        top: 1150px;
-        margin-left: auto; 
-        margin-right: auto;
+@media screen and (max-width: 900px) {
+    .lobby__message-content {
+        max-width: 80%
+    }
+    .lobby__input {
+        width: 85%;
+    }
+    .game-preview {
+        order: 0;
     }
     .board {
-        display: block;
+        order: 1;
     }
     .lobby {
-        position: absolute; 
-        left: 0; 
-        right: 0; 
-        top: 650px;
-        margin-left: auto; 
-        margin-right: auto;
-        width: 500px;
+        order: 2;
+        width: 90%
+    }
+    .game-menu {
+        order: 3;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .lobby__input {
+        width: 80%
     }
     .lobby__message-content {
-        max-width: 320px;
+        max-width: 70%
     }
-    .lobby__input {
-        width: 390px;
-    }
- }
+}
 
 
  @media screen and (max-width: 570px) {
-    .game-preview {
-        width: 300px;
-    }
+
     .lobby {
-        width: 300px;
-        position: absolute;
-        top: 400px;
+        width: 100%;
     }
+  
     .lobby__input {
-        width: 200px;
+        max-width: 80%;
     }
-    .lobby__message-content {
-        max-width: 160px;
-    }
+ 
+   
     .board {
         width: 350px;
+        height: 350px;
 
     }
+
+    .win-menu {
+        height: 264px;
+        font-size: 20px;
+    }
+
     .chessboard {
        width: 264px;
        height: 264px;
@@ -155,10 +145,18 @@
     .board__left-label {
         position: relative;
         left: 15px;
+        width: 15px;
+        margin: 0;
+        font-size: 7px;
+        left: 0;
     }
     .board__right-label {
         position: relative;
         right: 15px;
+        width: 15px;
+        margin: 0;
+        font-size: 7px;
+        right: 0
     }
 
     .board__right-label-num, .board__left-label-num {
@@ -172,7 +170,8 @@
     }
 
     .game-preview {
-        height: 50px;
+        height: 60px;
+        width: 100%;
     }
 
     .game-preview__label {
@@ -185,14 +184,18 @@
     }
 
     .game-preview__chessboard-wrapper {
-        margin-left: -12px;
+        margin-left: 20px;
         width: 100px;
     }
     .game-preview__close-game {
         left: 220px;
     }
-    .game-menu--float-right {
-        position: absolute;
-        top: 870px;
+    
+
+}
+
+@media screen and (max-width: 420px) {
+    .lobby__message-content {
+        max-width: 50%;
     }
 }

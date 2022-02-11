@@ -43,12 +43,19 @@ var Lobby = /** @class */ (function (_super) {
         };
         _this.createRoom = function (name) {
             var roomId = _this.getRoomId(name);
-            if (!_this.state.rooms.some(function (room) { return room.name == name; }) && name !== _this.props.name) {
+            if (!_this.state.rooms.some(function (room) { return room.name == name; }) &&
+                name !== _this.props.name) {
                 var room = { author: _this.props.name, target: name, id: roomId };
                 main_1.socket.emit("join_room", room);
                 main_1.socket.emit("create_room", room);
                 _this.setState(function (prevState) {
-                    var room = { name: name, id: roomId, unread: false, hover: false, isWriting: false };
+                    var room = {
+                        name: name,
+                        id: roomId,
+                        unread: false,
+                        hover: false,
+                        isWriting: false,
+                    };
                     return {
                         rooms: __spreadArray(__spreadArray([], prevState.rooms, true), [room], false),
                         currentRoom: room,
@@ -60,7 +67,7 @@ var Lobby = /** @class */ (function (_super) {
         _this.closeRoom = function (name) {
             _this.setState(function (prevState) {
                 return {
-                    rooms: prevState.rooms.filter(function (room) { return room.name != name; })
+                    rooms: prevState.rooms.filter(function (room) { return room.name != name; }),
                 };
             });
         };
@@ -79,7 +86,7 @@ var Lobby = /** @class */ (function (_super) {
                 roomId: roomId,
                 gameId: gameId,
                 playerAccepted: _this.props.name,
-                playerAcceptedColor: authorColor
+                playerAcceptedColor: authorColor,
             };
             main_1.socket.emit("accept_challange", gameInfo);
             _this.filterOutGameInvites(name);
@@ -94,14 +101,18 @@ var Lobby = /** @class */ (function (_super) {
         _this.filterOutSentInvites = function (name) {
             _this.setState(function (prevState) {
                 return {
-                    gameInvSent: prevState.gameInvSent.filter(function (inv) { return inv.target != name; })
+                    gameInvSent: prevState.gameInvSent.filter(function (inv) { return inv.target != name; }),
                 };
             });
         };
         _this.handlePlayerInvite = function (event) {
             var target = event.target;
             var player = target.closest(".lobby__player");
-            if (player && !_this.state.rooms.some(function (room) { room.name == player.id; }) && _this.state.roomInvitable) {
+            if (player &&
+                !_this.state.rooms.some(function (room) {
+                    room.name == player.id;
+                }) &&
+                _this.state.roomInvitable) {
                 _this.createRoom(player.id);
             }
             if (player && _this.state.gameInvitable && player.id != _this.props.name) {
@@ -119,7 +130,7 @@ var Lobby = /** @class */ (function (_super) {
                     };
                     _this.setState(function (prevState) {
                         return {
-                            gameInvSent: __spreadArray(__spreadArray([], prevState.gameInvSent, true), [inv_1], false)
+                            gameInvSent: __spreadArray(__spreadArray([], prevState.gameInvSent, true), [inv_1], false),
                         };
                     });
                 }
@@ -147,7 +158,7 @@ var Lobby = /** @class */ (function (_super) {
             else {
                 _this.setState(function (prevState) {
                     return {
-                        currentRoom: prevState.rooms[0]
+                        currentRoom: prevState.rooms[0],
                     };
                 });
             }
@@ -161,13 +172,33 @@ var Lobby = /** @class */ (function (_super) {
                 var index_1 = _this.state.rooms.findIndex(function (room) { return room.id == id; });
                 _this.setState(function (prevState) {
                     return {
-                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [room], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true),
+                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [
+                            room
+                        ], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true),
                     };
                 });
                 if (room.id == _this.state.currentRoom.id) {
                     _this.setState({ currentRoom: room });
                 }
             }
+        };
+        _this.handleScroll = function (event) {
+            var _a, _b;
+            if (event.deltaY < 0) {
+                console.log("scrolling up");
+                (_a = _this.roomsRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
+            }
+            else if (event.deltaY > 0) {
+                (_b = _this.roomsRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
+                console.log("scrolling down");
+            }
+            return false;
+        };
+        _this.handleMouseOver = function () {
+            document.body.setAttribute("style", "overflow-y: hidden");
+        };
+        _this.handleMouseLeave = function () {
+            document.body.setAttribute("style", "overflow-y: auto");
         };
         _this.componentDidMount = function () {
             main_1.socket.on("players_update", function (players) {
@@ -179,10 +210,10 @@ var Lobby = /** @class */ (function (_super) {
                 }
             });
             main_1.socket.on("someone_writing", function (room) {
-                _this.setRoomProperty(room.id, 'isWriting', true);
+                _this.setRoomProperty(room.id, "isWriting", true);
             });
             main_1.socket.on("done_writing", function (room) {
-                _this.setRoomProperty(room.id, 'isWriting', false);
+                _this.setRoomProperty(room.id, "isWriting", false);
             });
             main_1.socket.on("requested_join_game", function (_a) {
                 var author = _a.author, gameId = _a.gameId;
@@ -192,7 +223,9 @@ var Lobby = /** @class */ (function (_super) {
                 if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
                     _this.setState(function (prevState) {
                         return {
-                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name, roomId: roomId }], false)
+                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [
+                                { author: author, gameId: gameId, target: _this.props.name, roomId: roomId },
+                            ], false),
                         };
                     });
                 }
@@ -208,13 +241,27 @@ var Lobby = /** @class */ (function (_super) {
                 _this.filterOutGameInvites(player.name);
                 _this.filterOutSentInvites(player.name);
             });
-            document.addEventListener('click', _this.handleOutsidePlayersClick);
+            document.addEventListener("click", _this.handleOutsidePlayersClick);
         };
         _this.props = props;
         _this.state = {
             players: [],
-            currentRoom: { name: "global room", id: "global", unread: false, hover: false, isWriting: false },
-            rooms: [{ name: "global room", id: "global", unread: false, hover: false, isWriting: false }],
+            currentRoom: {
+                name: "global room",
+                id: "global",
+                unread: false,
+                hover: false,
+                isWriting: false,
+            },
+            rooms: [
+                {
+                    name: "global room",
+                    id: "global",
+                    unread: false,
+                    hover: false,
+                    isWriting: false,
+                },
+            ],
             roomInvitable: false,
             gameInvitable: false,
             gameInvitations: [],
@@ -223,6 +270,7 @@ var Lobby = /** @class */ (function (_super) {
         _this.playersRef = react_1.default.createRef();
         _this.createRoomRef = react_1.default.createRef();
         _this.inviteRef = react_1.default.createRef();
+        _this.roomsRef = react_1.default.createRef();
         return _this;
     }
     Lobby.prototype.getGameRoomId = function (playerName1, playerName2) {
@@ -250,17 +298,17 @@ var Lobby = /** @class */ (function (_super) {
         return Date.now();
     };
     Lobby.prototype.componentWillUnmount = function () {
-        document.removeEventListener('click', this.handleOutsidePlayersClick);
+        document.removeEventListener("click", this.handleOutsidePlayersClick);
         main_1.socket.off();
     };
     Lobby.prototype.render = function () {
         var _this = this;
         var player = this.state.players.find(function (player) { return player.name == _this.props.name; });
         var rooms = this.state.rooms.map(function (room, id) {
-            return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
+            return (react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id }));
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId });
+            return (react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId }));
         });
         var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
             return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, key: i });
@@ -281,11 +329,11 @@ var Lobby = /** @class */ (function (_super) {
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
                 react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),
-            react_1.default.createElement("div", { className: "lobby__rooms" },
+            react_1.default.createElement("div", { className: "lobby__rooms", ref: this.roomsRef, onMouseOver: this.handleMouseOver, onMouseLeave: this.handleMouseLeave, onWheel: this.handleScroll },
                 rooms,
                 react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
-            player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting })));
+            player && (react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting }))));
     };
     return Lobby;
 }(react_1.default.Component));

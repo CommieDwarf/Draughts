@@ -59,11 +59,11 @@ var App = /** @class */ (function (_super) {
         };
         _this.startNewGame = function (gameMode, side, color, label, gameId, roomId) {
             if (roomId === void 0) { roomId = ""; }
-            var game = new game_1.default(gameMode, color, 2 /* CUSTOM */, label, gameId, roomId);
+            var game = new game_1.default(gameMode, color, side, label, gameId, roomId);
             _this.setState(function (prevState) {
                 return {
                     currentGame: game,
-                    games: __spreadArray(__spreadArray([], prevState.games, true), [game], false)
+                    games: __spreadArray(__spreadArray([], prevState.games, true), [game], false),
                 };
             });
             return true;
@@ -72,7 +72,7 @@ var App = /** @class */ (function (_super) {
             var game = _this.state.games.find(function (game) { return game.id == id; });
             if (game) {
                 _this.setState({
-                    currentGame: game
+                    currentGame: game,
                 });
             }
         };
@@ -81,7 +81,7 @@ var App = /** @class */ (function (_super) {
             if (game == _this.state.currentGame) {
                 _this.setState(function (state) {
                     return {
-                        games: state.games.filter((function (g) { return g.id != gameId; })),
+                        games: state.games.filter(function (g) { return g.id != gameId; }),
                         currentGame: null,
                     };
                 });
@@ -89,7 +89,7 @@ var App = /** @class */ (function (_super) {
             else {
                 _this.setState(function (state) {
                     return {
-                        games: state.games.filter((function (g) { return g.id != gameId; })),
+                        games: state.games.filter(function (g) { return g.id != gameId; }),
                     };
                 });
             }
@@ -123,7 +123,7 @@ var App = /** @class */ (function (_super) {
             nameError: "",
             rematches: [],
         };
-        _this.menuPosition = 'center';
+        _this.menuPosition = "center";
         _this.gameCounter = 0;
         _this.justStarted = true;
         return _this;
@@ -131,7 +131,7 @@ var App = /** @class */ (function (_super) {
     App.prototype.getLabel = function (mode) {
         switch (mode) {
             case 1 /* BOT */:
-                return 'vsComp';
+                return "vsComp";
             case 0 /* LOCAL */:
                 return "local";
             case 2 /* ONLINE */:
@@ -191,7 +191,7 @@ var App = /** @class */ (function (_super) {
         main_1.socket.on("player_wants_rematch", function (rematch) {
             _this.setState(function (prevState) {
                 return {
-                    rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false)
+                    rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false),
                 };
             });
         });
@@ -214,9 +214,8 @@ var App = /** @class */ (function (_super) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
                 react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
-                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games }),
-                this.state.currentGame &&
-                    react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })));
+                this.state.currentGame && (react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })),
+                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,

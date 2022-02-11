@@ -1,9 +1,6 @@
 .lobby {
-    width: 300px;
+    width: 30%;
     height: 420px;
-    float: left;
-    margin-left: 50px;
-    margin-top: 20px;
     border-radius: 5px;
 }
 
@@ -29,7 +26,7 @@
 .lobby__game-invitation {
     display: inline-block;
     height: 60px;
-    width: 230px;
+    width: 75%;
     overflow-y: scroll;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none; 
@@ -117,9 +114,21 @@
 }
 
 @keyframes shadowChange {
-    0% {box-shadow: 0px 0px 10px 0px lightgreen}
-    50% {box-shadow: 0px 0px 30px 5px lightgreen}
-    100% {box-shadow: 0px 0px 10px 0px lightgreen}
+    0% {
+        box-shadow: 0px 0px 10px 0px lightgreen;
+        -webkit-box-shadow: 0px 0px 10px 0px lightgreen;
+        -moz-box-shadow: 0px 0px 10px 0px;
+    }
+    50% {
+        box-shadow: 0px 0px 30px 5px lightgreen;
+        -webkit-box-shadow: 0px 0px 30px 5px lightgreen;
+    -moz-box-shadow: 0px 0px 30px 5px lightgreen;
+    }
+    100% {
+        box-shadow: 0px 0px 10px 0px lightgreen;
+        -webkit-box-shadow: 0px 0px 10px 0px lightgreen;
+        -moz-box-shadow: 0px 0px 10px 0px lightgreen;
+    }
 }
 
 .lobby__player--current {
@@ -169,6 +178,9 @@ height: 6px;
 
 .lobby__room-wrapper {
     position: relative;
+}
+.lobby__room--global {
+    width: 85px;
 }
 
 .lobby__room {
@@ -232,7 +244,7 @@ height: 6px;
 
 .lobby__chat {
     width: 95%;
-    height: 230px;
+    height: 180px;
     margin: auto;
     margin-top: 10px;
     padding: 5px;
@@ -240,13 +252,14 @@ height: 6px;
 
 .lobby__messages {
     width: 100%;
-    height: 200px;
+    height: 120px;
     overflow-y: scroll;
     position: relative;
 }
 
 .lobby__message {
     margin-top: 5px;
+    position: relative;
 }
 
 .lobby__message-author {
@@ -262,7 +275,7 @@ height: 6px;
     background-color: white;
     display: inline-block;
     border-radius: 5px;
-    max-width: 150px;
+    max-width: 60%;
     min-height: 30px;
     overflow-wrap: break-word;
     padding: 5px;
@@ -332,7 +345,7 @@ height: 6px;
 }
 
 .lobby__input {
-    width: 200px;
+    width: 70%;
     margin-top: 10px;
     display: inline-block;
 }

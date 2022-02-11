@@ -40,10 +40,15 @@ function Room(props) {
     else {
         closeRoomClass = "lobby__close-room--hidden";
     }
+    var globalRoomClass = "";
+    if (props.room.name == "global room") {
+        console.log('global');
+        globalRoomClass = "lobby__room--global";
+    }
     return (react_1.default.createElement("div", { className: "lobby__room-wrapper", onMouseOver: handleMouseOver, onMouseLeave: handleMouseLeave },
-        react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass, onClick: handleClickRoom }, room.name),
-        room.id != "global" && react_1.default.createElement("div", { className: "lobby__close-room " + closeRoomClass, onClick: handleClickCloseRoom },
-            react_1.default.createElement("i", { className: "icon-cancel-circled" }))));
+        react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass + " " + globalRoomClass, onClick: handleClickRoom }, room.name),
+        room.id != "global" && (react_1.default.createElement("div", { className: "lobby__close-room " + closeRoomClass, onClick: handleClickCloseRoom },
+            react_1.default.createElement("i", { className: "icon-cancel-circled" })))));
 }
 exports.default = Room;
 //# sourceMappingURL=room.js.map

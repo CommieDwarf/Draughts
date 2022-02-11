@@ -34,6 +34,7 @@ var ContextMenu = /** @class */ (function (_super) {
             else {
                 props.chessboard[props.contextMenu.i]["piece"] = "black";
             }
+            document.dispatchEvent(new Event("chessboardChanged"));
         };
         _this.onClickBotHandler = function () {
             var props = _this.props;
@@ -47,6 +48,7 @@ var ContextMenu = /** @class */ (function (_super) {
             else {
                 props.chessboard[props.contextMenu.i]["piece"] = "white";
             }
+            document.dispatchEvent(new Event("chessboardChanged"));
         };
         _this.handleOutsideClick = function (event) {
             var target = event.target;

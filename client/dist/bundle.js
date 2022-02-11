@@ -60,11 +60,11 @@ var App = /** @class */ (function (_super) {
         };
         _this.startNewGame = function (gameMode, side, color, label, gameId, roomId) {
             if (roomId === void 0) { roomId = ""; }
-            var game = new game_1.default(gameMode, color, 2 /* CUSTOM */, label, gameId, roomId);
+            var game = new game_1.default(gameMode, color, side, label, gameId, roomId);
             _this.setState(function (prevState) {
                 return {
                     currentGame: game,
-                    games: __spreadArray(__spreadArray([], prevState.games, true), [game], false)
+                    games: __spreadArray(__spreadArray([], prevState.games, true), [game], false),
                 };
             });
             return true;
@@ -73,7 +73,7 @@ var App = /** @class */ (function (_super) {
             var game = _this.state.games.find(function (game) { return game.id == id; });
             if (game) {
                 _this.setState({
-                    currentGame: game
+                    currentGame: game,
                 });
             }
         };
@@ -82,7 +82,7 @@ var App = /** @class */ (function (_super) {
             if (game == _this.state.currentGame) {
                 _this.setState(function (state) {
                     return {
-                        games: state.games.filter((function (g) { return g.id != gameId; })),
+                        games: state.games.filter(function (g) { return g.id != gameId; }),
                         currentGame: null,
                     };
                 });
@@ -90,7 +90,7 @@ var App = /** @class */ (function (_super) {
             else {
                 _this.setState(function (state) {
                     return {
-                        games: state.games.filter((function (g) { return g.id != gameId; })),
+                        games: state.games.filter(function (g) { return g.id != gameId; }),
                     };
                 });
             }
@@ -124,7 +124,7 @@ var App = /** @class */ (function (_super) {
             nameError: "",
             rematches: [],
         };
-        _this.menuPosition = 'center';
+        _this.menuPosition = "center";
         _this.gameCounter = 0;
         _this.justStarted = true;
         return _this;
@@ -132,7 +132,7 @@ var App = /** @class */ (function (_super) {
     App.prototype.getLabel = function (mode) {
         switch (mode) {
             case 1 /* BOT */:
-                return 'vsComp';
+                return "vsComp";
             case 0 /* LOCAL */:
                 return "local";
             case 2 /* ONLINE */:
@@ -192,7 +192,7 @@ var App = /** @class */ (function (_super) {
         main_1.socket.on("player_wants_rematch", function (rematch) {
             _this.setState(function (prevState) {
                 return {
-                    rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false)
+                    rematches: __spreadArray(__spreadArray([], prevState.rematches, true), [rematch], false),
                 };
             });
         });
@@ -215,9 +215,8 @@ var App = /** @class */ (function (_super) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
                 react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
-                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games }),
-                this.state.currentGame &&
-                    react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })));
+                this.state.currentGame && (react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })),
+                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,
@@ -612,7 +611,6 @@ var chessboard_1 = __importDefault(require("./board/chessboard"));
 var right_label_1 = __importDefault(require("./labels/right-label"));
 var bot_label_1 = __importDefault(require("./labels/bot-label"));
 var context_menu_1 = __importDefault(require("./board/context-menu"));
-var winMenu_1 = __importDefault(require("./board/winMenu"));
 var main_1 = require("../main");
 var Board = /** @class */ (function (_super) {
     __extends(Board, _super);
@@ -620,7 +618,7 @@ var Board = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.setWinner = function (winner) {
             _this.setState({
-                winner: winner
+                winner: winner,
             });
         };
         _this.clickHandler = function (event) {
@@ -641,7 +639,7 @@ var Board = /** @class */ (function (_super) {
         _this.hideContextMenu = function () {
             _this.setState(function (prevState) {
                 return {
-                    contextMenu: __assign(__assign({}, prevState.contextMenu), { showMenu: false })
+                    contextMenu: __assign(__assign({}, prevState.contextMenu), { showMenu: false }),
                 };
             });
         };
@@ -649,7 +647,8 @@ var Board = /** @class */ (function (_super) {
             event.preventDefault();
             var engine = _this.props.game.engine;
             var square = event.target.closest(".chessboard__square");
-            if (square && square.className !== "chessboard__square chessboard__square--white") {
+            if (square &&
+                square.className !== "chessboard__square chessboard__square--white") {
                 var id = square.getAttribute("id");
                 var queen = engine.chessboard[id]["queen"];
                 var piece = engine.chessboard[id]["piece"];
@@ -668,7 +667,7 @@ var Board = /** @class */ (function (_super) {
                         clientX: clientX,
                         clientY: clientY,
                         showMenu: true,
-                    }
+                    },
                 });
             }
             return false;
@@ -697,21 +696,19 @@ var Board = /** @class */ (function (_super) {
         var engine = this.props.game.engine;
         var rematch = this.props.rematches.find(function (r) { return r.gameId == _this.props.game.id; });
         return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
-            this.props.game.engine.winner &&
-                react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: rematch }),
             react_1.default.createElement(top_label_1.default, null),
             react_1.default.createElement(left_label_1.default, null),
             react_1.default.createElement(right_label_1.default, null),
-            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner }),
+            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner, restartGame: this.props.restartGame, player: this.props.player, rematch: rematch }),
             react_1.default.createElement(bot_label_1.default, null),
-            this.state.contextMenu.showMenu && react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard, hide: this.hideContextMenu })));
+            this.state.contextMenu.showMenu && (react_1.default.createElement(context_menu_1.default, { contextMenu: this.state.contextMenu, chessboard: engine.chessboard, hide: this.hideContextMenu }))));
     };
     return Board;
 }(react_1.default.Component));
 exports.default = Board;
 var restartFlag = false;
 
-},{"../main":34,".//labels/top-label":20,"./board/chessboard":5,"./board/context-menu":6,"./board/winMenu":10,"./labels/bot-label":17,"./labels/left-label":18,"./labels/right-label":19,"react":71}],4:[function(require,module,exports){
+},{"../main":34,".//labels/top-label":20,"./board/chessboard":5,"./board/context-menu":6,"./labels/bot-label":17,"./labels/left-label":18,"./labels/right-label":19,"react":71}],4:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -757,6 +754,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var square_1 = __importDefault(require("./square"));
 var CloseGame_1 = __importDefault(require("./CloseGame"));
+var winMenu_1 = __importDefault(require("./winMenu"));
 var Chessboard = /** @class */ (function (_super) {
     __extends(Chessboard, _super);
     function Chessboard(props) {
@@ -781,7 +779,7 @@ var Chessboard = /** @class */ (function (_super) {
     Chessboard.prototype.getPieceType = function (id) {
         var engine = this.props.engine;
         if (engine.selectedPiece == id) {
-            return 'selected';
+            return "selected";
         }
         else if (engine.lockedPieces.includes(id)) {
             return "locked";
@@ -790,7 +788,7 @@ var Chessboard = /** @class */ (function (_super) {
             return "killable";
         }
         else {
-            return 'normal';
+            return "normal";
         }
     };
     Chessboard.prototype.getBgAnimationClass = function () {
@@ -826,7 +824,7 @@ var Chessboard = /** @class */ (function (_super) {
                     if (engine.availableMoves.includes(id)) {
                         className += " chessboard__square--hightlight";
                     }
-                    pieceColor = engine.chessboard[id]['piece'];
+                    pieceColor = engine.chessboard[id]["piece"];
                     var queen = engine.chessboard[id]["queen"];
                     squares.push(react_1.default.createElement(square_1.default, { id: id.toString(), className: className, key: id, pieceColor: pieceColor, type: this.getPieceType(id), queen: queen }));
                 }
@@ -845,7 +843,7 @@ var Chessboard = /** @class */ (function (_super) {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameId: game.id, closeGame: this.props.closeGame, game: this.props.game });
+            closeIcon = (react_1.default.createElement(CloseGame_1.default, { gameId: game.id, closeGame: this.props.closeGame, game: this.props.game }));
             var playerLabelClass = "";
             if (this.props.game.gameMode == 2 /* ONLINE */) {
                 playerLabelClass = "game-label__label--green";
@@ -855,14 +853,21 @@ var Chessboard = /** @class */ (function (_super) {
         var bgAnimationClass = this.getBgAnimationClass();
         return (react_1.default.createElement("div", { className: previewWrapperClass, onClick: this.handleClick },
             label,
-            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, ref: this.chessboardRef }, squares),
+            react_1.default.createElement("div", { className: "chessboard bg-animation " +
+                    bgAnimationClass +
+                    " " +
+                    previewChessboardClass, ref: this.chessboardRef },
+                this.props.game.engine.winner &&
+                    this.props.restartGame &&
+                    this.props.player && (react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: this.props.rematch })),
+                squares),
             closeIcon));
     };
     return Chessboard;
 }(react_1.default.Component));
 exports.default = Chessboard;
 
-},{"./CloseGame":4,"./square":9,"react":71}],6:[function(require,module,exports){
+},{"./CloseGame":4,"./square":9,"./winMenu":10,"react":71}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -899,6 +904,7 @@ var ContextMenu = /** @class */ (function (_super) {
             else {
                 props.chessboard[props.contextMenu.i]["piece"] = "black";
             }
+            document.dispatchEvent(new Event("chessboardChanged"));
         };
         _this.onClickBotHandler = function () {
             var props = _this.props;
@@ -912,6 +918,7 @@ var ContextMenu = /** @class */ (function (_super) {
             else {
                 props.chessboard[props.contextMenu.i]["piece"] = "white";
             }
+            document.dispatchEvent(new Event("chessboardChanged"));
         };
         _this.handleOutsideClick = function (event) {
             var target = event.target;
@@ -1376,15 +1383,37 @@ var GamePreview = /** @class */ (function (_super) {
     __extends(GamePreview, _super);
     function GamePreview(props) {
         var _this = _super.call(this, props) || this;
+        _this.handleScroll = function (event) {
+            var _a, _b;
+            if (event.deltaY < 0) {
+                console.log("scrolling up");
+                (_a = _this.gamePreviewRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
+            }
+            else if (event.deltaY > 0) {
+                (_b = _this.gamePreviewRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
+                console.log("scrolling down");
+            }
+            return false;
+        };
+        _this.handleMouseOver = function () {
+            document.body.setAttribute("style", "overflow-y: hidden");
+        };
+        _this.handleMouseLeave = function () {
+            document.body.setAttribute("style", "overflow-y: auto");
+        };
         _this.props = props;
+        _this.gamePreviewRef = react_1.default.createRef();
+        _this.state = {
+            mouseOver: false,
+        };
         return _this;
     }
     GamePreview.prototype.render = function () {
         var _this = this;
         var games = this.props.games.map(function (game, i) {
-            return react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame });
+            return (react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame }));
         });
-        return (react_1.default.createElement("div", { className: "game-preview" }, games));
+        return (react_1.default.createElement("div", { className: "game-preview", onWheel: this.handleScroll, ref: this.gamePreviewRef, onMouseOver: this.handleMouseOver, onMouseLeave: this.handleMouseLeave }, games));
     };
     return GamePreview;
 }(react_1.default.Component));
@@ -1998,12 +2027,19 @@ var Lobby = /** @class */ (function (_super) {
         };
         _this.createRoom = function (name) {
             var roomId = _this.getRoomId(name);
-            if (!_this.state.rooms.some(function (room) { return room.name == name; }) && name !== _this.props.name) {
+            if (!_this.state.rooms.some(function (room) { return room.name == name; }) &&
+                name !== _this.props.name) {
                 var room = { author: _this.props.name, target: name, id: roomId };
                 main_1.socket.emit("join_room", room);
                 main_1.socket.emit("create_room", room);
                 _this.setState(function (prevState) {
-                    var room = { name: name, id: roomId, unread: false, hover: false, isWriting: false };
+                    var room = {
+                        name: name,
+                        id: roomId,
+                        unread: false,
+                        hover: false,
+                        isWriting: false,
+                    };
                     return {
                         rooms: __spreadArray(__spreadArray([], prevState.rooms, true), [room], false),
                         currentRoom: room,
@@ -2015,7 +2051,7 @@ var Lobby = /** @class */ (function (_super) {
         _this.closeRoom = function (name) {
             _this.setState(function (prevState) {
                 return {
-                    rooms: prevState.rooms.filter(function (room) { return room.name != name; })
+                    rooms: prevState.rooms.filter(function (room) { return room.name != name; }),
                 };
             });
         };
@@ -2034,7 +2070,7 @@ var Lobby = /** @class */ (function (_super) {
                 roomId: roomId,
                 gameId: gameId,
                 playerAccepted: _this.props.name,
-                playerAcceptedColor: authorColor
+                playerAcceptedColor: authorColor,
             };
             main_1.socket.emit("accept_challange", gameInfo);
             _this.filterOutGameInvites(name);
@@ -2049,14 +2085,18 @@ var Lobby = /** @class */ (function (_super) {
         _this.filterOutSentInvites = function (name) {
             _this.setState(function (prevState) {
                 return {
-                    gameInvSent: prevState.gameInvSent.filter(function (inv) { return inv.target != name; })
+                    gameInvSent: prevState.gameInvSent.filter(function (inv) { return inv.target != name; }),
                 };
             });
         };
         _this.handlePlayerInvite = function (event) {
             var target = event.target;
             var player = target.closest(".lobby__player");
-            if (player && !_this.state.rooms.some(function (room) { room.name == player.id; }) && _this.state.roomInvitable) {
+            if (player &&
+                !_this.state.rooms.some(function (room) {
+                    room.name == player.id;
+                }) &&
+                _this.state.roomInvitable) {
                 _this.createRoom(player.id);
             }
             if (player && _this.state.gameInvitable && player.id != _this.props.name) {
@@ -2074,7 +2114,7 @@ var Lobby = /** @class */ (function (_super) {
                     };
                     _this.setState(function (prevState) {
                         return {
-                            gameInvSent: __spreadArray(__spreadArray([], prevState.gameInvSent, true), [inv_1], false)
+                            gameInvSent: __spreadArray(__spreadArray([], prevState.gameInvSent, true), [inv_1], false),
                         };
                     });
                 }
@@ -2102,7 +2142,7 @@ var Lobby = /** @class */ (function (_super) {
             else {
                 _this.setState(function (prevState) {
                     return {
-                        currentRoom: prevState.rooms[0]
+                        currentRoom: prevState.rooms[0],
                     };
                 });
             }
@@ -2116,13 +2156,33 @@ var Lobby = /** @class */ (function (_super) {
                 var index_1 = _this.state.rooms.findIndex(function (room) { return room.id == id; });
                 _this.setState(function (prevState) {
                     return {
-                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [room], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true),
+                        rooms: __spreadArray(__spreadArray(__spreadArray([], prevState.rooms.slice(0, index_1), true), [
+                            room
+                        ], false), prevState.rooms.slice(index_1 + 1, prevState.rooms.length), true),
                     };
                 });
                 if (room.id == _this.state.currentRoom.id) {
                     _this.setState({ currentRoom: room });
                 }
             }
+        };
+        _this.handleScroll = function (event) {
+            var _a, _b;
+            if (event.deltaY < 0) {
+                console.log("scrolling up");
+                (_a = _this.roomsRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
+            }
+            else if (event.deltaY > 0) {
+                (_b = _this.roomsRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
+                console.log("scrolling down");
+            }
+            return false;
+        };
+        _this.handleMouseOver = function () {
+            document.body.setAttribute("style", "overflow-y: hidden");
+        };
+        _this.handleMouseLeave = function () {
+            document.body.setAttribute("style", "overflow-y: auto");
         };
         _this.componentDidMount = function () {
             main_1.socket.on("players_update", function (players) {
@@ -2134,10 +2194,10 @@ var Lobby = /** @class */ (function (_super) {
                 }
             });
             main_1.socket.on("someone_writing", function (room) {
-                _this.setRoomProperty(room.id, 'isWriting', true);
+                _this.setRoomProperty(room.id, "isWriting", true);
             });
             main_1.socket.on("done_writing", function (room) {
-                _this.setRoomProperty(room.id, 'isWriting', false);
+                _this.setRoomProperty(room.id, "isWriting", false);
             });
             main_1.socket.on("requested_join_game", function (_a) {
                 var author = _a.author, gameId = _a.gameId;
@@ -2147,7 +2207,9 @@ var Lobby = /** @class */ (function (_super) {
                 if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
                     _this.setState(function (prevState) {
                         return {
-                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [{ author: author, gameId: gameId, target: _this.props.name, roomId: roomId }], false)
+                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [
+                                { author: author, gameId: gameId, target: _this.props.name, roomId: roomId },
+                            ], false),
                         };
                     });
                 }
@@ -2163,13 +2225,27 @@ var Lobby = /** @class */ (function (_super) {
                 _this.filterOutGameInvites(player.name);
                 _this.filterOutSentInvites(player.name);
             });
-            document.addEventListener('click', _this.handleOutsidePlayersClick);
+            document.addEventListener("click", _this.handleOutsidePlayersClick);
         };
         _this.props = props;
         _this.state = {
             players: [],
-            currentRoom: { name: "global room", id: "global", unread: false, hover: false, isWriting: false },
-            rooms: [{ name: "global room", id: "global", unread: false, hover: false, isWriting: false }],
+            currentRoom: {
+                name: "global room",
+                id: "global",
+                unread: false,
+                hover: false,
+                isWriting: false,
+            },
+            rooms: [
+                {
+                    name: "global room",
+                    id: "global",
+                    unread: false,
+                    hover: false,
+                    isWriting: false,
+                },
+            ],
             roomInvitable: false,
             gameInvitable: false,
             gameInvitations: [],
@@ -2178,6 +2254,7 @@ var Lobby = /** @class */ (function (_super) {
         _this.playersRef = react_1.default.createRef();
         _this.createRoomRef = react_1.default.createRef();
         _this.inviteRef = react_1.default.createRef();
+        _this.roomsRef = react_1.default.createRef();
         return _this;
     }
     Lobby.prototype.getGameRoomId = function (playerName1, playerName2) {
@@ -2205,17 +2282,17 @@ var Lobby = /** @class */ (function (_super) {
         return Date.now();
     };
     Lobby.prototype.componentWillUnmount = function () {
-        document.removeEventListener('click', this.handleOutsidePlayersClick);
+        document.removeEventListener("click", this.handleOutsidePlayersClick);
         main_1.socket.off();
     };
     Lobby.prototype.render = function () {
         var _this = this;
         var player = this.state.players.find(function (player) { return player.name == _this.props.name; });
         var rooms = this.state.rooms.map(function (room, id) {
-            return react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id });
+            return (react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id }));
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId });
+            return (react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId }));
         });
         var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
             return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, key: i });
@@ -2236,11 +2313,11 @@ var Lobby = /** @class */ (function (_super) {
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
                 react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),
-            react_1.default.createElement("div", { className: "lobby__rooms" },
+            react_1.default.createElement("div", { className: "lobby__rooms", ref: this.roomsRef, onMouseOver: this.handleMouseOver, onMouseLeave: this.handleMouseLeave, onWheel: this.handleScroll },
                 rooms,
                 react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
-            player && react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting })));
+            player && (react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting }))));
     };
     return Lobby;
 }(react_1.default.Component));
@@ -2425,10 +2502,15 @@ function Room(props) {
     else {
         closeRoomClass = "lobby__close-room--hidden";
     }
+    var globalRoomClass = "";
+    if (props.room.name == "global room") {
+        console.log('global');
+        globalRoomClass = "lobby__room--global";
+    }
     return (react_1.default.createElement("div", { className: "lobby__room-wrapper", onMouseOver: handleMouseOver, onMouseLeave: handleMouseLeave },
-        react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass, onClick: handleClickRoom }, room.name),
-        room.id != "global" && react_1.default.createElement("div", { className: "lobby__close-room " + closeRoomClass, onClick: handleClickCloseRoom },
-            react_1.default.createElement("i", { className: "icon-cancel-circled" }))));
+        react_1.default.createElement("div", { className: "lobby__room no-select " + roomClass + " " + globalRoomClass, onClick: handleClickRoom }, room.name),
+        room.id != "global" && (react_1.default.createElement("div", { className: "lobby__close-room " + closeRoomClass, onClick: handleClickCloseRoom },
+            react_1.default.createElement("i", { className: "icon-cancel-circled" })))));
 }
 exports.default = Room;
 

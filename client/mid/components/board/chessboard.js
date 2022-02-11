@@ -21,6 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var square_1 = __importDefault(require("./square"));
 var CloseGame_1 = __importDefault(require("./CloseGame"));
+var winMenu_1 = __importDefault(require("./winMenu"));
 var Chessboard = /** @class */ (function (_super) {
     __extends(Chessboard, _super);
     function Chessboard(props) {
@@ -45,7 +46,7 @@ var Chessboard = /** @class */ (function (_super) {
     Chessboard.prototype.getPieceType = function (id) {
         var engine = this.props.engine;
         if (engine.selectedPiece == id) {
-            return 'selected';
+            return "selected";
         }
         else if (engine.lockedPieces.includes(id)) {
             return "locked";
@@ -54,7 +55,7 @@ var Chessboard = /** @class */ (function (_super) {
             return "killable";
         }
         else {
-            return 'normal';
+            return "normal";
         }
     };
     Chessboard.prototype.getBgAnimationClass = function () {
@@ -90,7 +91,7 @@ var Chessboard = /** @class */ (function (_super) {
                     if (engine.availableMoves.includes(id)) {
                         className += " chessboard__square--hightlight";
                     }
-                    pieceColor = engine.chessboard[id]['piece'];
+                    pieceColor = engine.chessboard[id]["piece"];
                     var queen = engine.chessboard[id]["queen"];
                     squares.push(react_1.default.createElement(square_1.default, { id: id.toString(), className: className, key: id, pieceColor: pieceColor, type: this.getPieceType(id), queen: queen }));
                 }
@@ -109,7 +110,7 @@ var Chessboard = /** @class */ (function (_super) {
         if (this.props.preview) {
             previewWrapperClass = "game-preview__chessboard-wrapper";
             previewChessboardClass = "game-preview__chessboard";
-            closeIcon = react_1.default.createElement(CloseGame_1.default, { gameId: game.id, closeGame: this.props.closeGame, game: this.props.game });
+            closeIcon = (react_1.default.createElement(CloseGame_1.default, { gameId: game.id, closeGame: this.props.closeGame, game: this.props.game }));
             var playerLabelClass = "";
             if (this.props.game.gameMode == 2 /* ONLINE */) {
                 playerLabelClass = "game-label__label--green";
@@ -119,7 +120,14 @@ var Chessboard = /** @class */ (function (_super) {
         var bgAnimationClass = this.getBgAnimationClass();
         return (react_1.default.createElement("div", { className: previewWrapperClass, onClick: this.handleClick },
             label,
-            react_1.default.createElement("div", { className: "chessboard bg-animation " + bgAnimationClass + " " + previewChessboardClass, ref: this.chessboardRef }, squares),
+            react_1.default.createElement("div", { className: "chessboard bg-animation " +
+                    bgAnimationClass +
+                    " " +
+                    previewChessboardClass, ref: this.chessboardRef },
+                this.props.game.engine.winner &&
+                    this.props.restartGame &&
+                    this.props.player && (react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: this.props.rematch })),
+                squares),
             closeIcon));
     };
     return Chessboard;

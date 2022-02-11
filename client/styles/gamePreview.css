@@ -1,11 +1,11 @@
 .game-preview {
     width: 700px;
     height: 100px;
-    margin: auto;
     position: relative;
     display: flex;
     overflow-x: scroll;
     overflow-y: hidden;
+    width: 80%;
   }
 
 .game-preview::-webkit-scrollbar {

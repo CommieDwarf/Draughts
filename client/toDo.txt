@@ -1,13 +1,13 @@
 1. [x] Online mode
 2. [x] Optymalization of rendering the chessboard (update only when chessboard object changes instead of click events);
-3. [ ] Responsive design
+3. [x] Responsive design
 4. [x] Add close game functionality
 5. [x] Add rooms functionality
 6. [x] Repair context menu
 7. [x] Repair restart game functionality
 8. [x] Break apart lobby - make Room component
 9. [ ] shadow box support for other browsers
-10. [ ] Scroll rooms 
+10. [x] Scroll games
 
 In the future
 1. [ ] Change class components to functional components
