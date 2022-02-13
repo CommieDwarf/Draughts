@@ -199,7 +199,6 @@ var App = /** @class */ (function (_super) {
             _this.restartGame(id);
         });
         main_1.socket.on("player_closed_game", function (info) {
-            console.log(info);
             _this.closeGame(info.gameId);
         });
     };

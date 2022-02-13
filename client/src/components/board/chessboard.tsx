@@ -69,7 +69,6 @@ export default class Chessboard extends React.Component<props, state> {
     if (this.props.switchGame) {
       this.props.switchGame(this.props.game.id);
     }
-    console.log("handle");
   };
 
   componentDidMount() {

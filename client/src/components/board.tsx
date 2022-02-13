@@ -76,7 +76,6 @@ export default class Board extends React.Component<MyProps, MyState> {
   clickHandler = (event: any) => {
     //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
     this.props.game.clickHandler(event);
-    console.log(this.props.game.roomId);
     if (this.props.game.gameMode == GAMEMODE.ONLINE && this.props.game.roomId) {
       let gameInfo: GameInfo = {
         chessboard: this.props.game.engine.chessboard,

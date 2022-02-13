@@ -61,7 +61,6 @@ export default function Room(props: Props) {
   let globalRoomClass = "";
 
   if (props.room.name == "global room") {
-      console.log('global');
       globalRoomClass = "lobby__room--global";
   }
 

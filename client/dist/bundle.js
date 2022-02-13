@@ -200,7 +200,6 @@ var App = /** @class */ (function (_super) {
             _this.restartGame(id);
         });
         main_1.socket.on("player_closed_game", function (info) {
-            console.log(info);
             _this.closeGame(info.gameId);
         });
     };
@@ -624,7 +623,6 @@ var Board = /** @class */ (function (_super) {
         _this.clickHandler = function (event) {
             //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
-            console.log(_this.props.game.roomId);
             if (_this.props.game.gameMode == 2 /* ONLINE */ && _this.props.game.roomId) {
                 var gameInfo = {
                     chessboard: _this.props.game.engine.chessboard,
@@ -769,7 +767,6 @@ var Chessboard = /** @class */ (function (_super) {
             if (_this.props.switchGame) {
                 _this.props.switchGame(_this.props.game.id);
             }
-            console.log("handle");
         };
         _this.props = props;
         _this.chessboardRef = react_1.default.createRef();
@@ -1386,12 +1383,10 @@ var GamePreview = /** @class */ (function (_super) {
         _this.handleScroll = function (event) {
             var _a, _b;
             if (event.deltaY < 0) {
-                console.log("scrolling up");
                 (_a = _this.gamePreviewRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
             }
             else if (event.deltaY > 0) {
                 (_b = _this.gamePreviewRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
-                console.log("scrolling down");
             }
             return false;
         };
@@ -2169,12 +2164,10 @@ var Lobby = /** @class */ (function (_super) {
         _this.handleScroll = function (event) {
             var _a, _b;
             if (event.deltaY < 0) {
-                console.log("scrolling up");
                 (_a = _this.roomsRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
             }
             else if (event.deltaY > 0) {
                 (_b = _this.roomsRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
-                console.log("scrolling down");
             }
             return false;
         };
@@ -2203,7 +2196,6 @@ var Lobby = /** @class */ (function (_super) {
                 var author = _a.author, gameId = _a.gameId;
                 var roomId = _this.getGameRoomId(author, _this.props.name);
                 main_1.socket.emit("join_game", roomId);
-                console.log(roomId);
                 if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
                     _this.setState(function (prevState) {
                         return {
@@ -2504,7 +2496,6 @@ function Room(props) {
     }
     var globalRoomClass = "";
     if (props.room.name == "global room") {
-        console.log('global');
         globalRoomClass = "lobby__room--global";
     }
     return (react_1.default.createElement("div", { className: "lobby__room-wrapper", onMouseOver: handleMouseOver, onMouseLeave: handleMouseLeave },
@@ -3293,7 +3284,7 @@ var react_1 = __importDefault(require("react"));
 var react_dom_1 = __importDefault(require("react-dom"));
 var App_1 = __importDefault(require("./App"));
 var socket_io_client_1 = __importDefault(require("socket.io-client"));
-exports.socket = (0, socket_io_client_1.default)("http://localhost:3001");
+exports.socket = (0, socket_io_client_1.default)("https://murmuring-oasis-45557.herokuapp.com/");
 react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.querySelector(".container"));
 
 },{"./App":1,"react":71,"react-dom":68,"socket.io-client":78}],35:[function(require,module,exports){

@@ -27,12 +27,10 @@ var GamePreview = /** @class */ (function (_super) {
         _this.handleScroll = function (event) {
             var _a, _b;
             if (event.deltaY < 0) {
-                console.log("scrolling up");
                 (_a = _this.gamePreviewRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
             }
             else if (event.deltaY > 0) {
                 (_b = _this.gamePreviewRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
-                console.log("scrolling down");
             }
             return false;
         };

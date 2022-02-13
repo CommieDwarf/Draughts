@@ -7,11 +7,11 @@ var cors = require("cors");
 var server = http.createServer(app);
 var Server = require("socket.io").Server;
 app.use(cors({
-    origin: 'localhost/Draughts/client'
+    origin: '*'
 }));
 var io = new Server(server, {
     cors: {
-        origin: "http://localhost",
+        origin: "*",
         methods: ["POST", "GET"]
     }
 });
@@ -89,7 +89,7 @@ io.on("connection", function (socket) {
         }
     });
 });
-server.listen(3001, function () {
+server.listen(process.env.PORT, function () {
     console.log('server running');
 });
 var avatarThemes = ["frogideas", "sugarsweets", "heatwave", "daisygarden", "seascape",
@@ -98,4 +98,4 @@ var avatarShapes = ["squares", "isogrids", "spaceinvaders", "labs/isogrids/hexa"
 function getRandomElement(array) {
     return array[Math.floor(Math.random() * (array.length - 1))];
 }
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=server.js.map

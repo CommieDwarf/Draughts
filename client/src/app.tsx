@@ -219,7 +219,6 @@ export default class App extends React.Component<Props, State> {
     });
 
     socket.on("player_closed_game", (info) => {
-      console.log(info);
       this.closeGame(info.gameId);
     });
   }

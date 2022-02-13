@@ -5,7 +5,7 @@ import App from './App';
 
 
 import io from "socket.io-client";
-export const socket = io("http://localhost:3001");
+export const socket = io("https://murmuring-oasis-45557.herokuapp.com/");
 
 
 

@@ -298,11 +298,9 @@ export default class Lobby extends React.Component<Props, State> {
 
   handleScroll = (event: React.WheelEvent) => {
     if (event.deltaY < 0) {
-      console.log("scrolling up");
       this.roomsRef.current?.scrollBy(-30, 0);
     } else if (event.deltaY > 0) {
       this.roomsRef.current?.scrollBy(30, 0);
-      console.log("scrolling down");
     }
     return false;
   };
@@ -334,7 +332,6 @@ export default class Lobby extends React.Component<Props, State> {
     socket.on("requested_join_game", ({ author, gameId }) => {
       const roomId = this.getGameRoomId(author, this.props.name);
       socket.emit("join_game", roomId);
-      console.log(roomId);
       if (!this.state.gameInvitations.some((inv) => inv.gameId == gameId)) {
         this.setState((prevState) => {
           return {

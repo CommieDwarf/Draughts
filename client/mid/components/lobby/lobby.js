@@ -185,12 +185,10 @@ var Lobby = /** @class */ (function (_super) {
         _this.handleScroll = function (event) {
             var _a, _b;
             if (event.deltaY < 0) {
-                console.log("scrolling up");
                 (_a = _this.roomsRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
             }
             else if (event.deltaY > 0) {
                 (_b = _this.roomsRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
-                console.log("scrolling down");
             }
             return false;
         };
@@ -219,7 +217,6 @@ var Lobby = /** @class */ (function (_super) {
                 var author = _a.author, gameId = _a.gameId;
                 var roomId = _this.getGameRoomId(author, _this.props.name);
                 main_1.socket.emit("join_game", roomId);
-                console.log(roomId);
                 if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
                     _this.setState(function (prevState) {
                         return {

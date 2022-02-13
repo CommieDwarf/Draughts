@@ -42,7 +42,6 @@ function Room(props) {
     }
     var globalRoomClass = "";
     if (props.room.name == "global room") {
-        console.log('global');
         globalRoomClass = "lobby__room--global";
     }
     return (react_1.default.createElement("div", { className: "lobby__room-wrapper", onMouseOver: handleMouseOver, onMouseLeave: handleMouseLeave },

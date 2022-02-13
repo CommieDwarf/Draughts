@@ -49,7 +49,6 @@ var Board = /** @class */ (function (_super) {
         _this.clickHandler = function (event) {
             //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
-            console.log(_this.props.game.roomId);
             if (_this.props.game.gameMode == 2 /* ONLINE */ && _this.props.game.roomId) {
                 var gameInfo = {
                     chessboard: _this.props.game.engine.chessboard,

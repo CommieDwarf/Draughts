@@ -89,7 +89,7 @@ io.on("connection", function (socket) {
         }
     });
 });
-server.listen(3001, function () {
+server.listen(process.env.PORT, function () {
     console.log('server running');
 });
 var avatarThemes = ["frogideas", "sugarsweets", "heatwave", "daisygarden", "seascape",

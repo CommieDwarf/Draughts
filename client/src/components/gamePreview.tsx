@@ -28,11 +28,9 @@ export default class GamePreview extends React.Component<Props, State> {
 
   handleScroll = (event: React.WheelEvent) => {
     if (event.deltaY < 0) {
-      console.log("scrolling up");
       this.gamePreviewRef.current?.scrollBy(-30, 0);
     } else if (event.deltaY > 0) {
       this.gamePreviewRef.current?.scrollBy(30, 0);
-      console.log("scrolling down");
     }
     return false;
   };
