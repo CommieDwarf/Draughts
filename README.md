@@ -8,3 +8,5 @@
 3. [ ] online
 
 Now with working chat!
+
+    "nodemon": "nodemon ./dist/server.js",
