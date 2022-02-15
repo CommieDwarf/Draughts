@@ -36,6 +36,7 @@ var Chessboard = /** @class */ (function (_super) {
             if (_this.props.switchGame) {
                 _this.props.switchGame(_this.props.game.id);
             }
+            _this.forceUpdate();
         };
         _this.props = props;
         _this.chessboardRef = react_1.default.createRef();

@@ -75,8 +75,8 @@ function getSpecialClass(type, color) {
                 centerClass = "piece__center--white-selected";
                 break;
             case "locked":
-                baseClass = "piece--white-locked";
-                centerClass = "piece__center--white-locked";
+                baseClass = "piece-white--locked";
+                centerClass = "piece__center-white--locked";
                 break;
             case "killable":
                 baseClass = "piece--white-killable";
@@ -99,8 +99,8 @@ function getSpecialClass(type, color) {
                 centerClass = "piece__center--black-killable";
                 break;
             case "locked":
-                baseClass = "piece--black-locked";
-                centerClass = "piece__-center-black-locked";
+                baseClass = "piece-black--locked";
+                centerClass = "piece__center-black--locked";
                 break;
             default:
                 baseClass = "";

@@ -46,17 +46,17 @@
     background-color: #e64d00;
     border-bottom: 1px solid #4d1a00;
   }
-  .piece--white-locked {
+  .piece-white--locked {
     background-color: #ccffcf;
   }
-  .piece__center--white-locked {
+  .piece__center-white--locked {
     background-color: #f7fff8;
     border-bottom: 1px solid #498763;
   }
-  .piece--black-locked {
+  .piece-black--locked {
     background-color: #586e5a !important;
   }
-  .piece__center--black-locked {
+  .piece__center-black--locked {
     background-color: #709c77;
     border-bottom: 1px solid #172b1f;
   }

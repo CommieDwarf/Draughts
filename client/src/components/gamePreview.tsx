@@ -12,7 +12,7 @@ export default class GamePreview extends React.Component<Props, State> {
     games: Game[];
     switchGame: (id: number) => void;
     closeGame: (counter: number, gameId?: number) => void;
-    currentGame: Game;
+    currentGame: Game | null;
   };
 
   gamePreviewRef: React.RefObject<HTMLDivElement>;

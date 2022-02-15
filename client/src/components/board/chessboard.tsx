@@ -70,6 +70,7 @@ export default class Chessboard extends React.Component<props, state> {
     if (this.props.switchGame) {
       this.props.switchGame(this.props.game.id);
     }
+    this.forceUpdate();
   };
 
   componentDidMount() {
@@ -101,6 +102,7 @@ export default class Chessboard extends React.Component<props, state> {
           }
           pieceColor = engine.chessboard[id]["piece"];
           let queen = engine.chessboard[id]["queen"];
+          
 
           squares.push(
             <Square
