@@ -17,6 +17,11 @@ const io = new Server(server, {
     }
 });
 
+
+
+
+
+
 interface Player {
     name: string,
     avatar: {
@@ -89,8 +94,8 @@ io.on("connection", (socket: any) => {
         socket.broadcast.to(roomId).emit("get_gameId");
     })
 
-    socket.on("request_join_game", ({author, gameId}: {gameId: number, author:string}) => {
-        socket.broadcast.emit("requested_join_game", {author, gameId});
+    socket.on("request_join_game", ({author, gameId, target}: {gameId: number, author:string, target:string}) => {
+        socket.broadcast.emit("requested_join_game", {author, gameId, target});
     })
 
     socket.on("send_message", (msg: IMessage) => {

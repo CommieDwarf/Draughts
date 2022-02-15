@@ -51,13 +51,12 @@ var Emojis = /** @class */ (function (_super) {
             _this.props.pickEmoji(emoji);
         };
         _this.props = props;
-        _this.containerRef = react_1.default.createRef();
         return _this;
     }
     Emojis.prototype.render = function () {
         var _this = this;
         var imgs = emojis.map(function (emoji, id) { return react_1.default.createElement("img", { className: "lobby__emoji", key: id, src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler }); });
-        return (react_1.default.createElement("div", { className: "lobby__emoji-container", ref: this.containerRef }, imgs));
+        return (react_1.default.createElement("div", { className: "lobby__emoji-container", ref: this.props.emoContainerDivRef }, imgs));
     };
     return Emojis;
 }(react_1.Component));

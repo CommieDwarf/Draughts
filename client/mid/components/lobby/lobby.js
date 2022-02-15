@@ -118,7 +118,12 @@ var Lobby = /** @class */ (function (_super) {
             if (player && _this.state.gameInvitable && player.id != _this.props.name) {
                 var gameRoomId = _this.getGameRoomId(player.id, _this.props.name);
                 var gameId = _this.getGameId();
-                main_1.socket.emit("request_join_game", { author: _this.props.name, gameId: gameId });
+                console.log(player.id);
+                main_1.socket.emit("request_join_game", {
+                    author: _this.props.name,
+                    target: player.id,
+                    gameId: gameId,
+                });
                 main_1.socket.emit("join_game", gameRoomId);
                 _this.setState({ gameInvitable: false });
                 if (!_this.state.gameInvSent.some(function (inv) { return inv.target == player.id; })) {
@@ -192,12 +197,6 @@ var Lobby = /** @class */ (function (_super) {
             }
             return false;
         };
-        _this.handleMouseOver = function () {
-            document.body.setAttribute("style", "overflow-y: hidden");
-        };
-        _this.handleMouseLeave = function () {
-            document.body.setAttribute("style", "overflow-y: auto");
-        };
         _this.componentDidMount = function () {
             main_1.socket.on("players_update", function (players) {
                 _this.setState({ players: players });
@@ -214,17 +213,20 @@ var Lobby = /** @class */ (function (_super) {
                 _this.setRoomProperty(room.id, "isWriting", false);
             });
             main_1.socket.on("requested_join_game", function (_a) {
-                var author = _a.author, gameId = _a.gameId;
-                var roomId = _this.getGameRoomId(author, _this.props.name);
-                main_1.socket.emit("join_game", roomId);
-                if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
-                    _this.setState(function (prevState) {
-                        return {
-                            gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [
-                                { author: author, gameId: gameId, target: _this.props.name, roomId: roomId },
-                            ], false),
-                        };
-                    });
+                var author = _a.author, gameId = _a.gameId, target = _a.target;
+                console.log(target);
+                if (_this.props.name == target) {
+                    var roomId_1 = _this.getGameRoomId(author, _this.props.name);
+                    main_1.socket.emit("join_game", roomId_1);
+                    if (!_this.state.gameInvitations.some(function (inv) { return inv.gameId == gameId; })) {
+                        _this.setState(function (prevState) {
+                            return {
+                                gameInvitations: __spreadArray(__spreadArray([], prevState.gameInvitations, true), [
+                                    { author: author, gameId: gameId, target: _this.props.name, roomId: roomId_1 },
+                                ], false),
+                            };
+                        });
+                    }
                 }
             });
             main_1.socket.on("challange_accepted", function (gameInfo) {
@@ -326,7 +328,7 @@ var Lobby = /** @class */ (function (_super) {
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
                 react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),
-            react_1.default.createElement("div", { className: "lobby__rooms", ref: this.roomsRef, onMouseOver: this.handleMouseOver, onMouseLeave: this.handleMouseLeave, onWheel: this.handleScroll },
+            react_1.default.createElement("div", { className: "lobby__rooms", ref: this.roomsRef, onWheel: this.handleScroll },
                 rooms,
                 react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),

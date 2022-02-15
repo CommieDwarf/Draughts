@@ -1,0 +1,90 @@
+.piece {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: auto;
+    margin-top: 4px;
+    z-index: 100;
+  
+  }
+  .piece__center {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: auto;
+    position: relative;
+    top: 11px;
+  }
+  
+  .piece--white {
+    background-color: #DDD;
+    cursor: pointer;
+  }
+  .piece__center--white {
+    border-bottom: 1px solid #AAA;
+    background-color: #EEE;
+  }
+  .piece--black {
+    background-color: #666;
+  }
+  .piece__center--black {
+    border-bottom: 1px solid #333;
+    background-color: #777;
+  }
+  
+  .piece--white-killable {
+     background-color: #ff9999;
+  }
+  .piece__center--white-killable {
+    background-color: #fad4d4;
+    border-bottom: 1px solid #4d0000;
+  }
+  .piece--black-killable {
+    background-color: #993300;
+  }
+  .piece__center--black-killable {
+    background-color: #e64d00;
+    border-bottom: 1px solid #4d1a00;
+  }
+  .piece--white-locked {
+    background-color: #ccffcf;
+  }
+  .piece__center--white-locked {
+    background-color: #f7fff8;
+    border-bottom: 1px solid #498763;
+  }
+  .piece--black-locked {
+    background-color: #586e5a !important;
+  }
+  .piece__center--black-locked {
+    background-color: #709c77;
+    border-bottom: 1px solid #172b1f;
+  }
+  .piece--selected-black {
+    background-color: #586e5a;
+  }
+  .center--black-selected {
+    background-color: #709c77;
+    border-bottom: 1px solid #172b1f;
+  }
+  .piece--white-selected {
+    background-color: #4dff5b !important;
+  }
+  .piece__center--white-selected {
+    background-color: #b3ffb9 !important;
+    border-bottom: 1px solid #00800b !important;
+  }
+  .piece--black-selected {
+    background-color: #004d00 !important;
+  }
+  .piece__center--black-selected {
+    background-color: #008000 !important;
+    border-bottom: 1px solid #001a00 !important;
+  }
+
+  .piece--white-hover {
+    background-color: #b8b8b8;
+  }
+  .piece__center--white-hover {
+    background-color: #ededed;
+  }

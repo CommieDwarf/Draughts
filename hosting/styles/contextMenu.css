@@ -1,0 +1,21 @@
+.context-menu {
+    background-color: white;
+    width: 100px;
+    height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    z-index: 10000;
+    position:absolute;
+    border: 2px black solid;
+  }
+
+.context-menu__label {
+cursor: pointer;
+}
+
+
+.context-menu__break-line {
+margin-top: 5px;
+margin-bottom: 5px;
+}

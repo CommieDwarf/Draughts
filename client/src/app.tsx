@@ -239,6 +239,7 @@ export default class App extends React.Component<Props, State> {
             games={games}
             switchGame={this.switchGame}
             closeGame={this.closeGame}
+            currentGame={this.state.currentGame}
           />
           <Lobby name={this.state.name} startNewGame={this.startNewGame} />
           {this.state.currentGame && (

@@ -41,7 +41,9 @@ export default class Chat extends React.Component<Props, State> {
         setRoomProperty: (id: string, propertyName: string, propertyValue: any) => void;
     }
 
-    thisPlayerId: string
+    thisPlayerId: string;
+    messagesDivRef: React.RefObject<HTMLDivElement>
+    emoContainerDivRef: React.RefObject<HTMLDivElement>
 
     constructor(props: any) {
         super(props);
@@ -52,12 +54,13 @@ export default class Chat extends React.Component<Props, State> {
             showEmojis: false,
         }
         this.thisPlayerId = socket.id;
+        this.messagesDivRef = React.createRef();
+        this.emoContainerDivRef = React.createRef();
     }
 
     scrollToBot() {
-        const msgsDiv = document.getElementById('messages');
-            if (msgsDiv) {
-                msgsDiv.scrollBy({top: msgsDiv.scrollHeight + 9999});
+            if (this.messagesDivRef.current) {
+                this.messagesDivRef.current.scrollBy({top: this.messagesDivRef.current.scrollHeight + 9999});
             }
     }
 
@@ -133,13 +136,14 @@ export default class Chat extends React.Component<Props, State> {
     setEmojiBottom() {
         const emoContainer = document.getElementById('emoji-container');
         const msgsDiv = document.getElementById('messages');
-        if (emoContainer && msgsDiv) {
-            emoContainer.setAttribute("style", "top: " + (msgsDiv.scrollHeight - 85) + "px");
-
+        if (this.emoContainerDivRef.current && this.messagesDivRef.current) {
+            this.emoContainerDivRef.current.setAttribute("style", "top: " + (this.messagesDivRef.current.scrollHeight - 85) + "px");
+            console.log('to bottom');
         }
     }
 
 
+  
 
     componentDidMount() {
         socket.on("get_message", (msg) => {
@@ -157,6 +161,7 @@ export default class Chat extends React.Component<Props, State> {
     componentDidUpdate() {
         this.scrollToBot();
         this.setEmojiBottom();
+
     }
 
     render() {
@@ -175,7 +180,7 @@ export default class Chat extends React.Component<Props, State> {
 
         return (
             <div className="lobby__chat">
-                    <div className="lobby__messages">
+                    <div className="lobby__messages" ref={this.messagesDivRef}>
                         {messages}
                         {this.props.isWriting && <div className="lobby__someone-writing">
                             Someone is writing
@@ -189,7 +194,7 @@ export default class Chat extends React.Component<Props, State> {
                                 <div id="dot-3" className="lobby__dot"></div>
                             </div>
                         </div>}
-                        {this.state.showEmojis && <Emojis pickEmoji={this.pickEmoji}/>}
+                        {this.state.showEmojis && <Emojis pickEmoji={this.pickEmoji} emoContainerDivRef={this.emoContainerDivRef}/>}
                     </div>
                         <input className="lobby__input" 
                         type="text"

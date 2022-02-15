@@ -92,12 +92,13 @@ var Chat = /** @class */ (function (_super) {
             showEmojis: false,
         };
         _this.thisPlayerId = main_1.socket.id;
+        _this.messagesDivRef = react_1.default.createRef();
+        _this.emoContainerDivRef = react_1.default.createRef();
         return _this;
     }
     Chat.prototype.scrollToBot = function () {
-        var msgsDiv = document.getElementById('messages');
-        if (msgsDiv) {
-            msgsDiv.scrollBy({ top: msgsDiv.scrollHeight + 9999 });
+        if (this.messagesDivRef.current) {
+            this.messagesDivRef.current.scrollBy({ top: this.messagesDivRef.current.scrollHeight + 9999 });
         }
     };
     Chat.prototype.receiveMessage = function (message) {
@@ -117,8 +118,9 @@ var Chat = /** @class */ (function (_super) {
     Chat.prototype.setEmojiBottom = function () {
         var emoContainer = document.getElementById('emoji-container');
         var msgsDiv = document.getElementById('messages');
-        if (emoContainer && msgsDiv) {
-            emoContainer.setAttribute("style", "top: " + (msgsDiv.scrollHeight - 85) + "px");
+        if (this.emoContainerDivRef.current && this.messagesDivRef.current) {
+            this.emoContainerDivRef.current.setAttribute("style", "top: " + (this.messagesDivRef.current.scrollHeight - 85) + "px");
+            console.log('to bottom');
         }
     };
     Chat.prototype.componentDidMount = function () {
@@ -147,7 +149,7 @@ var Chat = /** @class */ (function (_super) {
         });
         var emoButtonClass = this.state.showEmojis ? "white color-black" : "";
         return (react_1.default.createElement("div", { className: "lobby__chat" },
-            react_1.default.createElement("div", { className: "lobby__messages" },
+            react_1.default.createElement("div", { className: "lobby__messages", ref: this.messagesDivRef },
                 messages,
                 this.props.isWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
                     "Someone is writing",
@@ -157,7 +159,7 @@ var Chat = /** @class */ (function (_super) {
                         react_1.default.createElement("div", { id: "dot-2", className: "lobby__dot" })),
                     react_1.default.createElement("div", { id: "dot-wrapper-3", className: "lobby__dot-wrapper" },
                         react_1.default.createElement("div", { id: "dot-3", className: "lobby__dot" }))),
-                this.state.showEmojis && react_1.default.createElement(emojis_1.default, { pickEmoji: this.pickEmoji })),
+                this.state.showEmojis && react_1.default.createElement(emojis_1.default, { pickEmoji: this.pickEmoji, emoContainerDivRef: this.emoContainerDivRef })),
             react_1.default.createElement("input", { className: "lobby__input", type: "text", onChange: this.onChangeHandler, value: this.state.message, autoComplete: "off" }),
             react_1.default.createElement("div", { className: "lobby__emo-button no-select " + emoButtonClass, onClick: this.toggleEmojis },
                 react_1.default.createElement("i", { className: "icon-emo-happy" })),

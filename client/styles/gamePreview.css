@@ -6,6 +6,7 @@
     overflow-x: scroll;
     overflow-y: hidden;
     width: 80%;
+    scrollbar-width: thin;
   }
 
 .game-preview::-webkit-scrollbar {
@@ -35,10 +36,14 @@ height: 8px;
     width: 150px;
     height: auto;
     transform-origin: left top;
-    transform: scale(0.2);
+    transform: scale(0.17);
     position: relative;
     cursor: pointer;
   }
+  .game-preview__chessboard-wrapper--current {
+    transform: scale(0.2);
+  }
+
   .game-preview__chessboard {
     transition: transform 0s linear;
     transform-style: preserve-3D;

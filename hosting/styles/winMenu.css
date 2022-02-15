@@ -1,0 +1,45 @@
+.win-menu {
+    width: 100%;
+    height: 402px;
+    position: absolute;
+    background-color: black;
+    z-index: 10;
+    color: white;
+    text-align: center;
+    font-size: 35px;
+    background: rgba(0, 0, 0, .7);
+}
+
+.win-menu__play-again {
+cursor: pointer;
+}
+
+
+
+.win-menu__avatar {
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+.win-menu__waiting-pawn-div {
+    width: 60px;
+    height: 40px;
+    margin: auto;
+    display: block;
+    margin-top: -25px;
+}
+.win-menu__waiting-pawn {
+    width: 40px;
+    height: 40px;
+    display: block; 
+    margin: auto;
+}
+
+.win-menu__rematch {
+    color: white;
+    margin-top: -10px;
+}
+
+
+
+

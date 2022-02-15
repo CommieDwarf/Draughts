@@ -211,7 +211,7 @@ var App = /** @class */ (function (_super) {
         var gameMenuCentered = this.state.currentGame ? false : true;
         if (this.state.connected) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
-                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame }),
+                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame, currentGame: this.state.currentGame }),
                 react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
                 this.state.currentGame && (react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })),
                 react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games })));

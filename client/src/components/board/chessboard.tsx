@@ -25,6 +25,7 @@ export default class Chessboard extends React.Component<props, state> {
     restartGame?: (gameId: number) => void;
     player?: IPlayer;
     rematch?: Rematch;
+    current?: boolean;
   };
 
   chessboardRef: React.RefObject<HTMLDivElement>;
@@ -126,6 +127,12 @@ export default class Chessboard extends React.Component<props, state> {
     let closeIcon: ReactElement | "" = "";
     let label: ReactElement | "" = "";
 
+    let currentGameClass = "";
+
+    if (this.props.current) {
+      currentGameClass = "game-preview__chessboard-wrapper--current";
+    } 
+
     if (this.props.preview) {
       previewWrapperClass = "game-preview__chessboard-wrapper";
       previewChessboardClass = "game-preview__chessboard";
@@ -150,7 +157,7 @@ export default class Chessboard extends React.Component<props, state> {
     const bgAnimationClass = this.getBgAnimationClass();
 
     return (
-      <div className={previewWrapperClass} onClick={this.handleClick}>
+      <div className={previewWrapperClass + " " + currentGameClass} onClick={this.handleClick}>
         {label}
 
         <div

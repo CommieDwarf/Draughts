@@ -1,7 +1,6 @@
 import React from "react";
 import Chessboard from "./board/chessboard";
 import Game from "../game";
-import { isPropertySignature } from "typescript";
 
 type Props = {};
 type State = {
@@ -13,6 +12,7 @@ export default class GamePreview extends React.Component<Props, State> {
     games: Game[];
     switchGame: (id: number) => void;
     closeGame: (counter: number, gameId?: number) => void;
+    currentGame: Game;
   };
 
   gamePreviewRef: React.RefObject<HTMLDivElement>;
@@ -35,17 +35,16 @@ export default class GamePreview extends React.Component<Props, State> {
     return false;
   };
 
-  handleMouseOver = () => {
-    document.body.setAttribute("style", "overflow-y: hidden");
-  };
-  handleMouseLeave = () => {
-    document.body.setAttribute("style", "overflow-y: auto");
-  };
+
 
 
 
   render() {
     const games = this.props.games.map((game, i) => {
+      let current = false;
+      if (game == this.props.currentGame) {
+        current = true;
+      }
       return (
         <Chessboard
           engine={game.engine}
@@ -55,6 +54,7 @@ export default class GamePreview extends React.Component<Props, State> {
           game={game}
           closeGame={this.props.closeGame}
           switchGame={this.props.switchGame}
+          current={current}
         />
       );
     });
@@ -64,8 +64,6 @@ export default class GamePreview extends React.Component<Props, State> {
         className="game-preview"
         onWheel={this.handleScroll}
         ref={this.gamePreviewRef}
-        onMouseOver={this.handleMouseOver}
-        onMouseLeave={this.handleMouseLeave}
       >
         {games}
       </div>

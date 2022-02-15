@@ -11,15 +11,14 @@ export {path, emojis};
 export default class Emojis extends Component {
 
     props: {
-        pickEmoji: (emoji: string) => void
+        pickEmoji: (emoji: string) => void;
+        emoContainerDivRef: React.RefObject<HTMLDivElement>
     }
 
-    containerRef: React.RefObject<HTMLDivElement>
 
     constructor(props: any) {
         super(props);
         this.props = props;
-        this.containerRef = React.createRef();
     }
 
     onClickHandler = (event: React.MouseEvent) => {
@@ -35,7 +34,7 @@ export default class Emojis extends Component {
         const imgs = emojis.map((emoji, id) => <img className="lobby__emoji" key={id} src={path + emoji + ".png"} alt={emoji} onClick={this.onClickHandler}></img>)
         
         return (
-            <div className="lobby__emoji-container" ref={this.containerRef}>
+            <div className="lobby__emoji-container" ref={this.props.emoContainerDivRef}>
                 {imgs}
             </div>
         )

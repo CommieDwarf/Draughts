@@ -47,8 +47,8 @@ io.on("connection", function (socket) {
         socket.broadcast.to(roomId).emit("get_gameId");
     });
     socket.on("request_join_game", function (_a) {
-        var author = _a.author, gameId = _a.gameId;
-        socket.broadcast.emit("requested_join_game", { author: author, gameId: gameId });
+        var author = _a.author, gameId = _a.gameId, target = _a.target;
+        socket.broadcast.emit("requested_join_game", { author: author, gameId: gameId, target: target });
     });
     socket.on("send_message", function (msg) {
         console.log(msg);

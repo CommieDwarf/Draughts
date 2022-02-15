@@ -34,12 +34,6 @@ var GamePreview = /** @class */ (function (_super) {
             }
             return false;
         };
-        _this.handleMouseOver = function () {
-            document.body.setAttribute("style", "overflow-y: hidden");
-        };
-        _this.handleMouseLeave = function () {
-            document.body.setAttribute("style", "overflow-y: auto");
-        };
         _this.props = props;
         _this.gamePreviewRef = react_1.default.createRef();
         _this.state = {
@@ -50,9 +44,13 @@ var GamePreview = /** @class */ (function (_super) {
     GamePreview.prototype.render = function () {
         var _this = this;
         var games = this.props.games.map(function (game, i) {
-            return (react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame }));
+            var current = false;
+            if (game == _this.props.currentGame) {
+                current = true;
+            }
+            return (react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame, current: current }));
         });
-        return (react_1.default.createElement("div", { className: "game-preview", onWheel: this.handleScroll, ref: this.gamePreviewRef, onMouseOver: this.handleMouseOver, onMouseLeave: this.handleMouseLeave }, games));
+        return (react_1.default.createElement("div", { className: "game-preview", onWheel: this.handleScroll, ref: this.gamePreviewRef }, games));
     };
     return GamePreview;
 }(react_1.default.Component));

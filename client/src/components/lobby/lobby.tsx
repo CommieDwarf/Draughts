@@ -227,7 +227,12 @@ export default class Lobby extends React.Component<Props, State> {
     if (player && this.state.gameInvitable && player.id != this.props.name) {
       const gameRoomId = this.getGameRoomId(player.id, this.props.name);
       const gameId = this.getGameId();
-      socket.emit("request_join_game", { author: this.props.name, gameId });
+      console.log(player.id);
+      socket.emit("request_join_game", {
+        author: this.props.name,
+        target: player.id,
+        gameId,
+      });
       socket.emit("join_game", gameRoomId);
       this.setState({ gameInvitable: false });
       if (!this.state.gameInvSent.some((inv) => inv.target == player.id)) {
@@ -305,13 +310,6 @@ export default class Lobby extends React.Component<Props, State> {
     return false;
   };
 
-  handleMouseOver = () => {
-    document.body.setAttribute("style", "overflow-y: hidden")
-  };
-  handleMouseLeave = () => {
-    document.body.setAttribute("style", "overflow-y: auto");
-  };
-
   componentDidMount = () => {
     socket.on("players_update", (players) => {
       this.setState({ players });
@@ -329,18 +327,21 @@ export default class Lobby extends React.Component<Props, State> {
       this.setRoomProperty(room.id, "isWriting", false);
     });
 
-    socket.on("requested_join_game", ({ author, gameId }) => {
-      const roomId = this.getGameRoomId(author, this.props.name);
-      socket.emit("join_game", roomId);
-      if (!this.state.gameInvitations.some((inv) => inv.gameId == gameId)) {
-        this.setState((prevState) => {
-          return {
-            gameInvitations: [
-              ...prevState.gameInvitations,
-              { author, gameId, target: this.props.name, roomId },
-            ],
-          };
-        });
+    socket.on("requested_join_game", ({ author, gameId, target }) => {
+      console.log(target);
+      if (this.props.name == target) {
+        const roomId = this.getGameRoomId(author, this.props.name);
+        socket.emit("join_game", roomId);
+        if (!this.state.gameInvitations.some((inv) => inv.gameId == gameId)) {
+          this.setState((prevState) => {
+            return {
+              gameInvitations: [
+                ...prevState.gameInvitations,
+                { author, gameId, target: this.props.name, roomId },
+              ],
+            };
+          });
+        }
       }
     });
 
@@ -443,8 +444,6 @@ export default class Lobby extends React.Component<Props, State> {
         <div
           className="lobby__rooms"
           ref={this.roomsRef}
-          onMouseOver={this.handleMouseOver}
-          onMouseLeave={this.handleMouseLeave}
           onWheel={this.handleScroll}
         >
           {rooms}

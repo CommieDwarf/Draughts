@@ -1,0 +1,435 @@
+.lobby {
+    width: 30%;
+    height: 420px;
+    border-radius: 5px;
+}
+
+
+.lobby__invite-button {
+    width: 20%;
+    height: 20px;
+    border: 1px solid white;
+    color: white;
+    border-radius: 5px;
+    margin-left: 5px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.lobby__invite-button--green {
+    color: lightgreen;
+    border: 1px solid lightgreen;
+}
+
+.lobby__game-invitation {
+    display: inline-block;
+    height: 60px;
+    width: 75%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none; 
+}
+
+.lobby__game-invitation::-webkit-scrollbar {
+    display: none;
+  }
+
+.lobby__game-invitation-text {
+    display: inline-block;
+    font-size: 13px;
+    width: 150px;
+    margin-left: 10px;;
+    animation-name: invitation-glow;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes invitation-glow {
+    0% {color: white}
+    50% {color: lightgreen}
+    100% {color: white}
+}
+
+.lobby__acceptButton {
+    color: white;
+    display: inline-block;
+    width: 50px;
+    text-align: center;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+    animation-name: invitation-glow;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+.lobby__acceptButton:hover {
+    background-color: white;
+    color: black;
+    animation-name: none;
+}
+
+
+
+.lobby__players {
+    width: 95%;
+    height: 130px;
+    margin: auto;
+    margin-top: 5px;
+    display: flex;
+    overflow: scroll;
+    flex-wrap: wrap;
+    gap: 8px;
+    border: 1px solid white;
+    background-color: black;
+    padding: 5px;
+    border-radius: 5px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.lobby__players::-webkit-scrollbar {
+    display: none;
+  }
+
+.lobby__player {
+    width: 50px;
+    height: 60px;
+    color: lightgreen;
+    text-align: center;
+    background-color: transparent;
+}
+
+
+.lobby__player--invitable {
+    font-weight: bold !important;
+    color: lightgreen;
+    animation-name: shadowChange;
+    animation-iteration-count: infinite;
+    animation-duration: 2s;
+    background-color: rgb(48, 88, 48)
+}
+
+@keyframes shadowChange {
+    0% {
+        box-shadow: 0px 0px 10px 0px lightgreen;
+        -webkit-box-shadow: 0px 0px 10px 0px lightgreen;
+        -moz-box-shadow: 0px 0px 10px 0px;
+    }
+    50% {
+        box-shadow: 0px 0px 30px 5px lightgreen;
+        -webkit-box-shadow: 0px 0px 30px 5px lightgreen;
+    -moz-box-shadow: 0px 0px 30px 5px lightgreen;
+    }
+    100% {
+        box-shadow: 0px 0px 10px 0px lightgreen;
+        -webkit-box-shadow: 0px 0px 10px 0px lightgreen;
+        -moz-box-shadow: 0px 0px 10px 0px lightgreen;
+    }
+}
+
+.lobby__player--current {
+    color: white;
+}
+
+.lobby___avatar-div {
+    width: 40px;
+    height: 40px;
+    margin: auto;
+}
+
+.lobby__avatar-img {
+    width: 40px;
+    height: 40px;
+    margin: auto;
+}
+
+.lobby__rooms {
+    color: white;
+    height: 30px;
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.lobby__rooms::-webkit-scrollbar {
+    height: 4px;
+}
+
+/* Track */
+.lobby__rooms::-webkit-scrollbar-track {
+background: black;
+height: 4px;
+}
+
+/* Handle */
+.lobby__rooms::-webkit-scrollbar-thumb {
+background: white;
+height: 4px;
+}
+
+/* Handle on hover */
+.lobby__rooms::-webkit-scrollbar-thumb:hover {
+background: white;
+height: 6px;
+}
+
+.lobby__room-wrapper {
+    position: relative;
+}
+.lobby__room--global {
+    width: 85px;
+}
+
+.lobby__room {
+    border: 1px solid white;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+.lobby__room--current {
+    color: lightgreen;
+}
+.lobby__room--unread {
+
+    animation-duration: 2s;
+    animation-name: room-animation;
+    animation-iteration-count: infinite;
+}
+
+@keyframes room-animation{
+    0% {
+        -webkit-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        -moz-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        box-shadow: inset 0px 0px 15px 1px lightgreen;
+    }
+    50% {
+        -webkit-box-shadow: inset 0px 0px 1px 1px lightgreen;
+        -moz-box-shadow: inset 0px 0px 1px 1px lightgreen;
+        box-shadow: inset 0px 0px 1px 1px lightgreen;
+    }
+    100% {
+        -webkit-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        -moz-box-shadow: inset 0px 0px 15px 1px lightgreen;
+        box-shadow: inset 0px 0px 15px 1px lightgreen;
+    }
+}
+
+.lobby__close-room {
+    position: absolute;
+    font-size: 14px;
+    color: red;
+    top: 0;
+    right: -2px;
+    cursor: pointer;
+}
+.lobby__close-room--visible {
+    visibility: visible;
+}
+.lobby__close-room--hidden {
+    visibility: hidden;
+}
+.lobby__new-room-button {
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 2px;
+}
+.lobby__new-room-button--green {
+    color: lightgreen;
+}
+
+.lobby__chat {
+    width: 95%;
+    height: 180px;
+    margin: auto;
+    margin-top: 10px;
+    padding: 5px;
+}
+
+.lobby__messages {
+    width: 100%;
+    height: 120px;
+    overflow-y: scroll;
+    position: relative;
+}
+
+.lobby__message {
+    margin-top: 5px;
+    position: relative;
+}
+
+.lobby__message-author {
+    display: inline-block;
+    color: lightgreen;
+    width: 100px;
+    vertical-align: top;
+    margin-top: 5px;
+}
+
+
+.lobby__message-content {
+    background-color: white;
+    display: inline-block;
+    border-radius: 5px;
+    max-width: 60%;
+    min-height: 30px;
+    overflow-wrap: break-word;
+    padding: 5px;
+    line-height: 1.6;
+}
+.message-content > span {
+    vertical-align: top;
+}
+
+.lobby__author-avatar-img {
+    width: 20px;
+    height: 20px;
+    margin-bottom: -5px;
+    
+}
+
+.lobby__author-avatar-div {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+
+}
+.lobby__author-name {
+    margin-left: 10px;
+}
+.lobby__author-name--current {
+    color: white;
+}
+
+.lobby__someone-writing {
+    color: white;
+    position: relative;
+}
+
+.lobby__dot-wrapper {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+}
+.lobby__dot-wrapper--1 {
+    margin-left: 5px;
+}
+
+.lobby__dot {
+    background-color: white;
+    width: 3px;
+    height: 3px;
+    border-radius: 100%;
+    display: inline-block;
+    animation-name: enlarge;
+    animation-iteration-count: infinite;
+    animation-duration: 1s;
+    top: 10px;
+}
+
+#dot-2 {
+    animation-delay: 0.2s;
+}
+#dot-3 {
+    animation-delay: 0.3s;
+}
+
+@keyframes enlarge {
+    0% {width: 3px; height: 3px}
+    50% {width: 6px; height: 6px}
+    100% {width: 3px; height: 3px}
+}
+
+.lobby__input {
+    width: 70%;
+    margin-top: 10px;
+    display: inline-block;
+}
+.lobby__send-button {
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    margin-left: 15px;
+    text-align: center;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 4px;
+}
+.lobby__send-button:hover {
+    background-color: white;
+    color: black;
+}
+.lobby__emo-button {
+    display: inline-block;
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    position: relative;
+    top: 2px;
+    margin-left: 10px;
+    padding-right: 7px;
+    padding-top: 2px;
+    padding-bottom: 4px;
+}
+.lobby__emo-button:hover {
+    background-color: white;
+    color: black;
+}
+
+.lobby__avatar-placeholder {
+    animation-name: rotation;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    position: absolute;
+}
+
+@keyframes rotation {
+    0% {transform: rotate(0deg) translate(0)};
+    50% {transform: rotate(180deg) translate(0)}
+    100% {transform: rotate(360deg) translate(0)}
+}
+
+.lobby__emoji-container {
+    width: 100%;
+    border-top: 1px solid white;
+    padding-top: 5px;
+    height: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+}
+
+.lobby__emoji {
+    height: 30px;
+    width: 30px;
+}
+
+.lobby__emoji:hover {
+    background-color: rgb(68, 68, 68);
+}
+
+.lobby__emoji-wrapper {
+    height: 28px;
+    width: 40px;
+    display: inline-block;
+    position: relative;
+}
+
+.lobby__inline-emoji {
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    top: 0;
+}

@@ -1,0 +1,53 @@
+.game-menu {
+    width: 240px;
+    height: 400px;
+    text-align: center;
+    color: white;
+    margin-right: 70px;
+    float: right;
+    font-size: 20px;
+    margin-top: 30px;
+}
+
+.game-menu--center {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  float: none;
+}
+
+
+.game-menu__start-game {
+  color: white;
+  border-radius: 5px;
+  width: 240px;
+  padding: 10px;
+}
+.game-menu__color {
+  color: white;
+  border: 1px solid white;
+  border-radius: 10px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.game-menu__color:hover {
+  color: black;
+  background-color: white;
+}
+
+.game-menu__color--white {
+  color: black;
+  background-color: white;
+}
+.game-menu__color--black {
+  color: white;
+  background-color: black;
+}
+
+.game-menu__error {
+  color: red;
+}

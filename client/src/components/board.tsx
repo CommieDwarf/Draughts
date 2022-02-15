@@ -159,13 +159,7 @@ export default class Board extends React.Component<MyProps, MyState> {
           rematch={rematch}
         />
         <BotLabel />
-        {this.state.contextMenu.showMenu && (
-          <ContextMenu
-            contextMenu={this.state.contextMenu}
-            chessboard={engine.chessboard}
-            hide={this.hideContextMenu}
-          />
-        )}
+        
       </div>
     );
   }
