@@ -1,6 +1,6 @@
 import React from "react";
 
-type Room = {
+interface Room {
   name: string;
   id: string;
   unread: boolean;
@@ -8,7 +8,7 @@ type Room = {
   isWriting: boolean;
 };
 
-type Props = {
+interface Props {
   closeRoom: (name: string) => void;
   setRoomProperty: (id: string, prop: string, value: any) => void;
   switchRoom: (room: Room) => void;
@@ -43,7 +43,6 @@ export default function Room(props: Props) {
   const handleClickRoom = (event: React.MouseEvent) => {
     props.switchRoom(props.room);
   };
-  
 
   let roomClass = "";
   if (room.name == props.currentRoom.name) {
@@ -61,7 +60,7 @@ export default function Room(props: Props) {
   let globalRoomClass = "";
 
   if (props.room.name == "global room") {
-      globalRoomClass = "lobby__room--global";
+    globalRoomClass = "lobby__room--global";
   }
 
   return (

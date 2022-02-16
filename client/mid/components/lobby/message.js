@@ -19,24 +19,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var avatar_1 = __importDefault(require("./avatar"));
-var emojis_1 = require("./emojis");
-var emojis_2 = require("./emojis");
+var Avatar_1 = __importDefault(require("./Avatar"));
+var Emojis_1 = require("./Emojis");
+var emojiList_1 = __importDefault(require("./emojiList"));
 var Message = /** @class */ (function (_super) {
     __extends(Message, _super);
     function Message(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
+        return _super.call(this, props) || this;
     }
     Message.prototype.render = function () {
         var author = this.props.author;
         var text = this.props.content.split(" ");
         var message = [];
         for (var i = 0; i < text.length; i++) {
-            if (emojis_2.emojis.includes(text[i])) {
+            if (emojiList_1.default.includes(text[i])) {
                 message.push(react_1.default.createElement("div", { className: "lobby__emoji-wrapper" },
-                    react_1.default.createElement("img", { src: emojis_1.path + text[i] + ".png", className: "lobby__inline-emoji", key: i })));
+                    react_1.default.createElement("img", { src: Emojis_1.path + text[i] + ".png", className: "lobby__inline-emoji", key: i })));
             }
             else {
                 message.push(react_1.default.createElement("span", { key: i }, text[i] + " "));
@@ -49,7 +47,7 @@ var Message = /** @class */ (function (_super) {
         return (react_1.default.createElement("div", { className: "lobby__message" },
             react_1.default.createElement("div", { className: "lobby__message-author" },
                 react_1.default.createElement("div", { id: "player1", className: "lobby__message-author" },
-                    react_1.default.createElement(avatar_1.default, { shape: author.avatar.shape, theme: author.avatar.theme, name: author.name, small: true }),
+                    react_1.default.createElement(Avatar_1.default, { shape: author.avatar.shape, theme: author.avatar.theme, name: author.name, small: true }),
                     react_1.default.createElement("span", { className: "lobby__author-name " + msgAuthorClass },
                         this.props.author.name,
                         ":"))),
@@ -58,4 +56,4 @@ var Message = /** @class */ (function (_super) {
     return Message;
 }(react_1.default.Component));
 exports.default = Message;
-//# sourceMappingURL=message.js.map
+//# sourceMappingURL=Message.js.map

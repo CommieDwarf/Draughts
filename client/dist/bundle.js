@@ -29,15 +29,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var board_1 = __importDefault(require("./components/board"));
-var gameMenu_1 = __importDefault(require("./components/gameMenu/gameMenu"));
-var lobby_1 = __importDefault(require("./components/lobby/lobby"));
-var gamePreview_1 = __importDefault(require("./components/gamePreview"));
+var Board_1 = __importDefault(require("./components/Board"));
+var GameMenu_1 = __importDefault(require("./components/gameMenu/GameMenu"));
+var Lobby_1 = __importDefault(require("./components/lobby/Lobby"));
+var GamePreview_1 = __importDefault(require("./components/GamePreview"));
 var game_1 = __importDefault(require("./game"));
-var inputName_1 = __importDefault(require("./components/inputName"));
-var connectMenu_1 = __importDefault(require("./components/connectMenu"));
+var InputName_1 = __importDefault(require("./components/InputName"));
+var ConnectMenu_1 = __importDefault(require("./components/ConnectMenu"));
 var reverseChessboard_1 = __importDefault(require("./reverseChessboard"));
 var main_1 = require("./main");
+;
+;
+;
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App(props) {
@@ -212,22 +215,22 @@ var App = /** @class */ (function (_super) {
         var gameMenuCentered = this.state.currentGame ? false : true;
         if (this.state.connected) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
-                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame, currentGame: this.state.currentGame }),
-                react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
-                this.state.currentGame && (react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })),
-                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games })));
+                react_1.default.createElement(GamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame, currentGame: this.state.currentGame }),
+                react_1.default.createElement(Lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
+                this.state.currentGame && (react_1.default.createElement(Board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })),
+                react_1.default.createElement(GameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,
-                react_1.default.createElement(inputName_1.default, { setName: this.setName, error: this.state.nameError }),
-                react_1.default.createElement(connectMenu_1.default, { connect: this.connect })));
+                react_1.default.createElement(InputName_1.default, { setName: this.setName, error: this.state.nameError }),
+                react_1.default.createElement(ConnectMenu_1.default, { connect: this.connect })));
         }
     };
     return App;
 }(react_1.default.Component));
 exports.default = App;
 
-},{"./components/board":3,"./components/connectMenu":10,"./components/gameMenu/gameMenu":12,"./components/gamePreview":14,"./components/inputName":15,"./components/lobby/lobby":25,"./game":32,"./main":33,"./reverseChessboard":34,"react":70}],2:[function(require,module,exports){
+},{"./components/Board":3,"./components/ConnectMenu":4,"./components/GamePreview":5,"./components/InputName":6,"./components/gameMenu/GameMenu":15,"./components/lobby/Lobby":23,"./game":31,"./main":32,"./reverseChessboard":33,"react":69}],2:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -571,7 +574,7 @@ function getScoreSheet() {
     return scoreSheet;
 }
 
-},{"./utility":35}],3:[function(require,module,exports){
+},{"./utility":34}],3:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -604,12 +607,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var top_label_1 = __importDefault(require(".//labels/top-label"));
-var left_label_1 = __importDefault(require("./labels/left-label"));
-var chessboard_1 = __importDefault(require("./board/chessboard"));
-var right_label_1 = __importDefault(require("./labels/right-label"));
-var bot_label_1 = __importDefault(require("./labels/bot-label"));
+var Chessboard_1 = __importDefault(require("./board/Chessboard"));
+var Label_1 = __importDefault(require("./Label"));
 var main_1 = require("../main");
+;
+;
+;
 var Board = /** @class */ (function (_super) {
     __extends(Board, _super);
     function Board(props) {
@@ -620,7 +623,6 @@ var Board = /** @class */ (function (_super) {
             });
         };
         _this.clickHandler = function (event) {
-            //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
             if (_this.props.game.gameMode == 2 /* ONLINE */ && _this.props.game.roomId) {
                 var gameInfo = {
@@ -669,7 +671,6 @@ var Board = /** @class */ (function (_super) {
             }
             return false;
         };
-        _this.props = props;
         _this.state = {
             contextMenu: {
                 piece: "",
@@ -693,40 +694,30 @@ var Board = /** @class */ (function (_super) {
         var engine = this.props.game.engine;
         var rematch = this.props.rematches.find(function (r) { return r.gameId == _this.props.game.id; });
         return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
-            react_1.default.createElement(top_label_1.default, null),
-            react_1.default.createElement(left_label_1.default, null),
-            react_1.default.createElement(right_label_1.default, null),
-            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner, restartGame: this.props.restartGame, player: this.props.player, rematch: rematch }),
-            react_1.default.createElement(bot_label_1.default, null)));
+            react_1.default.createElement(Label_1.default, { side: "top" }),
+            react_1.default.createElement(Label_1.default, { side: "left" }),
+            react_1.default.createElement(Label_1.default, { side: "right" }),
+            react_1.default.createElement(Chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner, restartGame: this.props.restartGame, player: this.props.player, rematch: rematch }),
+            react_1.default.createElement(Label_1.default, { side: "bot" })));
     };
     return Board;
 }(react_1.default.Component));
 exports.default = Board;
 var restartFlag = false;
 
-},{"../main":33,".//labels/top-label":19,"./board/chessboard":5,"./labels/bot-label":16,"./labels/left-label":17,"./labels/right-label":18,"react":70}],4:[function(require,module,exports){
+},{"../main":32,"./Label":7,"./board/Chessboard":8,"react":69}],4:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var main_1 = require("../../main");
-function CloseGame(props) {
-    function handleClick() {
-        if (props.closeGame) {
-            props.closeGame(props.gameId);
-            if (props.game.gameMode == 2 /* ONLINE */) {
-                main_1.socket.emit("player-close-game", { gameId: props.game.id, roomId: props.game.roomId });
-            }
-        }
-    }
-    return (react_1.default.createElement("div", { className: "game-preview__close-game", onClick: handleClick },
-        react_1.default.createElement("i", { className: "icon-cancel-circled" })));
+function ConnectMenu(props) {
+    return react_1.default.createElement("div", { className: "connect-menu no-select", onClick: props.connect }, " Connect ");
 }
-exports.default = CloseGame;
+exports.default = ConnectMenu;
 
-},{"../../main":33,"react":70}],5:[function(require,module,exports){
+},{"react":69}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -748,9 +739,131 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var square_1 = __importDefault(require("./square"));
+var Chessboard_1 = __importDefault(require("./board/Chessboard"));
+;
+;
+var GamePreview = /** @class */ (function (_super) {
+    __extends(GamePreview, _super);
+    function GamePreview(props) {
+        var _this = _super.call(this, props) || this;
+        _this.handleScroll = function (event) {
+            var _a, _b;
+            if (event.deltaY < 0) {
+                (_a = _this.gamePreviewRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
+            }
+            else if (event.deltaY > 0) {
+                (_b = _this.gamePreviewRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
+            }
+            return false;
+        };
+        _this.gamePreviewRef = react_1.default.createRef();
+        _this.state = {
+            mouseOver: false,
+        };
+        return _this;
+    }
+    GamePreview.prototype.render = function () {
+        var _this = this;
+        var games = this.props.games.map(function (game, i) {
+            var current = false;
+            if (game == _this.props.currentGame) {
+                current = true;
+            }
+            return (react_1.default.createElement(Chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame, current: current }));
+        });
+        return (react_1.default.createElement("div", { className: "game-preview", onWheel: this.handleScroll, ref: this.gamePreviewRef }, games));
+    };
+    return GamePreview;
+}(react_1.default.Component));
+exports.default = GamePreview;
+
+},{"./board/Chessboard":8,"react":69}],6:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+var InputName = /** @class */ (function (_super) {
+    __extends(InputName, _super);
+    function InputName(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onChangeHandler = function (e) {
+            var target = e.target;
+            _this.props.setName(target.value);
+        };
+        return _this;
+    }
+    InputName.prototype.render = function () {
+        return (react_1.default.createElement("div", { className: "app__input-name no-select" },
+            react_1.default.createElement("label", { htmlFor: "name" },
+                react_1.default.createElement("h1", null, "Enter your name:")),
+            react_1.default.createElement("br", null),
+            react_1.default.createElement("input", { type: "text", id: "name", maxLength: 6, onChange: this.onChangeHandler }),
+            react_1.default.createElement("div", { className: "app__name-error" }, this.props.error)));
+    };
+    return InputName;
+}(react_1.default.Component));
+exports.default = InputName;
+
+},{"react":69}],7:[function(require,module,exports){
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+var letters_1 = __importDefault(require("./letters"));
+;
+function Label(props) {
+    var isSideTopOrBot = ["top", "bot"].includes(props.side);
+    return (react_1.default.createElement("div", { className: "board__" + props.side + "-label no-select" }, letters_1.default.map(function (letter, index) {
+        return (react_1.default.createElement("div", { className: "board__" + props.side + "-label-" + (isSideTopOrBot ? "letter" : "num"), key: index }, isSideTopOrBot ? letter : index + 1));
+    })));
+}
+exports.default = Label;
+
+},{"./letters":17,"react":69}],8:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+var Square_1 = __importDefault(require("./Square"));
 var CloseGame_1 = __importDefault(require("./CloseGame"));
-var winMenu_1 = __importDefault(require("./winMenu"));
+var WinMenu_1 = __importDefault(require("./WinMenu"));
+;
 var Chessboard = /** @class */ (function (_super) {
     __extends(Chessboard, _super);
     function Chessboard(props) {
@@ -767,7 +880,6 @@ var Chessboard = /** @class */ (function (_super) {
             }
             _this.forceUpdate();
         };
-        _this.props = props;
         _this.chessboardRef = react_1.default.createRef();
         _this.timeout = null;
         return _this;
@@ -822,7 +934,7 @@ var Chessboard = /** @class */ (function (_super) {
                     }
                     pieceColor = engine.chessboard[id]["piece"];
                     var queen = engine.chessboard[id]["queen"];
-                    squares.push(react_1.default.createElement(square_1.default, { id: id.toString(), className: className, key: id, pieceColor: pieceColor, type: this.getPieceType(id), queen: queen }));
+                    squares.push(react_1.default.createElement(Square_1.default, { id: id.toString(), className: className, key: id, pieceColor: pieceColor, type: this.getPieceType(id), queen: queen }));
                 }
                 if (className == "chessboard__square chessboard__square--white") {
                     className = "chessboard__square chessboard__square--black";
@@ -859,7 +971,7 @@ var Chessboard = /** @class */ (function (_super) {
                     previewChessboardClass, ref: this.chessboardRef },
                 this.props.game.engine.winner &&
                     this.props.restartGame &&
-                    this.props.player && (react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: this.props.rematch })),
+                    this.props.player && (react_1.default.createElement(WinMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: this.props.rematch })),
                 squares),
             closeIcon));
     };
@@ -867,7 +979,193 @@ var Chessboard = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Chessboard;
 
-},{"./CloseGame":4,"./square":8,"./winMenu":9,"react":70}],6:[function(require,module,exports){
+},{"./CloseGame":9,"./Square":11,"./WinMenu":12,"react":69}],9:[function(require,module,exports){
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+var main_1 = require("../../main");
+function CloseGame(props) {
+    function handleClick() {
+        if (props.closeGame) {
+            props.closeGame(props.gameId);
+            if (props.game.gameMode == 2 /* ONLINE */) {
+                main_1.socket.emit("player-close-game", {
+                    gameId: props.game.id,
+                    roomId: props.game.roomId,
+                });
+            }
+        }
+    }
+    return (react_1.default.createElement("div", { className: "game-preview__close-game", onClick: handleClick },
+        react_1.default.createElement("i", { className: "icon-cancel-circled" })));
+}
+exports.default = CloseGame;
+
+},{"../../main":32,"react":69}],10:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+var getPieceJSX_1 = require("./getPieceJSX");
+var Piece = /** @class */ (function (_super) {
+    __extends(Piece, _super);
+    function Piece(props) {
+        return _super.call(this, props) || this;
+    }
+    Piece.prototype.render = function () {
+        var piece = (0, getPieceJSX_1.getPieceJSX)(this.props.color, this.props.type, this.props.queen);
+        return piece;
+    };
+    return Piece;
+}(react_1.default.Component));
+exports.default = Piece;
+
+},{"./getPieceJSX":13,"react":69}],11:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+var Piece_1 = __importDefault(require("./Piece"));
+var Square = /** @class */ (function (_super) {
+    __extends(Square, _super);
+    function Square(props) {
+        return _super.call(this, props) || this;
+    }
+    Square.prototype.render = function () {
+        return (react_1.default.createElement("div", { id: this.props.id, className: this.props.className },
+            react_1.default.createElement(Piece_1.default, { color: this.props.pieceColor, id: this.props.id, type: this.props.type, queen: this.props.queen })));
+    };
+    return Square;
+}(react_1.default.Component));
+exports.default = Square;
+
+},{"./Piece":10,"react":69}],12:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+var main_1 = require("../../main");
+var Avatar_1 = __importDefault(require("../lobby/Avatar"));
+var WinMenu = /** @class */ (function (_super) {
+    __extends(WinMenu, _super);
+    function WinMenu(props) {
+        var _this = _super.call(this, props) || this;
+        _this.handleClick = function () {
+            var props = _this.props;
+            if (_this.props.game.gameMode == 2 /* ONLINE */ && !_this.props.rematch) {
+                var rematch = {
+                    gameId: props.game.id,
+                    player: props.player,
+                    requested: true,
+                    roomId: props.game.roomId,
+                };
+                main_1.socket.emit("player_wants_rematch", rematch);
+                _this.setState({ rematchSent: true });
+            }
+            else if (_this.props.rematch) {
+                var id = props.game.id ? props.game.id : 0;
+                _this.props.restart(id);
+                main_1.socket.emit("restart_game", id);
+            }
+            else {
+                _this.props.restart(0);
+            }
+        };
+        _this.state = {
+            rematchSent: false,
+        };
+        return _this;
+    }
+    WinMenu.prototype.componentDidMount = function () {
+        var _this = this;
+        main_1.socket.on("rematch_accepted", function (gameId) {
+            _this.props.restart(gameId);
+        });
+    };
+    WinMenu.prototype.componentWillUnmount = function () {
+        main_1.socket.off();
+    };
+    WinMenu.prototype.render = function () {
+        var winner = this.props.winner;
+        var playAgainClass = this.state.rematchSent
+            ? "win-menu__play-again--selected"
+            : "";
+        return (react_1.default.createElement("div", { className: "win-menu " },
+            react_1.default.createElement("h1", null,
+                winner,
+                " Wins!"),
+            react_1.default.createElement("h2", { className: "win-menu__play-again " + playAgainClass, onClick: this.handleClick }, "Play Again?"),
+            this.props.rematch && (react_1.default.createElement("div", { className: "win-menu__avatar" },
+                react_1.default.createElement(Avatar_1.default, { name: this.props.player.name, theme: this.props.player.avatar.theme, shape: this.props.player.avatar.shape }))),
+            this.props.rematch && (react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                this.props.rematch.player && this.props.player.name + " ",
+                "wants rematch!")),
+            this.state.rematchSent && (react_1.default.createElement("div", { className: "win-menu__waiting-pawn-div" },
+                react_1.default.createElement("img", { className: "lobby__avatar-placeholder win-menu__waiting-pawn", src: "./img/pawn.png" }))),
+            this.state.rematchSent && (react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                "Waiting for ",
+                this.props.player.name,
+                " to accept"))));
+    };
+    return WinMenu;
+}(react_1.default.Component));
+exports.default = WinMenu;
+
+},{"../../main":32,"../lobby/Avatar":18,"react":69}],13:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -981,194 +1279,14 @@ function getSpecialClass(type, color) {
     return [baseClass, centerClass];
 }
 
-},{"react":70}],7:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var getPieceJSX_1 = require("./getPieceJSX");
-var Piece = /** @class */ (function (_super) {
-    __extends(Piece, _super);
-    function Piece(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
-    }
-    Piece.prototype.render = function () {
-        var piece = (0, getPieceJSX_1.getPieceJSX)(this.props.color, this.props.type, this.props.queen);
-        return piece;
-    };
-    return Piece;
-}(react_1.default.Component));
-exports.default = Piece;
-
-},{"./getPieceJSX":6,"react":70}],8:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var piece_1 = __importDefault(require("./piece"));
-var Square = /** @class */ (function (_super) {
-    __extends(Square, _super);
-    function Square(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
-    }
-    Square.prototype.render = function () {
-        return (react_1.default.createElement("div", { id: this.props.id, className: this.props.className },
-            react_1.default.createElement(piece_1.default, { color: this.props.pieceColor, id: this.props.id, type: this.props.type, queen: this.props.queen })));
-    };
-    return Square;
-}(react_1.default.Component));
-exports.default = Square;
-
-},{"./piece":7,"react":70}],9:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var main_1 = require("../../main");
-var avatar_1 = __importDefault(require("../lobby/avatar"));
-var WinMenu = /** @class */ (function (_super) {
-    __extends(WinMenu, _super);
-    function WinMenu(props) {
-        var _this = _super.call(this, props) || this;
-        _this.handleClick = function () {
-            var props = _this.props;
-            if (_this.props.game.gameMode == 2 /* ONLINE */ && !_this.props.rematch) {
-                var rematch = {
-                    gameId: props.game.id,
-                    player: props.player,
-                    requested: true,
-                    roomId: props.game.roomId
-                };
-                main_1.socket.emit("player_wants_rematch", rematch);
-                _this.setState({ rematchSent: true });
-            }
-            else if (_this.props.rematch) {
-                var id = props.game.id ? props.game.id : 0;
-                _this.props.restart(id);
-                main_1.socket.emit("restart_game", id);
-            }
-            else {
-                _this.props.restart(0);
-            }
-        };
-        _this.props = props;
-        _this.state = {
-            rematchSent: false,
-        };
-        return _this;
-    }
-    WinMenu.prototype.componentDidMount = function () {
-        var _this = this;
-        main_1.socket.on("rematch_accepted", function (gameId) {
-            _this.props.restart(gameId);
-        });
-    };
-    WinMenu.prototype.componentWillUnmount = function () {
-        main_1.socket.off();
-    };
-    WinMenu.prototype.render = function () {
-        var winner = this.props.winner;
-        var playAgainClass = this.state.rematchSent ? "win-menu__play-again--selected" : "";
-        return (react_1.default.createElement("div", { className: "win-menu " },
-            react_1.default.createElement("h1", null,
-                winner,
-                " Wins!"),
-            react_1.default.createElement("h2", { className: "win-menu__play-again " + playAgainClass, onClick: this.handleClick }, "Play Again?"),
-            this.props.rematch &&
-                react_1.default.createElement("div", { className: "win-menu__avatar" },
-                    react_1.default.createElement(avatar_1.default, { name: this.props.player.name, theme: this.props.player.avatar.theme, shape: this.props.player.avatar.shape })),
-            this.props.rematch &&
-                react_1.default.createElement("h3", { className: "win-menu__rematch" },
-                    this.props.rematch.player &&
-                        this.props.player.name + " ",
-                    "wants rematch!"),
-            this.state.rematchSent &&
-                react_1.default.createElement("div", { className: "win-menu__waiting-pawn-div" },
-                    react_1.default.createElement("img", { className: "lobby__avatar-placeholder win-menu__waiting-pawn", src: "./img/pawn.png" })),
-            this.state.rematchSent &&
-                react_1.default.createElement("h3", { className: "win-menu__rematch" },
-                    "Waiting for ",
-                    this.props.player.name,
-                    " to accept")));
-    };
-    return WinMenu;
-}(react_1.default.Component));
-exports.default = WinMenu;
-
-},{"../../main":33,"../lobby/avatar":21,"react":70}],10:[function(require,module,exports){
+},{"react":69}],14:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-function ConnectMenu(props) {
-    return react_1.default.createElement("div", { className: "connect-menu no-select", onClick: props.connect }, " Connect ");
-}
-exports.default = ConnectMenu;
-
-},{"react":70}],11:[function(require,module,exports){
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
+;
 function ColorSelection(props) {
     var side = props.color == "white" ? 0 /* NORMAL */ : 1 /* REVERSED */;
     function handleClick() {
@@ -1185,24 +1303,24 @@ function ColorSelection(props) {
 }
 exports.default = ColorSelection;
 
-},{"react":70}],12:[function(require,module,exports){
+},{"react":69}],15:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var startGame_1 = __importDefault(require("./startGame"));
+var StartGame_1 = __importDefault(require("./StartGame"));
 function gameMenu(props) {
     var centerClass = props.centered ? "game-menu--center" : "";
     return (react_1.default.createElement("div", { className: "game-menu no-select " + centerClass },
         react_1.default.createElement("div", null,
-            react_1.default.createElement(startGame_1.default, { title: "Start Local Game", gameMode: 0 /* LOCAL */, startNewGame: props.startNewGame, label: "local", games: props.games }),
-            react_1.default.createElement(startGame_1.default, { title: "Start Vs Computer Game", gameMode: 1 /* BOT */, startNewGame: props.startNewGame, label: "vsComp", games: props.games }))));
+            react_1.default.createElement(StartGame_1.default, { title: "Start Local Game", gameMode: 0 /* LOCAL */, startNewGame: props.startNewGame, label: "local", games: props.games }),
+            react_1.default.createElement(StartGame_1.default, { title: "Start Vs Computer Game", gameMode: 1 /* BOT */, startNewGame: props.startNewGame, label: "vsComp", games: props.games }))));
 }
 exports.default = gameMenu;
 
-},{"./startGame":13,"react":70}],13:[function(require,module,exports){
+},{"./StartGame":16,"react":69}],16:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -1228,310 +1346,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
-var colorSelection_1 = __importDefault(require("./colorSelection"));
+var ColorSelection_1 = __importDefault(require("./ColorSelection"));
+;
 function StartGame(props) {
     var _a = (0, react_1.useState)(""), error = _a[0], setError = _a[1];
-    (0, react_1.useEffect)(function () {
-        if (props.games.length < 4) {
-            setError("");
-        }
-    }, [props.games]);
     return (react_1.default.createElement("div", { className: "game-menu__start-game" },
         react_1.default.createElement("h3", null, props.title),
-        react_1.default.createElement(colorSelection_1.default, { color: "white", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
-        react_1.default.createElement(colorSelection_1.default, { color: "black", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
+        react_1.default.createElement(ColorSelection_1.default, { color: "white", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
+        react_1.default.createElement(ColorSelection_1.default, { color: "black", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
         react_1.default.createElement("p", { className: "game-menu__error" }, error)));
 }
 exports.default = StartGame;
 
-},{"./colorSelection":11,"react":70}],14:[function(require,module,exports){
+},{"./ColorSelection":14,"react":69}],17:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var chessboard_1 = __importDefault(require("./board/chessboard"));
-var GamePreview = /** @class */ (function (_super) {
-    __extends(GamePreview, _super);
-    function GamePreview(props) {
-        var _this = _super.call(this, props) || this;
-        _this.handleScroll = function (event) {
-            var _a, _b;
-            if (event.deltaY < 0) {
-                (_a = _this.gamePreviewRef.current) === null || _a === void 0 ? void 0 : _a.scrollBy(-30, 0);
-            }
-            else if (event.deltaY > 0) {
-                (_b = _this.gamePreviewRef.current) === null || _b === void 0 ? void 0 : _b.scrollBy(30, 0);
-            }
-            return false;
-        };
-        _this.props = props;
-        _this.gamePreviewRef = react_1.default.createRef();
-        _this.state = {
-            mouseOver: false,
-        };
-        return _this;
-    }
-    GamePreview.prototype.render = function () {
-        var _this = this;
-        var games = this.props.games.map(function (game, i) {
-            var current = false;
-            if (game == _this.props.currentGame) {
-                current = true;
-            }
-            return (react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame, current: current }));
-        });
-        return (react_1.default.createElement("div", { className: "game-preview", onWheel: this.handleScroll, ref: this.gamePreviewRef }, games));
-    };
-    return GamePreview;
-}(react_1.default.Component));
-exports.default = GamePreview;
+var letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+exports.default = letters;
 
-},{"./board/chessboard":5,"react":70}],15:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var InputName = /** @class */ (function (_super) {
-    __extends(InputName, _super);
-    function InputName(props) {
-        var _this = _super.call(this, props) || this;
-        _this.onChangeHandler = function (e) {
-            var target = e.target;
-            _this.props.setName(target.value);
-        };
-        _this.props = props;
-        return _this;
-    }
-    InputName.prototype.render = function () {
-        return (react_1.default.createElement("div", { className: "app__input-name no-select" },
-            react_1.default.createElement("label", { htmlFor: "name" },
-                react_1.default.createElement("h1", null, "Enter your name:")),
-            react_1.default.createElement("br", null),
-            react_1.default.createElement("input", { type: "text", id: "name", maxLength: 6, onChange: this.onChangeHandler }),
-            react_1.default.createElement("div", { className: "app__name-error" }, this.props.error)));
-    };
-    return InputName;
-}(react_1.default.Component));
-exports.default = InputName;
-
-},{"react":70}],16:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var BotLabel = /** @class */ (function (_super) {
-    __extends(BotLabel, _super);
-    function BotLabel() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BotLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { className: "board__bot-label no-select" },
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "A"),
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "B"),
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "C"),
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "D"),
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "E"),
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "F"),
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "G"),
-            react_1.default.createElement("div", { className: "board__bot-label-letter" }, "H")));
-    };
-    return BotLabel;
-}(react_1.default.Component));
-exports.default = BotLabel;
-
-},{"react":70}],17:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var leftLabel = /** @class */ (function (_super) {
-    __extends(leftLabel, _super);
-    function leftLabel() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    leftLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { className: "board__left-label" },
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "1"),
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "2"),
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "3"),
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "4"),
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "5"),
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "6"),
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "7"),
-            react_1.default.createElement("div", { className: "board__left-label-num" }, "8")));
-    };
-    return leftLabel;
-}(react_1.default.Component));
-exports.default = leftLabel;
-
-},{"react":70}],18:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var RightLabel = /** @class */ (function (_super) {
-    __extends(RightLabel, _super);
-    function RightLabel() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    RightLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { className: "board__right-label" },
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "1"),
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "2"),
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "3"),
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "4"),
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "5"),
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "6"),
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "7"),
-            react_1.default.createElement("div", { className: "board__right-label-num" }, "8")));
-    };
-    return RightLabel;
-}(react_1.default.Component));
-exports.default = RightLabel;
-
-},{"react":70}],19:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-var TopLabel = /** @class */ (function (_super) {
-    __extends(TopLabel, _super);
-    function TopLabel() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    TopLabel.prototype.render = function () {
-        return (react_1.default.createElement("div", { className: "board__top-label" },
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "A"),
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "B"),
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "C"),
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "D"),
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "E"),
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "F"),
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "G"),
-            react_1.default.createElement("div", { className: "board__top-label-letter" }, "H")));
-    };
-    return TopLabel;
-}(react_1.default.Component));
-exports.default = TopLabel;
-
-},{"react":70}],20:[function(require,module,exports){
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = __importDefault(require("react"));
-function GameInvitation(props) {
-    return react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement("div", { className: "lobby__game-invitation-text" },
-            "You challanged ",
-            props.target));
-}
-exports.default = GameInvitation;
-
-},{"react":70}],21:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1569,6 +1402,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
+;
+;
 var Avatar = /** @class */ (function (_super) {
     __extends(Avatar, _super);
     function Avatar(props) {
@@ -1579,14 +1414,13 @@ var Avatar = /** @class */ (function (_super) {
         _this.onErrorHandler = function () {
             _this.setState({
                 src: "./img/pawn.png",
-                error: true
+                error: true,
             });
         };
-        _this.props = props;
         _this.state = {
             loaded: false,
             error: false,
-            src: "http://tinygraphs.com/" + props.shape + "/{" + props.name + "}?theme=" + props.theme + "&numcolors=4&size=220&fmt=svg"
+            src: "http://tinygraphs.com/" + props.shape + "/{" + props.name + "}?theme=" + props.theme + "&numcolors=4&size=220&fmt=svg",
         };
         return _this;
     }
@@ -1602,14 +1436,14 @@ var Avatar = /** @class */ (function (_super) {
             inviteClass = "lobby__player--invitable";
         }
         return (react_1.default.createElement("div", { className: divClass + " " + inviteClass },
-            !this.state.loaded && !this.state.error && react_1.default.createElement("img", { className: "lobby__avatar-placeholder " + imgClass, src: "./img/pawn.png" }),
+            !this.state.loaded && !this.state.error && (react_1.default.createElement("img", { className: "lobby__avatar-placeholder " + imgClass, src: "./img/pawn.png" })),
             react_1.default.createElement("img", { className: imgClass, src: this.state.src, onLoad: this.onLoadHandler, onError: this.onErrorHandler })));
     };
     return Avatar;
 }(react_1.Component));
 exports.default = Avatar;
 
-},{"react":70}],22:[function(require,module,exports){
+},{"react":69}],19:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1640,22 +1474,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var message_1 = __importDefault(require("./message"));
+var Message_1 = __importDefault(require("./Message"));
 var main_1 = require("../../main");
-var emojis_1 = __importDefault(require("./emojis"));
+var Emojis_1 = __importDefault(require("./Emojis"));
+;
+;
+;
+;
 var Chat = /** @class */ (function (_super) {
     __extends(Chat, _super);
     function Chat(props) {
         var _this = _super.call(this, props) || this;
         _this.sendMesage = function () {
             var _a;
-            if (_this.state.message.replace(/\s/g, '').length) {
+            if (_this.state.message.replace(/\s/g, "").length) {
                 main_1.socket.emit("done_writing", _this.props.currentRoom);
-                var message = { content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom };
+                var message = {
+                    content: _this.state.message,
+                    author: _this.props.player,
+                    room: _this.props.currentRoom,
+                };
                 main_1.socket.emit("send_message", message);
                 _this.setState(function (prev) {
                     return {
-                        messages: __spreadArray(__spreadArray([], prev.messages, true), [{ content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom }], false),
+                        messages: __spreadArray(__spreadArray([], prev.messages, true), [
+                            {
+                                content: _this.state.message,
+                                author: _this.props.player,
+                                room: _this.props.currentRoom,
+                            },
+                        ], false),
                         message: "",
                     };
                 });
@@ -1687,17 +1535,17 @@ var Chat = /** @class */ (function (_super) {
         _this.pickEmoji = function (emoji) {
             _this.setState(function (prevState) {
                 return {
-                    message: prevState.message + " " + emoji + " "
+                    message: prevState.message + " " + emoji + " ",
                 };
             });
         };
         _this.handleOutsideClick = function (event) {
             var target = event.target;
-            if (!target.closest('.lobby__emoji-container') && !target.closest(".lobby__emo-button")) {
+            if (!target.closest(".lobby__emoji-container") &&
+                !target.closest(".lobby__emo-button")) {
                 _this.setState({ showEmojis: false });
             }
         };
-        _this.props = props;
         _this.state = {
             messages: [],
             message: "",
@@ -1710,7 +1558,9 @@ var Chat = /** @class */ (function (_super) {
     }
     Chat.prototype.scrollToBot = function () {
         if (this.messagesDivRef.current) {
-            this.messagesDivRef.current.scrollBy({ top: this.messagesDivRef.current.scrollHeight + 9999 });
+            this.messagesDivRef.current.scrollBy({
+                top: this.messagesDivRef.current.scrollHeight + 9999,
+            });
         }
     };
     Chat.prototype.receiveMessage = function (message) {
@@ -1722,17 +1572,15 @@ var Chat = /** @class */ (function (_super) {
         }
         this.setState(function (prevState) {
             return {
-                messages: __spreadArray(__spreadArray([], prevState.messages, true), [message], false)
+                messages: __spreadArray(__spreadArray([], prevState.messages, true), [message], false),
             };
         });
         this.scrollToBot();
     };
     Chat.prototype.setEmojiBottom = function () {
-        var emoContainer = document.getElementById('emoji-container');
-        var msgsDiv = document.getElementById('messages');
         if (this.emoContainerDivRef.current && this.messagesDivRef.current) {
             this.emoContainerDivRef.current.setAttribute("style", "top: " + (this.messagesDivRef.current.scrollHeight - 85) + "px");
-            console.log('to bottom');
+            console.log("to bottom");
         }
     };
     Chat.prototype.componentDidMount = function () {
@@ -1756,22 +1604,22 @@ var Chat = /** @class */ (function (_super) {
         var _this = this;
         var messages = this.state.messages.map(function (msg, id) {
             if (msg.room.id == _this.props.currentRoom.id) {
-                return (react_1.default.createElement(message_1.default, { author: msg.author, content: msg.content, key: id, thisPlayerId: _this.thisPlayerId }));
+                return (react_1.default.createElement(Message_1.default, { author: msg.author, content: msg.content, key: id, thisPlayerId: _this.thisPlayerId }));
             }
         });
         var emoButtonClass = this.state.showEmojis ? "white color-black" : "";
         return (react_1.default.createElement("div", { className: "lobby__chat" },
             react_1.default.createElement("div", { className: "lobby__messages", ref: this.messagesDivRef },
                 messages,
-                this.props.isWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
+                this.props.isWriting && (react_1.default.createElement("div", { className: "lobby__someone-writing" },
                     "Someone is writing",
                     react_1.default.createElement("div", { className: "lobby__dot-wrapper lobby__dot-wrapper--1" },
                         react_1.default.createElement("div", { id: "dot-1", className: "lobby__dot" })),
                     react_1.default.createElement("div", { id: "dot-wrapper-2", className: "lobby__dot-wrapper" },
                         react_1.default.createElement("div", { id: "dot-2", className: "lobby__dot" })),
                     react_1.default.createElement("div", { id: "dot-wrapper-3", className: "lobby__dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-3", className: "lobby__dot" }))),
-                this.state.showEmojis && react_1.default.createElement(emojis_1.default, { pickEmoji: this.pickEmoji, emoContainerDivRef: this.emoContainerDivRef })),
+                        react_1.default.createElement("div", { id: "dot-3", className: "lobby__dot" })))),
+                this.state.showEmojis && (react_1.default.createElement(Emojis_1.default, { pickEmoji: this.pickEmoji, emoContainerDivRef: this.emoContainerDivRef }))),
             react_1.default.createElement("input", { className: "lobby__input", type: "text", onChange: this.onChangeHandler, value: this.state.message, autoComplete: "off" }),
             react_1.default.createElement("div", { className: "lobby__emo-button no-select " + emoButtonClass, onClick: this.toggleEmojis },
                 react_1.default.createElement("i", { className: "icon-emo-happy" })),
@@ -1782,7 +1630,7 @@ var Chat = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Chat;
 
-},{"../../main":33,"./emojis":23,"./message":26,"react":70}],23:[function(require,module,exports){
+},{"../../main":32,"./Emojis":20,"./Message":24,"react":69}],20:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1818,14 +1666,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emojis = exports.path = void 0;
+exports.emojiList = exports.path = void 0;
 var react_1 = __importStar(require("react"));
 var path = "./img/emojis/";
 exports.path = path;
-var emojis = ["10of10", "Clap", "Cry", "Facepalm", "Glasses", "Hacker", "Hands", "Help", "Hmmm", "KEKW",
-    "KingCry", "Restless", "Sleep", "Susp", "Think"];
-exports.emojis = emojis;
+var emojiList_1 = __importDefault(require("./emojiList"));
+exports.emojiList = emojiList_1.default;
 var Emojis = /** @class */ (function (_super) {
     __extends(Emojis, _super);
     function Emojis(props) {
@@ -1835,19 +1685,18 @@ var Emojis = /** @class */ (function (_super) {
             var emoji = target.alt;
             _this.props.pickEmoji(emoji);
         };
-        _this.props = props;
         return _this;
     }
     Emojis.prototype.render = function () {
         var _this = this;
-        var imgs = emojis.map(function (emoji, id) { return react_1.default.createElement("img", { className: "lobby__emoji", key: id, src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler }); });
+        var imgs = emojiList_1.default.map(function (emoji, id) { return (react_1.default.createElement("img", { className: "lobby__emoji", key: id, src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler })); });
         return (react_1.default.createElement("div", { className: "lobby__emoji-container", ref: this.props.emoContainerDivRef }, imgs));
     };
     return Emojis;
 }(react_1.Component));
 exports.default = Emojis;
 
-},{"react":70}],24:[function(require,module,exports){
+},{"./emojiList":27,"react":69}],21:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1855,18 +1704,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 function GameInvitation(props) {
-    function handleClick() {
-        props.acceptChallange(props.author, props.gameId, props.roomId);
-    }
     return react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement("div", { className: "lobby__game-invitation-text" },
-            props.author,
-            " is challenging you"),
-        react_1.default.createElement("div", { className: "lobby__acceptButton", onClick: handleClick }, "Accept"));
+            "You challanged ",
+            props.target));
 }
 exports.default = GameInvitation;
 
-},{"react":70}],25:[function(require,module,exports){
+},{"react":69}],22:[function(require,module,exports){
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+;
+function GameInvitation(props) {
+    function handleClick() {
+        props.acceptChallange(props.author, props.gameId, props.roomId);
+    }
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("div", { className: "lobby__game-invitation-text" },
+            props.author,
+            " is challenging you"),
+        react_1.default.createElement("div", { className: "lobby__acceptButton", onClick: handleClick }, "Accept")));
+}
+exports.default = GameInvitation;
+
+},{"react":69}],23:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1897,12 +1762,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var chat_1 = __importDefault(require("./chat"));
+var Chat_1 = __importDefault(require("./Chat"));
 var main_1 = require("../../main");
-var players_1 = __importDefault(require("./players"));
-var room_1 = __importDefault(require("./room"));
-var gameInvitation_1 = __importDefault(require("./gameInvitation"));
+var Players_1 = __importDefault(require("./Players"));
+var Room_1 = __importDefault(require("./Room"));
+var GameInvitation_1 = __importDefault(require("./GameInvitation"));
 var GameInvSent_1 = __importDefault(require("./GameInvSent"));
+;
+;
+;
 var Lobby = /** @class */ (function (_super) {
     __extends(Lobby, _super);
     function Lobby(props) {
@@ -2111,7 +1979,6 @@ var Lobby = /** @class */ (function (_super) {
             });
             document.addEventListener("click", _this.handleOutsidePlayersClick);
         };
-        _this.props = props;
         _this.state = {
             players: [],
             currentRoom: {
@@ -2173,10 +2040,10 @@ var Lobby = /** @class */ (function (_super) {
         var _this = this;
         var player = this.state.players.find(function (player) { return player.name == _this.props.name; });
         var rooms = this.state.rooms.map(function (room, id) {
-            return (react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id }));
+            return (react_1.default.createElement(Room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id }));
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return (react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId }));
+            return (react_1.default.createElement(GameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId }));
         });
         var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
             return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, key: i });
@@ -2195,19 +2062,19 @@ var Lobby = /** @class */ (function (_super) {
                 gameInvitations,
                 gameInvSent),
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
-                react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
+                react_1.default.createElement(Players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),
             react_1.default.createElement("div", { className: "lobby__rooms", ref: this.roomsRef, onWheel: this.handleScroll },
                 rooms,
                 react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
-            player && (react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting }))));
+            player && (react_1.default.createElement(Chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting }))));
     };
     return Lobby;
 }(react_1.default.Component));
 exports.default = Lobby;
 
-},{"../../main":33,"./GameInvSent":20,"./chat":22,"./gameInvitation":24,"./players":27,"./room":28,"react":70}],26:[function(require,module,exports){
+},{"../../main":32,"./Chat":19,"./GameInvSent":21,"./GameInvitation":22,"./Players":25,"./Room":26,"react":69}],24:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2229,24 +2096,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var avatar_1 = __importDefault(require("./avatar"));
-var emojis_1 = require("./emojis");
-var emojis_2 = require("./emojis");
+var Avatar_1 = __importDefault(require("./Avatar"));
+var Emojis_1 = require("./Emojis");
+var emojiList_1 = __importDefault(require("./emojiList"));
 var Message = /** @class */ (function (_super) {
     __extends(Message, _super);
     function Message(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
+        return _super.call(this, props) || this;
     }
     Message.prototype.render = function () {
         var author = this.props.author;
         var text = this.props.content.split(" ");
         var message = [];
         for (var i = 0; i < text.length; i++) {
-            if (emojis_2.emojis.includes(text[i])) {
+            if (emojiList_1.default.includes(text[i])) {
                 message.push(react_1.default.createElement("div", { className: "lobby__emoji-wrapper" },
-                    react_1.default.createElement("img", { src: emojis_1.path + text[i] + ".png", className: "lobby__inline-emoji", key: i })));
+                    react_1.default.createElement("img", { src: Emojis_1.path + text[i] + ".png", className: "lobby__inline-emoji", key: i })));
             }
             else {
                 message.push(react_1.default.createElement("span", { key: i }, text[i] + " "));
@@ -2259,7 +2124,7 @@ var Message = /** @class */ (function (_super) {
         return (react_1.default.createElement("div", { className: "lobby__message" },
             react_1.default.createElement("div", { className: "lobby__message-author" },
                 react_1.default.createElement("div", { id: "player1", className: "lobby__message-author" },
-                    react_1.default.createElement(avatar_1.default, { shape: author.avatar.shape, theme: author.avatar.theme, name: author.name, small: true }),
+                    react_1.default.createElement(Avatar_1.default, { shape: author.avatar.shape, theme: author.avatar.theme, name: author.name, small: true }),
                     react_1.default.createElement("span", { className: "lobby__author-name " + msgAuthorClass },
                         this.props.author.name,
                         ":"))),
@@ -2269,7 +2134,7 @@ var Message = /** @class */ (function (_super) {
 }(react_1.default.Component));
 exports.default = Message;
 
-},{"./avatar":21,"./emojis":23,"react":70}],27:[function(require,module,exports){
+},{"./Avatar":18,"./Emojis":20,"./emojiList":27,"react":69}],25:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2310,14 +2175,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
-var avatar_1 = __importDefault(require("./avatar"));
+var Avatar_1 = __importDefault(require("./Avatar"));
 var main_1 = require("../../main");
 var Players = /** @class */ (function (_super) {
     __extends(Players, _super);
     function Players(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
+        return _super.call(this, props) || this;
     }
     Players.prototype.render = function () {
         var _this = this;
@@ -2330,26 +2193,30 @@ var Players = /** @class */ (function (_super) {
                 spanClass = "lobby__player--current";
             }
             var canBeInvited = false;
-            if ((_this.props.roomInvitable || _this.props.gameInvitable) && player.id !== main_1.socket.id && !_this.props.rooms.some(function (room) { return room.name == player.name; })) {
+            if ((_this.props.roomInvitable || _this.props.gameInvitable) &&
+                player.id !== main_1.socket.id &&
+                !_this.props.rooms.some(function (room) { return room.name == player.name; })) {
                 canBeInvited = true;
             }
             return (react_1.default.createElement("div", { className: "lobby__player ", key: id, id: player.name, onClick: _this.props.handlePlayerInvite },
-                react_1.default.createElement(avatar_1.default, { name: name, shape: shape, theme: theme, invitable: canBeInvited }),
+                react_1.default.createElement(Avatar_1.default, { name: name, shape: shape, theme: theme, invitable: canBeInvited }),
                 react_1.default.createElement("span", { className: "player-name " + spanClass }, player.name)));
         });
-        return (react_1.default.createElement(react_1.default.Fragment, null, players));
+        return react_1.default.createElement(react_1.default.Fragment, null, players);
     };
     return Players;
 }(react_1.Component));
 exports.default = Players;
 
-},{"../../main":33,"./avatar":21,"react":70}],28:[function(require,module,exports){
+},{"../../main":32,"./Avatar":18,"react":69}],26:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
+;
+;
 function Room(props) {
     var room = props.room;
     var handleClickCloseRoom = function (event) {
@@ -2397,7 +2264,29 @@ function Room(props) {
 }
 exports.default = Room;
 
-},{"react":70}],29:[function(require,module,exports){
+},{"react":69}],27:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var emojis = [
+    "10of10",
+    "Clap",
+    "Cry",
+    "Facepalm",
+    "Glasses",
+    "Hacker",
+    "Hands",
+    "Help",
+    "Hmmm",
+    "KEKW",
+    "KingCry",
+    "Restless",
+    "Sleep",
+    "Susp",
+    "Think",
+];
+exports.default = emojis;
+
+},{}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPreset = void 0;
@@ -2439,7 +2328,7 @@ function getPreset(side) {
 }
 exports.getPreset = getPreset;
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("./config");
@@ -2556,7 +2445,7 @@ function addPiece(i, color, chessboard) {
     chessboard[i]["piece"] = color;
 }
 
-},{"./config":29}],31:[function(require,module,exports){
+},{"./config":28}],30:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -2594,7 +2483,8 @@ var Engine = /** @class */ (function () {
         this.winner = "";
     }
     Engine.prototype.dispatchEvent = function () {
-        document.dispatchEvent(new Event('chessboardChanged'));
+        // dispatching event in order react to update
+        document.dispatchEvent(new Event("chessboardChanged"));
     };
     Engine.prototype.setWinner = function (chessboard, turn, playerSide) {
         var allMoves = this.getAllMoves(chessboard, turn, playerSide);
@@ -2651,24 +2541,33 @@ var Engine = /** @class */ (function () {
             this.unlockPieces();
         }
         // Selecting
-        if (clickedId && chessboard[clickedId]["piece"] == this.turn && this.selectedPiece !== clickedId) {
-            if (this.lockedPieces.length == 0 || this.lockedPieces.includes(clickedId)) {
+        if (clickedId &&
+            chessboard[clickedId]["piece"] == this.turn &&
+            this.selectedPiece !== clickedId) {
+            if (this.lockedPieces.length == 0 ||
+                this.lockedPieces.includes(clickedId)) {
                 this.selectPiece(clickedId);
             }
         }
-        else if (!(clickedId && this.selectedPiece && this.availableMoves.includes(clickedId))) {
+        else if (!(clickedId &&
+            this.selectedPiece &&
+            this.availableMoves.includes(clickedId))) {
             this.unselectPiece();
             this.unsetAvailableMoves();
         }
         if (this.selectedPiece) {
             var moves = this.getMoves(this.selectedPiece, chessboard, this.turn, this.playerSide);
             if (this.lockedPieces.length > 0) {
-                moves = moves.filter(function (move) { return routes.some(function (route) { return move.move == route[1]; }); });
+                moves = moves.filter(function (move) {
+                    return routes.some(function (route) { return move.move == route[1]; });
+                });
             }
             this.setAvailableMoves(moves);
         }
         // movement and killing
-        if (clickedId && this.availableMoves.includes(clickedId) && this.selectedPiece) {
+        if (clickedId &&
+            this.availableMoves.includes(clickedId) &&
+            this.selectedPiece) {
             var moves = this.getMoves(this.selectedPiece, chessboard, this.turn, this.playerSide);
             var move = this.getMove(clickedId, moves);
             if (move) {
@@ -2715,7 +2614,8 @@ var Engine = /** @class */ (function () {
             chessboard: JSON.stringify(this.chessboard),
             turn: this.turn,
         };
-        if (JSON.stringify(oldState) != JSON.stringify(currentState) || this.winner) {
+        if (JSON.stringify(oldState) != JSON.stringify(currentState) ||
+            this.winner) {
             this.dispatchEvent();
         }
     };
@@ -2734,7 +2634,7 @@ var Engine = /** @class */ (function () {
         return false;
     };
     Engine.prototype.makeQueen = function (id, chessboard) {
-        chessboard[id]['queen'] = true;
+        chessboard[id]["queen"] = true;
     };
     Engine.prototype.switchTurn = function () {
         this.turn = this.turn == "white" ? "black" : "white";
@@ -2765,7 +2665,7 @@ var Engine = /** @class */ (function () {
     };
     Engine.prototype.getMoves = function (selected, chessboard, turn, playerSide) {
         var moves = [];
-        if (chessboard[selected]['queen']) {
+        if (chessboard[selected]["queen"]) {
             moves = this.getQueenMoves(selected, chessboard, turn);
         }
         else {
@@ -2782,7 +2682,13 @@ var Engine = /** @class */ (function () {
     Engine.prototype.getObliqueMoves = function (queenPosition, chessboard) {
         var allMoves = [[], [], [], []];
         var current = queenPosition;
-        var borders = ['border-left', 'border-top', 'border-right', 'border-bot', "border-left"];
+        var borders = [
+            "border-left",
+            "border-top",
+            "border-right",
+            "border-bot",
+            "border-left",
+        ];
         var directions = [-9, -7, 9, 7];
         for (var i = 0; i < borders.length - 1; i++) {
             var border1 = borders[i];
@@ -2828,7 +2734,7 @@ var Engine = /** @class */ (function () {
         for (var i = 0; i < moves.length; i++) {
             var kill = void 0;
             for (var j = 0; j < moves[i].length; j++) {
-                if (chessboard[moves[i][j]]['piece'] == opponent) {
+                if (chessboard[moves[i][j]]["piece"] == opponent) {
                     kill = moves[i][j];
                 }
                 if (kill !== moves[i][j]) {
@@ -2879,16 +2785,19 @@ var Engine = /** @class */ (function () {
                 if (moveBy2 < 0 || moveBy2 > 63) {
                     continue;
                 }
-                else if (chessboard[moveBy2]["border-left"] && (dir == -7 || dir == 9)) {
+                else if (chessboard[moveBy2]["border-left"] &&
+                    (dir == -7 || dir == 9)) {
                     continue;
                 }
-                else if (chessboard[moveBy2]["border-right"] && (dir == -9 || dir == 7)) {
+                else if (chessboard[moveBy2]["border-right"] &&
+                    (dir == -9 || dir == 7)) {
                     continue;
                 }
-                else if (chessboard[moveBy2]["square"] !== 'black') {
+                else if (chessboard[moveBy2]["square"] !== "black") {
                     continue;
                 }
-                else if (chessboard[moveBy1]["piece"] && !chessboard[moveBy2]["piece"]) {
+                else if (chessboard[moveBy1]["piece"] &&
+                    !chessboard[moveBy2]["piece"]) {
                     moves.push({ piece: selected, kill: moveBy1, move: moveBy2 });
                 }
             }
@@ -2927,7 +2836,7 @@ var Engine = /** @class */ (function () {
             stack.push(position);
         });
         var current = stack[stack.length - 1];
-        var counter = 0; // for optimization testing porpouse 
+        var counter = 0; // for optimization testing porpouse
         while (current) {
             var temp = [];
             for (var _i = 0, stack_1 = stack; _i < stack_1.length; _i++) {
@@ -2964,7 +2873,7 @@ var Engine = /** @class */ (function () {
                 flatMoves.push(movesWithKill[i].move);
             }
             // poping from stack when available moves from current pos are already visited
-            if (utility.setIncludesArray(current.visited, flatMoves)) {
+            if (utility.setIncludesArrayElements(current.visited, flatMoves)) {
                 deepPositions.push(current);
                 stack.pop();
                 current = stack[stack.length - 1];
@@ -3049,7 +2958,7 @@ var Engine = /** @class */ (function () {
 }());
 exports.Engine = Engine;
 
-},{"./utility":35}],32:[function(require,module,exports){
+},{"./utility":34}],31:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -3165,7 +3074,7 @@ function sleep(ms) {
     return new Promise(function (resolve) { return setTimeout(resolve, ms); });
 }
 
-},{"./bot":2,"./createChessboard":30,"./engine":31}],33:[function(require,module,exports){
+},{"./bot":2,"./createChessboard":29,"./engine":30}],32:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -3179,7 +3088,7 @@ var socket_io_client_1 = __importDefault(require("socket.io-client"));
 exports.socket = (0, socket_io_client_1.default)("https://murmuring-oasis-45557.herokuapp.com/");
 react_dom_1.default.render(react_1.default.createElement(App_1.default, null), document.querySelector(".container"));
 
-},{"./App":1,"react":70,"react-dom":67,"socket.io-client":77}],34:[function(require,module,exports){
+},{"./App":1,"react":69,"react-dom":66,"socket.io-client":76}],33:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function reverseChessboard(chessboard) {
@@ -3192,19 +3101,12 @@ function reverseChessboard(chessboard) {
 }
 exports.default = reverseChessboard;
 
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sleep = exports.filterEverySecondElement = exports.hasOnlyNulls = exports.isEmpty = exports.setIncludesArray = exports.arraysEqual = exports.arrayIncludesArray = exports.filterOutNulls = void 0;
+exports.sleep = exports.filterEverySecondElement = exports.hasOnlyNulls = exports.isEmpty = exports.setIncludesArrayElements = exports.arraysEqual = exports.arrayIncludesArray = exports.filterOutNulls = void 0;
 function filterOutNulls(array) {
-    var filteredOut = [];
-    for (var _i = 0, array_1 = array; _i < array_1.length; _i++) {
-        var element = array_1[_i];
-        if (element) {
-            filteredOut.push(element);
-        }
-    }
-    return filteredOut;
+    return array.filter(function (e) { return Boolean(e); });
 }
 exports.filterOutNulls = filterOutNulls;
 function arrayIncludesArray(searched, array) {
@@ -3231,16 +3133,10 @@ function arraysEqual(array1, array2) {
     return true;
 }
 exports.arraysEqual = arraysEqual;
-function setIncludesArray(set, array) {
-    var flag = true;
-    array.forEach(function (key) {
-        if (!set.has(key)) {
-            flag = false;
-        }
-    });
-    return flag;
+function setIncludesArrayElements(set, array) {
+    return array.every(function (el) { return Array.from(set).includes(el); });
 }
-exports.setIncludesArray = setIncludesArray;
+exports.setIncludesArrayElements = setIncludesArrayElements;
 function isEmpty(array) {
     return array.length == 0;
 }
@@ -3264,7 +3160,7 @@ function sleep(ms) {
 }
 exports.sleep = sleep;
 
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -3442,7 +3338,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -3529,7 +3425,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*
  * base64-arraybuffer 1.0.1 <https://github.com/niklasvh/base64-arraybuffer>
  * Copyright (c) 2021 Niklas von Hertzen <https://hertzen.com>
@@ -3592,7 +3488,7 @@ Backoff.prototype.setJitter = function(jitter){
 })));
 
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -3744,7 +3640,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5525,7 +5421,7 @@ function numberIsNaN (obj) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"base64-js":39,"buffer":40,"ieee754":60}],41:[function(require,module,exports){
+},{"base64-js":38,"buffer":39,"ieee754":59}],40:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = (() => {
@@ -5540,7 +5436,7 @@ exports.default = (() => {
     }
 })();
 
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.installTimerFunctions = exports.transports = exports.Transport = exports.protocol = exports.Socket = void 0;
@@ -5554,7 +5450,7 @@ Object.defineProperty(exports, "transports", { enumerable: true, get: function (
 var util_js_1 = require("./util.js");
 Object.defineProperty(exports, "installTimerFunctions", { enumerable: true, get: function () { return util_js_1.installTimerFunctions; } });
 
-},{"./socket.js":43,"./transport.js":44,"./transports/index.js":45,"./util.js":51}],43:[function(require,module,exports){
+},{"./socket.js":42,"./transport.js":43,"./transports/index.js":44,"./util.js":50}],42:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6146,7 +6042,7 @@ function clone(obj) {
     return o;
 }
 
-},{"./transports/index.js":45,"./util.js":51,"@socket.io/component-emitter":36,"debug":52,"engine.io-parser":58,"parseqs":62,"parseuri":63}],44:[function(require,module,exports){
+},{"./transports/index.js":44,"./util.js":50,"@socket.io/component-emitter":35,"debug":51,"engine.io-parser":57,"parseqs":61,"parseuri":62}],43:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6269,7 +6165,7 @@ class Transport extends component_emitter_1.Emitter {
 }
 exports.Transport = Transport;
 
-},{"./util.js":51,"@socket.io/component-emitter":36,"debug":52,"engine.io-parser":58}],45:[function(require,module,exports){
+},{"./util.js":50,"@socket.io/component-emitter":35,"debug":51,"engine.io-parser":57}],44:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transports = void 0;
@@ -6280,7 +6176,7 @@ exports.transports = {
     polling: polling_xhr_js_1.XHR
 };
 
-},{"./polling-xhr.js":46,"./websocket.js":49}],46:[function(require,module,exports){
+},{"./polling-xhr.js":45,"./websocket.js":48}],45:[function(require,module,exports){
 "use strict";
 /* global attachEvent */
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6560,7 +6456,7 @@ function unloadHandler() {
     }
 }
 
-},{"../globalThis.js":41,"../util.js":51,"./polling.js":47,"./xmlhttprequest.js":50,"@socket.io/component-emitter":36,"debug":52}],47:[function(require,module,exports){
+},{"../globalThis.js":40,"../util.js":50,"./polling.js":46,"./xmlhttprequest.js":49,"@socket.io/component-emitter":35,"debug":51}],46:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6746,7 +6642,7 @@ class Polling extends transport_js_1.Transport {
 }
 exports.Polling = Polling;
 
-},{"../transport.js":44,"debug":52,"engine.io-parser":58,"parseqs":62,"yeast":88}],48:[function(require,module,exports){
+},{"../transport.js":43,"debug":51,"engine.io-parser":57,"parseqs":61,"yeast":87}],47:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -6767,7 +6663,7 @@ exports.WebSocket = globalThis_js_1.default.WebSocket || globalThis_js_1.default
 exports.usingBrowserWebSocket = true;
 exports.defaultBinaryType = "arraybuffer";
 
-},{"../globalThis.js":41}],49:[function(require,module,exports){
+},{"../globalThis.js":40}],48:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6965,7 +6861,7 @@ class WS extends transport_js_1.Transport {
 exports.WS = WS;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"../transport.js":44,"../util.js":51,"./websocket-constructor.js":48,"buffer":40,"debug":52,"engine.io-parser":58,"parseqs":62,"yeast":88}],50:[function(require,module,exports){
+},{"../transport.js":43,"../util.js":50,"./websocket-constructor.js":47,"buffer":39,"debug":51,"engine.io-parser":57,"parseqs":61,"yeast":87}],49:[function(require,module,exports){
 "use strict";
 // browser shim for xmlhttprequest module
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -6992,7 +6888,7 @@ function default_1(opts) {
 }
 exports.default = default_1;
 
-},{"../globalThis.js":41,"has-cors":59}],51:[function(require,module,exports){
+},{"../globalThis.js":40,"has-cors":58}],50:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -7024,7 +6920,7 @@ function installTimerFunctions(obj, opts) {
 }
 exports.installTimerFunctions = installTimerFunctions;
 
-},{"./globalThis.js":41}],52:[function(require,module,exports){
+},{"./globalThis.js":40}],51:[function(require,module,exports){
 (function (process){(function (){
 /* eslint-env browser */
 
@@ -7297,7 +7193,7 @@ formatters.j = function (v) {
 };
 
 }).call(this)}).call(this,require('_process'))
-},{"./common":53,"_process":64}],53:[function(require,module,exports){
+},{"./common":52,"_process":63}],52:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -7573,7 +7469,7 @@ function setup(env) {
 
 module.exports = setup;
 
-},{"ms":54}],54:[function(require,module,exports){
+},{"ms":53}],53:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -7737,7 +7633,7 @@ function plural(ms, msAbs, n, name) {
   return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
 }
 
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ERROR_PACKET = exports.PACKET_TYPES_REVERSE = exports.PACKET_TYPES = void 0;
@@ -7758,7 +7654,7 @@ Object.keys(PACKET_TYPES).forEach(key => {
 const ERROR_PACKET = { type: "error", data: "parser error" };
 exports.ERROR_PACKET = ERROR_PACKET;
 
-},{}],56:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commons_js_1 = require("./commons.js");
@@ -7811,7 +7707,7 @@ const mapBinary = (data, binaryType) => {
 };
 exports.default = decodePacket;
 
-},{"./commons.js":55,"base64-arraybuffer":38}],57:[function(require,module,exports){
+},{"./commons.js":54,"base64-arraybuffer":37}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commons_js_1 = require("./commons.js");
@@ -7856,7 +7752,7 @@ const encodeBlobAsBase64 = (data, callback) => {
 };
 exports.default = encodePacket;
 
-},{"./commons.js":55}],58:[function(require,module,exports){
+},{"./commons.js":54}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decodePayload = exports.decodePacket = exports.encodePayload = exports.encodePacket = exports.protocol = void 0;
@@ -7896,7 +7792,7 @@ const decodePayload = (encodedPayload, binaryType) => {
 exports.decodePayload = decodePayload;
 exports.protocol = 4;
 
-},{"./decodePacket.js":56,"./encodePacket.js":57}],59:[function(require,module,exports){
+},{"./decodePacket.js":55,"./encodePacket.js":56}],58:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -7915,7 +7811,7 @@ try {
   module.exports = false;
 }
 
-},{}],60:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -8002,7 +7898,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],61:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -8094,7 +7990,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],62:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -8133,7 +8029,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],63:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -8203,7 +8099,7 @@ function queryKey(uri, query) {
     return data;
 }
 
-},{}],64:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -8389,7 +8285,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],65:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v17.0.2
  * react-dom.development.js
@@ -34655,7 +34551,7 @@ exports.version = ReactVersion;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":64,"object-assign":61,"react":70,"scheduler":75,"scheduler/tracing":76}],66:[function(require,module,exports){
+},{"_process":63,"object-assign":60,"react":69,"scheduler":74,"scheduler/tracing":75}],65:[function(require,module,exports){
 /** @license React v17.0.2
  * react-dom.production.min.js
  *
@@ -34954,7 +34850,7 @@ exports.findDOMNode=function(a){if(null==a)return null;if(1===a.nodeType)return 
 exports.render=function(a,b,c){if(!rk(b))throw Error(y(200));return tk(null,a,b,!1,c)};exports.unmountComponentAtNode=function(a){if(!rk(a))throw Error(y(40));return a._reactRootContainer?(Xj(function(){tk(null,null,a,!1,function(){a._reactRootContainer=null;a[ff]=null})}),!0):!1};exports.unstable_batchedUpdates=Wj;exports.unstable_createPortal=function(a,b){return uk(a,b,2<arguments.length&&void 0!==arguments[2]?arguments[2]:null)};
 exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!rk(c))throw Error(y(200));if(null==a||void 0===a._reactInternals)throw Error(y(38));return tk(a,b,c,!1,d)};exports.version="17.0.2";
 
-},{"object-assign":61,"react":70,"scheduler":75}],67:[function(require,module,exports){
+},{"object-assign":60,"react":69,"scheduler":74}],66:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -34996,7 +34892,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/react-dom.development.js":65,"./cjs/react-dom.production.min.js":66,"_process":64}],68:[function(require,module,exports){
+},{"./cjs/react-dom.development.js":64,"./cjs/react-dom.production.min.js":65,"_process":63}],67:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v17.0.2
  * react.development.js
@@ -37333,7 +37229,7 @@ exports.version = ReactVersion;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":64,"object-assign":61}],69:[function(require,module,exports){
+},{"_process":63,"object-assign":60}],68:[function(require,module,exports){
 /** @license React v17.0.2
  * react.production.min.js
  *
@@ -37358,7 +37254,7 @@ key:d,ref:k,props:e,_owner:h}};exports.createContext=function(a,b){void 0===b&&(
 exports.lazy=function(a){return{$$typeof:v,_payload:{_status:-1,_result:a},_init:Q}};exports.memo=function(a,b){return{$$typeof:u,type:a,compare:void 0===b?null:b}};exports.useCallback=function(a,b){return S().useCallback(a,b)};exports.useContext=function(a,b){return S().useContext(a,b)};exports.useDebugValue=function(){};exports.useEffect=function(a,b){return S().useEffect(a,b)};exports.useImperativeHandle=function(a,b,c){return S().useImperativeHandle(a,b,c)};
 exports.useLayoutEffect=function(a,b){return S().useLayoutEffect(a,b)};exports.useMemo=function(a,b){return S().useMemo(a,b)};exports.useReducer=function(a,b,c){return S().useReducer(a,b,c)};exports.useRef=function(a){return S().useRef(a)};exports.useState=function(a){return S().useState(a)};exports.version="17.0.2";
 
-},{"object-assign":61}],70:[function(require,module,exports){
+},{"object-assign":60}],69:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -37369,7 +37265,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/react.development.js":68,"./cjs/react.production.min.js":69,"_process":64}],71:[function(require,module,exports){
+},{"./cjs/react.development.js":67,"./cjs/react.production.min.js":68,"_process":63}],70:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v0.20.2
  * scheduler-tracing.development.js
@@ -37720,7 +37616,7 @@ exports.unstable_wrap = unstable_wrap;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":64}],72:[function(require,module,exports){
+},{"_process":63}],71:[function(require,module,exports){
 /** @license React v0.20.2
  * scheduler-tracing.production.min.js
  *
@@ -37731,7 +37627,7 @@ exports.unstable_wrap = unstable_wrap;
  */
 'use strict';var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unstable_clear=function(a){return a()};exports.unstable_getCurrent=function(){return null};exports.unstable_getThreadID=function(){return++b};exports.unstable_subscribe=function(){};exports.unstable_trace=function(a,d,c){return c()};exports.unstable_unsubscribe=function(){};exports.unstable_wrap=function(a){return a};
 
-},{}],73:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 (function (process){(function (){
 /** @license React v0.20.2
  * scheduler.development.js
@@ -38381,7 +38277,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":64}],74:[function(require,module,exports){
+},{"_process":63}],73:[function(require,module,exports){
 /** @license React v0.20.2
  * scheduler.production.min.js
  *
@@ -38403,7 +38299,7 @@ exports.unstable_next=function(a){switch(P){case 1:case 2:case 3:var b=3;break;d
 exports.unstable_scheduleCallback=function(a,b,c){var d=exports.unstable_now();"object"===typeof c&&null!==c?(c=c.delay,c="number"===typeof c&&0<c?d+c:d):c=d;switch(a){case 1:var e=-1;break;case 2:e=250;break;case 5:e=1073741823;break;case 4:e=1E4;break;default:e=5E3}e=c+e;a={id:N++,callback:b,priorityLevel:a,startTime:c,expirationTime:e,sortIndex:-1};c>d?(a.sortIndex=c,H(M,a),null===J(L)&&a===J(M)&&(S?h():S=!0,g(U,c-d))):(a.sortIndex=e,H(L,a),R||Q||(R=!0,f(V)));return a};
 exports.unstable_wrapCallback=function(a){var b=P;return function(){var c=P;P=b;try{return a.apply(this,arguments)}finally{P=c}}};
 
-},{}],75:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -38414,7 +38310,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/scheduler.development.js":73,"./cjs/scheduler.production.min.js":74,"_process":64}],76:[function(require,module,exports){
+},{"./cjs/scheduler.development.js":72,"./cjs/scheduler.production.min.js":73,"_process":63}],75:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -38425,7 +38321,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./cjs/scheduler-tracing.development.js":71,"./cjs/scheduler-tracing.production.min.js":72,"_process":64}],77:[function(require,module,exports){
+},{"./cjs/scheduler-tracing.development.js":70,"./cjs/scheduler-tracing.production.min.js":71,"_process":63}],76:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -38496,7 +38392,7 @@ Object.defineProperty(exports, "protocol", { enumerable: true, get: function () 
 
 module.exports = lookup;
 
-},{"./manager.js":78,"./socket.js":80,"./url.js":81,"debug":82,"socket.io-parser":86}],78:[function(require,module,exports){
+},{"./manager.js":77,"./socket.js":79,"./url.js":80,"debug":81,"socket.io-parser":85}],77:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -38893,7 +38789,7 @@ class Manager extends component_emitter_1.Emitter {
 }
 exports.Manager = Manager;
 
-},{"./on.js":79,"./socket.js":80,"@socket.io/component-emitter":36,"backo2":37,"debug":82,"engine.io-client":42,"socket.io-parser":86}],79:[function(require,module,exports){
+},{"./on.js":78,"./socket.js":79,"@socket.io/component-emitter":35,"backo2":36,"debug":81,"engine.io-client":41,"socket.io-parser":85}],78:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.on = void 0;
@@ -38905,7 +38801,7 @@ function on(obj, ev, fn) {
 }
 exports.on = on;
 
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39415,7 +39311,7 @@ class Socket extends component_emitter_1.Emitter {
 }
 exports.Socket = Socket;
 
-},{"./on.js":79,"@socket.io/component-emitter":36,"debug":82,"socket.io-parser":86}],81:[function(require,module,exports){
+},{"./on.js":78,"@socket.io/component-emitter":35,"debug":81,"socket.io-parser":85}],80:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39487,13 +39383,13 @@ function url(uri, path = "", loc) {
 }
 exports.url = url;
 
-},{"debug":82,"parseuri":63}],82:[function(require,module,exports){
+},{"debug":81,"parseuri":62}],81:[function(require,module,exports){
+arguments[4][51][0].apply(exports,arguments)
+},{"./common":82,"_process":63,"dup":51}],82:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"./common":83,"_process":64,"dup":52}],83:[function(require,module,exports){
+},{"dup":52,"ms":83}],83:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"dup":53,"ms":84}],84:[function(require,module,exports){
-arguments[4][54][0].apply(exports,arguments)
-},{"dup":54}],85:[function(require,module,exports){
+},{"dup":53}],84:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reconstructPacket = exports.deconstructPacket = void 0;
@@ -39575,7 +39471,7 @@ function _reconstructPacket(data, buffers) {
     return data;
 }
 
-},{"./is-binary.js":87}],86:[function(require,module,exports){
+},{"./is-binary.js":86}],85:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Decoder = exports.Encoder = exports.PacketType = exports.protocol = void 0;
@@ -39858,7 +39754,7 @@ class BinaryReconstructor {
     }
 }
 
-},{"./binary.js":85,"./is-binary.js":87,"@socket.io/component-emitter":36,"debug":82}],87:[function(require,module,exports){
+},{"./binary.js":84,"./is-binary.js":86,"@socket.io/component-emitter":35,"debug":81}],86:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasBinary = exports.isBinary = void 0;
@@ -39915,7 +39811,7 @@ function hasBinary(obj, toJSON) {
 }
 exports.hasBinary = hasBinary;
 
-},{}],88:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -39985,4 +39881,4 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}]},{},[33]);
+},{}]},{},[32]);

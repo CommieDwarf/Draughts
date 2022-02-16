@@ -9,7 +9,6 @@ export function getPieceJSX(color: Color, type: Type, queen: boolean = false) {
   }
   let [baseClass, centerClass] = getSpecialClass(type, color);
 
-
   let piece;
 
   if (queen) {
@@ -20,7 +19,9 @@ export function getPieceJSX(color: Color, type: Type, queen: boolean = false) {
         piece = (
           <div className={"piece piece--black " + baseClass}>
             {" "}
-            <div className={"piece__center piece__center--black " + centerClass}>
+            <div
+              className={"piece__center piece__center--black " + centerClass}
+            >
               {" "}
             </div>{" "}
           </div>
@@ -30,7 +31,9 @@ export function getPieceJSX(color: Color, type: Type, queen: boolean = false) {
         piece = (
           <div className={"piece piece--white " + baseClass}>
             {" "}
-            <div className={"piece__center piece__center--white " + centerClass}>
+            <div
+              className={"piece__center piece__center--white " + centerClass}
+            >
               {" "}
             </div>{" "}
           </div>
@@ -48,7 +51,7 @@ function getQueen(color: Color, type: Type) {
       <div className={"piece piece--white " + baseClass}>
         <div className={"piece__center piece__center--white " + centerClass}>
           <div className="piece__vertical-bar-left piece__vertical-bar-left--white"></div>
-          <div className="piece__vertical-bar-mid piece__vertical-bar-mid--white" ></div>
+          <div className="piece__vertical-bar-mid piece__vertical-bar-mid--white"></div>
           <div className="piece__vertical-bar-right piece__vertical-bar-right--white"></div>
           <div className="piece__horizontal-bar piece__horizontal-bar--white">
             <div className="piece__circle piece__circle--1 piece__circle--white"></div>
@@ -96,9 +99,9 @@ function getSpecialClass(type: Type, color: Color) {
         centerClass = "piece__center-white--locked";
         break;
       case "killable":
-          baseClass="piece--white-killable";
-          centerClass = "piece__center--white-killable";
-          break;
+        baseClass = "piece--white-killable";
+        centerClass = "piece__center--white-killable";
+        break;
       default:
         baseClass = "";
         centerClass = "";
@@ -110,10 +113,10 @@ function getSpecialClass(type: Type, color: Color) {
         baseClass = "piece--black-selected";
         centerClass = "piece__center--black-selected";
         break;
-        case "killable":
-          baseClass = "piece--black-killable";
-          centerClass = "piece__center--black-killable";
-          break;
+      case "killable":
+        baseClass = "piece--black-killable";
+        centerClass = "piece__center--black-killable";
+        break;
       case "locked":
         baseClass = "piece-black--locked";
         centerClass = "piece__center-black--locked";

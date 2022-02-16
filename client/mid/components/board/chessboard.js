@@ -19,9 +19,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var square_1 = __importDefault(require("./square"));
+var Square_1 = __importDefault(require("./Square"));
 var CloseGame_1 = __importDefault(require("./CloseGame"));
-var winMenu_1 = __importDefault(require("./winMenu"));
+var WinMenu_1 = __importDefault(require("./WinMenu"));
+;
 var Chessboard = /** @class */ (function (_super) {
     __extends(Chessboard, _super);
     function Chessboard(props) {
@@ -38,7 +39,6 @@ var Chessboard = /** @class */ (function (_super) {
             }
             _this.forceUpdate();
         };
-        _this.props = props;
         _this.chessboardRef = react_1.default.createRef();
         _this.timeout = null;
         return _this;
@@ -93,7 +93,7 @@ var Chessboard = /** @class */ (function (_super) {
                     }
                     pieceColor = engine.chessboard[id]["piece"];
                     var queen = engine.chessboard[id]["queen"];
-                    squares.push(react_1.default.createElement(square_1.default, { id: id.toString(), className: className, key: id, pieceColor: pieceColor, type: this.getPieceType(id), queen: queen }));
+                    squares.push(react_1.default.createElement(Square_1.default, { id: id.toString(), className: className, key: id, pieceColor: pieceColor, type: this.getPieceType(id), queen: queen }));
                 }
                 if (className == "chessboard__square chessboard__square--white") {
                     className = "chessboard__square chessboard__square--black";
@@ -130,11 +130,11 @@ var Chessboard = /** @class */ (function (_super) {
                     previewChessboardClass, ref: this.chessboardRef },
                 this.props.game.engine.winner &&
                     this.props.restartGame &&
-                    this.props.player && (react_1.default.createElement(winMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: this.props.rematch })),
+                    this.props.player && (react_1.default.createElement(WinMenu_1.default, { winner: engine.winner, restart: this.props.restartGame, game: this.props.game, player: this.props.player, rematch: this.props.rematch })),
                 squares),
             closeIcon));
     };
     return Chessboard;
 }(react_1.default.Component));
 exports.default = Chessboard;
-//# sourceMappingURL=chessboard.js.map
+//# sourceMappingURL=Chessboard.js.map

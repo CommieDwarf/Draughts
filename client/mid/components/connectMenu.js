@@ -8,4 +8,4 @@ function ConnectMenu(props) {
     return react_1.default.createElement("div", { className: "connect-menu no-select", onClick: props.connect }, " Connect ");
 }
 exports.default = ConnectMenu;
-//# sourceMappingURL=connectMenu.js.map
+//# sourceMappingURL=ConnectMenu.js.map

@@ -28,12 +28,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var chat_1 = __importDefault(require("./chat"));
+var Chat_1 = __importDefault(require("./Chat"));
 var main_1 = require("../../main");
-var players_1 = __importDefault(require("./players"));
-var room_1 = __importDefault(require("./room"));
-var gameInvitation_1 = __importDefault(require("./gameInvitation"));
+var Players_1 = __importDefault(require("./Players"));
+var Room_1 = __importDefault(require("./Room"));
+var GameInvitation_1 = __importDefault(require("./GameInvitation"));
 var GameInvSent_1 = __importDefault(require("./GameInvSent"));
+;
+;
+;
 var Lobby = /** @class */ (function (_super) {
     __extends(Lobby, _super);
     function Lobby(props) {
@@ -242,7 +245,6 @@ var Lobby = /** @class */ (function (_super) {
             });
             document.addEventListener("click", _this.handleOutsidePlayersClick);
         };
-        _this.props = props;
         _this.state = {
             players: [],
             currentRoom: {
@@ -304,10 +306,10 @@ var Lobby = /** @class */ (function (_super) {
         var _this = this;
         var player = this.state.players.find(function (player) { return player.name == _this.props.name; });
         var rooms = this.state.rooms.map(function (room, id) {
-            return (react_1.default.createElement(room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id }));
+            return (react_1.default.createElement(Room_1.default, { closeRoom: _this.closeRoom, setRoomProperty: _this.setRoomProperty, switchRoom: _this.switchRoom, room: room, currentRoom: _this.state.currentRoom, key: id }));
         });
         var gameInvitations = this.state.gameInvitations.map(function (inv, i) {
-            return (react_1.default.createElement(gameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId }));
+            return (react_1.default.createElement(GameInvitation_1.default, { author: inv.author, gameId: inv.gameId, key: i, target: inv.target, acceptChallange: _this.acceptChallange, roomId: inv.roomId }));
         });
         var gameInvSent = this.state.gameInvSent.map(function (inv, i) {
             return react_1.default.createElement(GameInvSent_1.default, { target: inv.target, key: i });
@@ -326,15 +328,15 @@ var Lobby = /** @class */ (function (_super) {
                 gameInvitations,
                 gameInvSent),
             react_1.default.createElement("div", { className: "lobby__players", ref: this.playersRef },
-                react_1.default.createElement(players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
+                react_1.default.createElement(Players_1.default, { players: this.state.players, roomInvitable: this.state.roomInvitable, gameInvitable: this.state.gameInvitable, handlePlayerInvite: this.handlePlayerInvite, rooms: this.state.rooms }),
                 ";"),
             react_1.default.createElement("div", { className: "lobby__rooms", ref: this.roomsRef, onWheel: this.handleScroll },
                 rooms,
                 react_1.default.createElement("div", { className: "lobby__new-room-button no-select " + newRoomButtonClass, onClick: this.handleClickNewRoom, ref: this.createRoomRef },
                     react_1.default.createElement("i", { className: "icon-user-plus" }))),
-            player && (react_1.default.createElement(chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting }))));
+            player && (react_1.default.createElement(Chat_1.default, { player: player, currentRoom: this.state.currentRoom, createRoom: this.createRoom, rooms: this.state.rooms, setRoomProperty: this.setRoomProperty, isWriting: this.state.currentRoom.isWriting }))));
     };
     return Lobby;
 }(react_1.default.Component));
 exports.default = Lobby;
-//# sourceMappingURL=lobby.js.map
+//# sourceMappingURL=Lobby.js.map

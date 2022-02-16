@@ -10,7 +10,10 @@ function CloseGame(props) {
         if (props.closeGame) {
             props.closeGame(props.gameId);
             if (props.game.gameMode == 2 /* ONLINE */) {
-                main_1.socket.emit("player-close-game", { gameId: props.game.id, roomId: props.game.roomId });
+                main_1.socket.emit("player-close-game", {
+                    gameId: props.game.id,
+                    roomId: props.game.roomId,
+                });
             }
         }
     }

@@ -19,7 +19,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var chessboard_1 = __importDefault(require("./board/chessboard"));
+var Chessboard_1 = __importDefault(require("./board/Chessboard"));
+;
+;
 var GamePreview = /** @class */ (function (_super) {
     __extends(GamePreview, _super);
     function GamePreview(props) {
@@ -34,7 +36,6 @@ var GamePreview = /** @class */ (function (_super) {
             }
             return false;
         };
-        _this.props = props;
         _this.gamePreviewRef = react_1.default.createRef();
         _this.state = {
             mouseOver: false,
@@ -48,11 +49,11 @@ var GamePreview = /** @class */ (function (_super) {
             if (game == _this.props.currentGame) {
                 current = true;
             }
-            return (react_1.default.createElement(chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame, current: current }));
+            return (react_1.default.createElement(Chessboard_1.default, { engine: game.engine, preview: true, key: i, label: game.label, game: game, closeGame: _this.props.closeGame, switchGame: _this.props.switchGame, current: current }));
         });
         return (react_1.default.createElement("div", { className: "game-preview", onWheel: this.handleScroll, ref: this.gamePreviewRef }, games));
     };
     return GamePreview;
 }(react_1.default.Component));
 exports.default = GamePreview;
-//# sourceMappingURL=gamePreview.js.map
+//# sourceMappingURL=GamePreview.js.map

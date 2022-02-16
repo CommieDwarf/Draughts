@@ -20,7 +20,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var main_1 = require("../../main");
-var avatar_1 = __importDefault(require("../lobby/avatar"));
+var Avatar_1 = __importDefault(require("../lobby/Avatar"));
 var WinMenu = /** @class */ (function (_super) {
     __extends(WinMenu, _super);
     function WinMenu(props) {
@@ -32,7 +32,7 @@ var WinMenu = /** @class */ (function (_super) {
                     gameId: props.game.id,
                     player: props.player,
                     requested: true,
-                    roomId: props.game.roomId
+                    roomId: props.game.roomId,
                 };
                 main_1.socket.emit("player_wants_rematch", rematch);
                 _this.setState({ rematchSent: true });
@@ -46,7 +46,6 @@ var WinMenu = /** @class */ (function (_super) {
                 _this.props.restart(0);
             }
         };
-        _this.props = props;
         _this.state = {
             rematchSent: false,
         };
@@ -63,30 +62,27 @@ var WinMenu = /** @class */ (function (_super) {
     };
     WinMenu.prototype.render = function () {
         var winner = this.props.winner;
-        var playAgainClass = this.state.rematchSent ? "win-menu__play-again--selected" : "";
+        var playAgainClass = this.state.rematchSent
+            ? "win-menu__play-again--selected"
+            : "";
         return (react_1.default.createElement("div", { className: "win-menu " },
             react_1.default.createElement("h1", null,
                 winner,
                 " Wins!"),
             react_1.default.createElement("h2", { className: "win-menu__play-again " + playAgainClass, onClick: this.handleClick }, "Play Again?"),
-            this.props.rematch &&
-                react_1.default.createElement("div", { className: "win-menu__avatar" },
-                    react_1.default.createElement(avatar_1.default, { name: this.props.player.name, theme: this.props.player.avatar.theme, shape: this.props.player.avatar.shape })),
-            this.props.rematch &&
-                react_1.default.createElement("h3", { className: "win-menu__rematch" },
-                    this.props.rematch.player &&
-                        this.props.player.name + " ",
-                    "wants rematch!"),
-            this.state.rematchSent &&
-                react_1.default.createElement("div", { className: "win-menu__waiting-pawn-div" },
-                    react_1.default.createElement("img", { className: "lobby__avatar-placeholder win-menu__waiting-pawn", src: "./img/pawn.png" })),
-            this.state.rematchSent &&
-                react_1.default.createElement("h3", { className: "win-menu__rematch" },
-                    "Waiting for ",
-                    this.props.player.name,
-                    " to accept")));
+            this.props.rematch && (react_1.default.createElement("div", { className: "win-menu__avatar" },
+                react_1.default.createElement(Avatar_1.default, { name: this.props.player.name, theme: this.props.player.avatar.theme, shape: this.props.player.avatar.shape }))),
+            this.props.rematch && (react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                this.props.rematch.player && this.props.player.name + " ",
+                "wants rematch!")),
+            this.state.rematchSent && (react_1.default.createElement("div", { className: "win-menu__waiting-pawn-div" },
+                react_1.default.createElement("img", { className: "lobby__avatar-placeholder win-menu__waiting-pawn", src: "./img/pawn.png" }))),
+            this.state.rematchSent && (react_1.default.createElement("h3", { className: "win-menu__rematch" },
+                "Waiting for ",
+                this.props.player.name,
+                " to accept"))));
     };
     return WinMenu;
 }(react_1.default.Component));
 exports.default = WinMenu;
-//# sourceMappingURL=winMenu.js.map
+//# sourceMappingURL=WinMenu.js.map

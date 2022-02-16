@@ -35,7 +35,8 @@ var Engine = /** @class */ (function () {
         this.winner = "";
     }
     Engine.prototype.dispatchEvent = function () {
-        document.dispatchEvent(new Event('chessboardChanged'));
+        // dispatching event in order react to update
+        document.dispatchEvent(new Event("chessboardChanged"));
     };
     Engine.prototype.setWinner = function (chessboard, turn, playerSide) {
         var allMoves = this.getAllMoves(chessboard, turn, playerSide);
@@ -92,24 +93,33 @@ var Engine = /** @class */ (function () {
             this.unlockPieces();
         }
         // Selecting
-        if (clickedId && chessboard[clickedId]["piece"] == this.turn && this.selectedPiece !== clickedId) {
-            if (this.lockedPieces.length == 0 || this.lockedPieces.includes(clickedId)) {
+        if (clickedId &&
+            chessboard[clickedId]["piece"] == this.turn &&
+            this.selectedPiece !== clickedId) {
+            if (this.lockedPieces.length == 0 ||
+                this.lockedPieces.includes(clickedId)) {
                 this.selectPiece(clickedId);
             }
         }
-        else if (!(clickedId && this.selectedPiece && this.availableMoves.includes(clickedId))) {
+        else if (!(clickedId &&
+            this.selectedPiece &&
+            this.availableMoves.includes(clickedId))) {
             this.unselectPiece();
             this.unsetAvailableMoves();
         }
         if (this.selectedPiece) {
             var moves = this.getMoves(this.selectedPiece, chessboard, this.turn, this.playerSide);
             if (this.lockedPieces.length > 0) {
-                moves = moves.filter(function (move) { return routes.some(function (route) { return move.move == route[1]; }); });
+                moves = moves.filter(function (move) {
+                    return routes.some(function (route) { return move.move == route[1]; });
+                });
             }
             this.setAvailableMoves(moves);
         }
         // movement and killing
-        if (clickedId && this.availableMoves.includes(clickedId) && this.selectedPiece) {
+        if (clickedId &&
+            this.availableMoves.includes(clickedId) &&
+            this.selectedPiece) {
             var moves = this.getMoves(this.selectedPiece, chessboard, this.turn, this.playerSide);
             var move = this.getMove(clickedId, moves);
             if (move) {
@@ -156,7 +166,8 @@ var Engine = /** @class */ (function () {
             chessboard: JSON.stringify(this.chessboard),
             turn: this.turn,
         };
-        if (JSON.stringify(oldState) != JSON.stringify(currentState) || this.winner) {
+        if (JSON.stringify(oldState) != JSON.stringify(currentState) ||
+            this.winner) {
             this.dispatchEvent();
         }
     };
@@ -175,7 +186,7 @@ var Engine = /** @class */ (function () {
         return false;
     };
     Engine.prototype.makeQueen = function (id, chessboard) {
-        chessboard[id]['queen'] = true;
+        chessboard[id]["queen"] = true;
     };
     Engine.prototype.switchTurn = function () {
         this.turn = this.turn == "white" ? "black" : "white";
@@ -206,7 +217,7 @@ var Engine = /** @class */ (function () {
     };
     Engine.prototype.getMoves = function (selected, chessboard, turn, playerSide) {
         var moves = [];
-        if (chessboard[selected]['queen']) {
+        if (chessboard[selected]["queen"]) {
             moves = this.getQueenMoves(selected, chessboard, turn);
         }
         else {
@@ -223,7 +234,13 @@ var Engine = /** @class */ (function () {
     Engine.prototype.getObliqueMoves = function (queenPosition, chessboard) {
         var allMoves = [[], [], [], []];
         var current = queenPosition;
-        var borders = ['border-left', 'border-top', 'border-right', 'border-bot', "border-left"];
+        var borders = [
+            "border-left",
+            "border-top",
+            "border-right",
+            "border-bot",
+            "border-left",
+        ];
         var directions = [-9, -7, 9, 7];
         for (var i = 0; i < borders.length - 1; i++) {
             var border1 = borders[i];
@@ -269,7 +286,7 @@ var Engine = /** @class */ (function () {
         for (var i = 0; i < moves.length; i++) {
             var kill = void 0;
             for (var j = 0; j < moves[i].length; j++) {
-                if (chessboard[moves[i][j]]['piece'] == opponent) {
+                if (chessboard[moves[i][j]]["piece"] == opponent) {
                     kill = moves[i][j];
                 }
                 if (kill !== moves[i][j]) {
@@ -320,16 +337,19 @@ var Engine = /** @class */ (function () {
                 if (moveBy2 < 0 || moveBy2 > 63) {
                     continue;
                 }
-                else if (chessboard[moveBy2]["border-left"] && (dir == -7 || dir == 9)) {
+                else if (chessboard[moveBy2]["border-left"] &&
+                    (dir == -7 || dir == 9)) {
                     continue;
                 }
-                else if (chessboard[moveBy2]["border-right"] && (dir == -9 || dir == 7)) {
+                else if (chessboard[moveBy2]["border-right"] &&
+                    (dir == -9 || dir == 7)) {
                     continue;
                 }
-                else if (chessboard[moveBy2]["square"] !== 'black') {
+                else if (chessboard[moveBy2]["square"] !== "black") {
                     continue;
                 }
-                else if (chessboard[moveBy1]["piece"] && !chessboard[moveBy2]["piece"]) {
+                else if (chessboard[moveBy1]["piece"] &&
+                    !chessboard[moveBy2]["piece"]) {
                     moves.push({ piece: selected, kill: moveBy1, move: moveBy2 });
                 }
             }
@@ -368,7 +388,7 @@ var Engine = /** @class */ (function () {
             stack.push(position);
         });
         var current = stack[stack.length - 1];
-        var counter = 0; // for optimization testing porpouse 
+        var counter = 0; // for optimization testing porpouse
         while (current) {
             var temp = [];
             for (var _i = 0, stack_1 = stack; _i < stack_1.length; _i++) {
@@ -405,7 +425,7 @@ var Engine = /** @class */ (function () {
                 flatMoves.push(movesWithKill[i].move);
             }
             // poping from stack when available moves from current pos are already visited
-            if (utility.setIncludesArray(current.visited, flatMoves)) {
+            if (utility.setIncludesArrayElements(current.visited, flatMoves)) {
                 deepPositions.push(current);
                 stack.pop();
                 current = stack[stack.length - 1];

@@ -1,6 +1,5 @@
-import { runInThisContext } from "vm";
 import { SIDE } from "./config";
-import * as utility from "./utility"; 
+import * as utility from "./utility";
 
 type Border = "border-top" | "border-left" | "border-right" | "border-bot";
 
@@ -8,32 +7,29 @@ export interface ISquare {
   id: number;
   piece: "black" | "white" | "";
   square: string;
-  "border-top": boolean
-  "border-left": boolean
-  "border-right": boolean
-  "border-bot": boolean
+  "border-top": boolean;
+  "border-left": boolean;
+  "border-right": boolean;
+  "border-bot": boolean;
   queen: boolean;
 }
 // for kill routes tracking
 interface IPosition {
-  move: number,
-  depth: number,
-  prev: null | IPosition,
-  board: IChessboard,
-  visited: Set<number>,
+  move: number;
+  depth: number;
+  prev: null | IPosition;
+  board: IChessboard;
+  visited: Set<number>;
 }
-type Moves = Move[]
+type Moves = Move[];
 type Turn = "black" | "white";
 export type IChessboard = ISquare[];
 
 export type Move = {
-    piece: number,
-    move: number,
-    kill: number | null,
-}
-
-
-
+  piece: number;
+  move: number;
+  kill: number | null;
+};
 
 export class Engine {
   chessboard: IChessboard;
@@ -48,7 +44,6 @@ export class Engine {
   whiteSide: "top" | "bot";
 
   constructor(side: SIDE) {
-    
     this.whiteSide = side == SIDE.NORMAL ? "bot" : "top";
     this.playerSide = this.whiteSide; // this is turn side. Player is always bot
     this.chessboard = [];
@@ -61,10 +56,11 @@ export class Engine {
     this.winner = "";
   }
 
-  dispatchEvent() {   // dispatching event in order react to update
-    document.dispatchEvent(new Event('chessboardChanged'));
+  dispatchEvent() {
+    // dispatching event in order react to update
+    document.dispatchEvent(new Event("chessboardChanged"));
   }
-  
+
   setWinner(chessboard: IChessboard, turn: Turn, playerSide: string) {
     const allMoves = this.getAllMoves(chessboard, turn, playerSide);
     const opponent = turn == "white" ? "black" : "white";
@@ -75,20 +71,20 @@ export class Engine {
   }
 
   public unselectPiece() {
-      this.selectedPiece = null;
+    this.selectedPiece = null;
   }
   private selectPiece(id: number | null) {
-      this.selectedPiece = id; 
+    this.selectedPiece = id;
   }
   private setAvailableMoves(moves: Moves) {
     let movesOnly = [];
     for (let move of moves) {
-        movesOnly.push(move.move);
+      movesOnly.push(move.move);
     }
     this.availableMoves = movesOnly;
   }
   private unsetAvailableMoves() {
-      this.availableMoves = [];
+    this.availableMoves = [];
   }
   private lockPieces(pieces: number[]) {
     this.lockedPieces = pieces;
@@ -99,11 +95,10 @@ export class Engine {
   private getRoutesStarts(routes: number[][]) {
     let array = [];
     for (let i = 0; i < routes.length; i++) {
-      array.push(routes[i][0])
+      array.push(routes[i][0]);
     }
     return array;
   }
-
 
   /////////////////////////////// MAIN FUNCTION
   public performAction(
@@ -114,70 +109,116 @@ export class Engine {
       selectedPiece: this.selectedPiece,
       chessboard: JSON.stringify(this.chessboard),
       turn: this.turn,
-    }
-    let killMoves = this.getAllMovesWithKill(chessboard, this.turn, this.playerSide);
-    let routes = this.getLongestRoutes(killMoves, this.turn, chessboard, this.playerSide);
+    };
+    let killMoves = this.getAllMovesWithKill(
+      chessboard,
+      this.turn,
+      this.playerSide
+    );
+    let routes = this.getLongestRoutes(
+      killMoves,
+      this.turn,
+      chessboard,
+      this.playerSide
+    );
     if (routes.length > 0) {
       let startPieces = this.getRoutesStarts(routes);
       this.lockPieces(startPieces);
     } else {
-      this.unlockPieces()
+      this.unlockPieces();
     }
     // Selecting
-      if (clickedId && chessboard[clickedId]["piece"] == this.turn && this.selectedPiece !== clickedId) {
-        
-        if (this.lockedPieces.length == 0 || this.lockedPieces.includes(clickedId)) {
-          this.selectPiece(clickedId);
-        }
-      } else if (!(clickedId && this.selectedPiece && this.availableMoves.includes(clickedId))) {
-          this.unselectPiece();
-          this.unsetAvailableMoves();
+    if (
+      clickedId &&
+      chessboard[clickedId]["piece"] == this.turn &&
+      this.selectedPiece !== clickedId
+    ) {
+      if (
+        this.lockedPieces.length == 0 ||
+        this.lockedPieces.includes(clickedId)
+      ) {
+        this.selectPiece(clickedId);
       }
-    
+    } else if (
+      !(
+        clickedId &&
+        this.selectedPiece &&
+        this.availableMoves.includes(clickedId)
+      )
+    ) {
+      this.unselectPiece();
+      this.unsetAvailableMoves();
+    }
+
     if (this.selectedPiece) {
-        let moves = this.getMoves(this.selectedPiece, chessboard, this.turn, this.playerSide)
-        if (this.lockedPieces.length > 0) {
-          moves = moves.filter((move) => routes.some((route) => move.move == route[1]));
-        }
-        
-        this.setAvailableMoves(moves);
+      let moves = this.getMoves(
+        this.selectedPiece,
+        chessboard,
+        this.turn,
+        this.playerSide
+      );
+      if (this.lockedPieces.length > 0) {
+        moves = moves.filter((move) =>
+          routes.some((route) => move.move == route[1])
+        );
+      }
+
+      this.setAvailableMoves(moves);
     }
 
     // movement and killing
-    if (clickedId && this.availableMoves.includes(clickedId) && this.selectedPiece) {
-      let moves = this.getMoves(this.selectedPiece, chessboard, this.turn, this.playerSide)
+    if (
+      clickedId &&
+      this.availableMoves.includes(clickedId) &&
+      this.selectedPiece
+    ) {
+      let moves = this.getMoves(
+        this.selectedPiece,
+        chessboard,
+        this.turn,
+        this.playerSide
+      );
       let move = this.getMove(clickedId, moves);
       if (move) {
-        this.move(move.piece , clickedId, chessboard);
+        this.move(move.piece, clickedId, chessboard);
         this.unsetAvailableMoves();
         this.unselectPiece();
         this.lockPieces([]);
-        
+
         let killed = false;
         if (move.kill) {
           this.kill(move.kill, chessboard);
           killed = true;
         }
         if (killed) {
-          let routes = this.getLongestRoutes([move.move], this.turn, chessboard, this.playerSide);
+          let routes = this.getLongestRoutes(
+            [move.move],
+            this.turn,
+            chessboard,
+            this.playerSide
+          );
           if (routes.some((route) => route.length > 1)) {
             this.lockPieces([move.move]);
             this.selectPiece(move.move);
-            let moves = this.getMoves(move.move, chessboard, this.turn, this.playerSide);
+            let moves = this.getMoves(
+              move.move,
+              chessboard,
+              this.turn,
+              this.playerSide
+            );
             for (let route of routes) {
               this.availableMoves.push(route[1]);
             }
           } else {
-            let shouldQueen = this.shouldMakeQueen(move.move, chessboard)
-          if (shouldQueen) {
-            this.makeQueen(move.move, chessboard);
-          }
-            
+            let shouldQueen = this.shouldMakeQueen(move.move, chessboard);
+            if (shouldQueen) {
+              this.makeQueen(move.move, chessboard);
+            }
+
             this.switchTurn();
-            
           }
         } else {
-          let shouldQueen = this.shouldMakeQueen(move.move, chessboard)
+          let shouldQueen = this.shouldMakeQueen(move.move, chessboard);
           if (shouldQueen) {
             this.makeQueen(move.move, chessboard);
           }
@@ -191,15 +232,17 @@ export class Engine {
       selectedPiece: this.selectedPiece,
       chessboard: JSON.stringify(this.chessboard),
       turn: this.turn,
-    }
+    };
 
-    if (JSON.stringify(oldState) != JSON.stringify(currentState) || this.winner) {
+    if (
+      JSON.stringify(oldState) != JSON.stringify(currentState) ||
+      this.winner
+    ) {
       this.dispatchEvent();
     }
   }
 
   /////////////////////////////////////////////////
-
 
   shouldMakeQueen(piece: number, chessboard: IChessboard): boolean {
     if (this.playerSide == "bot") {
@@ -215,9 +258,8 @@ export class Engine {
   }
 
   makeQueen(id: number, chessboard: IChessboard): void {
-    chessboard[id]['queen'] = true;
+    chessboard[id]["queen"] = true;
   }
-
 
   switchTurn(): void {
     this.turn = this.turn == "white" ? "black" : "white";
@@ -239,7 +281,6 @@ export class Engine {
     }
     return null;
   }
-  
 
   move(from: number, target: number, chessboard: IChessboard) {
     if (chessboard[from]["queen"]) {
@@ -250,33 +291,41 @@ export class Engine {
     chessboard[from]["piece"] = "";
   }
 
-
-  public getMoves(selected: number, chessboard: IChessboard, turn: Turn, playerSide: string): Moves {
+  public getMoves(
+    selected: number,
+    chessboard: IChessboard,
+    turn: Turn,
+    playerSide: string
+  ): Moves {
     let moves: any = [];
-    if (chessboard[selected]['queen']) {
-        moves = this.getQueenMoves(selected, chessboard, turn);
+    if (chessboard[selected]["queen"]) {
+      moves = this.getQueenMoves(selected, chessboard, turn);
     } else {
-        moves = this.getRegularMoves(selected, chessboard, turn, playerSide);
+      moves = this.getRegularMoves(selected, chessboard, turn, playerSide);
     }
     return moves;
   }
 
   getQueenMoves(selected: number, chessboard: IChessboard, turn: Turn): Moves {
     let moves = this.getObliqueMoves(selected, chessboard);
-    moves = this.filterBlockedMoves(chessboard, moves, selected, turn)
+    moves = this.filterBlockedMoves(chessboard, moves, selected, turn);
     let qMoves = this.getQueenFullMoves(moves, chessboard, selected, turn);
 
     return qMoves;
-
   }
   private getObliqueMoves(queenPosition: number, chessboard: IChessboard) {
-
-    let allMoves: number[][] = [[],[],[],[]]; 
+    let allMoves: number[][] = [[], [], [], []];
     let current = queenPosition;
 
-    let borders: Border[] = ['border-left', 'border-top', 'border-right', 'border-bot', "border-left"];
-    let directions = [-9, - 7 , 9, 7]
-    
+    let borders: Border[] = [
+      "border-left",
+      "border-top",
+      "border-right",
+      "border-bot",
+      "border-left",
+    ];
+    let directions = [-9, -7, 9, 7];
+
     for (let i = 0; i < borders.length - 1; i++) {
       let border1 = borders[i];
       let border2 = borders[i + 1];
@@ -292,21 +341,25 @@ export class Engine {
       current = queenPosition;
       allMoves[i].shift();
     }
-    
+
     return allMoves;
   }
 
-  private filterBlockedMoves(chessboard: IChessboard, allMoves: number[][], queenPosition: number, turn: Turn) {
-    let newAllMoves:number[][] = [[],[],[],[]];
+  private filterBlockedMoves(
+    chessboard: IChessboard,
+    allMoves: number[][],
+    queenPosition: number,
+    turn: Turn
+  ) {
+    let newAllMoves: number[][] = [[], [], [], []];
 
     for (let i = 0; i < allMoves.length; i++) {
-      for (let j = 0; j < allMoves[i].length ; j++) {
+      for (let j = 0; j < allMoves[i].length; j++) {
         let move = allMoves[i][j];
-        let move2 = allMoves[i][j+1]
+        let move2 = allMoves[i][j + 1];
         if (chessboard[move]["piece"] !== turn) {
-
           if (!chessboard[move]["piece"] || !chessboard[move2]?.["piece"]) {
-            newAllMoves[i].push(allMoves[i][j])
+            newAllMoves[i].push(allMoves[i][j]);
           } else {
             break;
           }
@@ -315,31 +368,41 @@ export class Engine {
         }
       }
     }
-    return newAllMoves
+    return newAllMoves;
   }
 
-  private getQueenFullMoves(moves: number[][], chessboard: IChessboard, queenPos: number, turn: Turn): Moves {
-    let opponent = turn == "white" ? "black" : "white"; 
+  private getQueenFullMoves(
+    moves: number[][],
+    chessboard: IChessboard,
+    queenPos: number,
+    turn: Turn
+  ): Moves {
+    let opponent = turn == "white" ? "black" : "white";
     let qMoves = [];
-    
+
     for (let i = 0; i < moves.length; i++) {
       let kill;
       for (let j = 0; j < moves[i].length; j++) {
-        if (chessboard[moves[i][j]]['piece'] == opponent) {
+        if (chessboard[moves[i][j]]["piece"] == opponent) {
           kill = moves[i][j];
         }
         if (kill !== moves[i][j]) {
-            if (kill) {
-                qMoves.push({piece: queenPos, move: moves[i][j], kill: kill});
-              } else {
-                  qMoves.push({piece: queenPos, move: moves[i][j], kill: null});
-              }
+          if (kill) {
+            qMoves.push({ piece: queenPos, move: moves[i][j], kill: kill });
+          } else {
+            qMoves.push({ piece: queenPos, move: moves[i][j], kill: null });
+          }
         }
       }
     }
     return qMoves;
   }
-  getRegularMoves(selected: number, chessboard: IChessboard, turn: Turn, playerSide: string): Moves {
+  getRegularMoves(
+    selected: number,
+    chessboard: IChessboard,
+    turn: Turn,
+    playerSide: string
+  ): Moves {
     let directions = [-9, -7, 7, 9];
     let playerDirections;
 
@@ -351,10 +414,10 @@ export class Engine {
 
     if (chessboard[selected]["border-left"]) {
       directions = directions.filter((dir) => dir !== 7);
-      directions = directions.filter((dir) => dir !== - 9);
+      directions = directions.filter((dir) => dir !== -9);
     } else if (chessboard[selected]["border-right"]) {
-      directions = directions.filter((dir) => dir !== - 7);
-      directions = directions.filter((dir) => dir !== 9)
+      directions = directions.filter((dir) => dir !== -7);
+      directions = directions.filter((dir) => dir !== 9);
     }
 
     let moves = [];
@@ -368,29 +431,39 @@ export class Engine {
       if (piece == turn) {
         continue;
       } else if (piece == "" && playerDirections.includes(dir)) {
-        moves.push({piece: selected, kill: null, move: moveBy1})
+        moves.push({ piece: selected, kill: null, move: moveBy1 });
       } else {
         let moveBy2 = moveBy1 + dir;
         if (moveBy2 < 0 || moveBy2 > 63) {
           continue;
-        } else if (chessboard[moveBy2]["border-left"] && (dir == - 7 || dir ==  9)) {
+        } else if (
+          chessboard[moveBy2]["border-left"] &&
+          (dir == -7 || dir == 9)
+        ) {
           continue;
-        } else if (chessboard[moveBy2]["border-right"] && (dir == - 9 || dir ==  7)) {
+        } else if (
+          chessboard[moveBy2]["border-right"] &&
+          (dir == -9 || dir == 7)
+        ) {
           continue;
-        } else if (chessboard[moveBy2]["square"] !== 'black') {
+        } else if (chessboard[moveBy2]["square"] !== "black") {
           continue;
-        } else if (chessboard[moveBy1]["piece"] && !chessboard[moveBy2]["piece"]) {
-          moves.push({piece: selected, kill: moveBy1, move: moveBy2})
+        } else if (
+          chessboard[moveBy1]["piece"] &&
+          !chessboard[moveBy2]["piece"]
+        ) {
+          moves.push({ piece: selected, kill: moveBy1, move: moveBy2 });
         }
       }
     }
     return moves;
   }
 
-    
-
-
-  public getAllMovesWithKill(chessboard: IChessboard, turn: Turn, playerSide: string): number[] {
+  public getAllMovesWithKill(
+    chessboard: IChessboard,
+    turn: Turn,
+    playerSide: string
+  ): number[] {
     let killMoves = [];
     for (let i = 0; i < 64; i++) {
       if (chessboard[i]["piece"] && chessboard[i]["piece"] == turn) {
@@ -402,16 +475,20 @@ export class Engine {
         }
       }
     }
-    
+
     return killMoves;
   }
- 
-  public getLongestRoutes(moves: number[], turn: Turn, chessboard: IChessboard, playerSide: string) {
 
+  public getLongestRoutes(
+    moves: number[],
+    turn: Turn,
+    chessboard: IChessboard,
+    playerSide: string
+  ) {
     let deepPositions: IPosition[] = [];
     let stack: IPosition[] = [];
 
-    moves.forEach(move => {
+    moves.forEach((move) => {
       let board = JSON.parse(JSON.stringify(chessboard));
       let position: IPosition = {
         move: move,
@@ -419,11 +496,11 @@ export class Engine {
         prev: null,
         board: board,
         visited: new Set(),
-      }
-      stack.push(position)
-    })
+      };
+      stack.push(position);
+    });
     let current = stack[stack.length - 1];
-    let counter = 0; // for optimization testing porpouse 
+    let counter = 0; // for optimization testing porpouse
 
     while (current) {
       let temp = [];
@@ -435,16 +512,11 @@ export class Engine {
         break;
       }
       current.board[current.move]["piece"] = "";
-      let moves = this.getMoves(
-            current.move,
-            current.board,
-            turn,
-            playerSide
-          );
+      let moves = this.getMoves(current.move, current.board, turn, playerSide);
       let movesWithKill = moves.filter((move) => move.kill !== null);
-      
+
       // pushing available moves to stack
-      movesWithKill.forEach(move => {
+      movesWithKill.forEach((move) => {
         let newBoard = JSON.parse(JSON.stringify(current.board));
         if (move.kill) {
           newBoard = this.kill(move.kill, newBoard);
@@ -457,17 +529,17 @@ export class Engine {
             prev: current,
             board: newBoard,
             visited: visit,
-          }
+          };
           stack.push(position);
-        } 
-      })
+        }
+      });
 
-      let flatMoves = []
+      let flatMoves = [];
       for (let i = 0; i < movesWithKill.length; i++) {
         flatMoves.push(movesWithKill[i].move);
       }
       // poping from stack when available moves from current pos are already visited
-      if (utility.setIncludesArray(current.visited, flatMoves)) {
+      if (utility.setIncludesArrayElements(current.visited, flatMoves)) {
         deepPositions.push(current);
         stack.pop();
         current = stack[stack.length - 1];
@@ -487,17 +559,13 @@ export class Engine {
       route.reverse();
     }
     return routes;
-  
-}
-
-
-
+  }
 
   private remNestArrayDuplicates(array: number[][]) {
     let set = new Set();
 
     for (let i = 0; i < array.length; i++) {
-      set.add(JSON.stringify(array[i]))
+      set.add(JSON.stringify(array[i]));
     }
     let arr: any = Array.from(set);
     let filtered = [];
@@ -506,8 +574,6 @@ export class Engine {
     }
     return filtered;
   }
-
- 
 
   private findDeepestMoves(moves: IPosition[]): IPosition[] {
     if (moves.length == 0) {
@@ -526,7 +592,7 @@ export class Engine {
     }
     return deepest;
   }
-  
+
   private getFullRoutes(deepestPositions: IPosition[]): number[][] {
     let routes: number[][] = [];
     deepestPositions.forEach((position) => {
@@ -537,27 +603,23 @@ export class Engine {
         current = current.prev;
       }
       routes.push(route);
-    })
-    return routes
-}
-
-filterMovesWithoutKill(moves: Moves): Moves {
-  let filtered = moves.filter((move) => move.kill !== null);
-  return filtered;
- }
-
- getAllMoves(chessboard: IChessboard, turn: Turn, playerSide: string): Moves {
-   let allMoves = [];
-  for (let i = 0; i < 64; i++) {
-    if (chessboard[i]["piece"] == turn) {
-      let moves = this.getMoves(i, chessboard, turn, playerSide);
-      allMoves.push(...moves);
-    }
+    });
+    return routes;
   }
-  return allMoves;
- }
 
+  filterMovesWithoutKill(moves: Moves): Moves {
+    let filtered = moves.filter((move) => move.kill !== null);
+    return filtered;
+  }
+
+  getAllMoves(chessboard: IChessboard, turn: Turn, playerSide: string): Moves {
+    let allMoves = [];
+    for (let i = 0; i < 64; i++) {
+      if (chessboard[i]["piece"] == turn) {
+        let moves = this.getMoves(i, chessboard, turn, playerSide);
+        allMoves.push(...moves);
+      }
+    }
+    return allMoves;
+  }
 }
-
-
-

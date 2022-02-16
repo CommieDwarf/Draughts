@@ -47,7 +47,7 @@
     }
   
     .lobby__input {
-        max-width: 80%;
+        max-width: 70%;
     }
  
    
@@ -190,7 +190,6 @@
     .game-preview__close-game {
         left: 220px;
     }
-    
 
 }
 

@@ -1,21 +1,15 @@
 import React, { ReactElement } from "react";
-import Square from "./square";
+import Square from "./Square";
 import { Engine, IChessboard } from "../../engine";
 import { Color } from "./getPieceJSX";
 import CloseGame from "./CloseGame";
 import Game, { GAMEMODE } from "../../game";
-import WinMenu from "./winMenu";
-import { IPlayer } from "../lobby/lobby";
+import WinMenu from "./WinMenu";
+import { IPlayer } from "../lobby/Lobby";
 import { Rematch } from "../../App";
-type props = {};
 
-type state = {
-  bGAnimationColor: "white" | "green";
-};
-
-export default class Chessboard extends React.Component<props, state> {
-  props: {
-    engine: Engine;
+interface Props {
+  engine: Engine;
     game: Game;
     preview: boolean;
     label?: string;
@@ -26,14 +20,20 @@ export default class Chessboard extends React.Component<props, state> {
     player?: IPlayer;
     rematch?: Rematch;
     current?: boolean;
-  };
+}
+
+interface State {
+  bGAnimationColor: "white" | "green";
+};
+
+export default class Chessboard extends React.Component<Props, State> {
+
 
   chessboardRef: React.RefObject<HTMLDivElement>;
   timeout: null | ReturnType<typeof setTimeout>;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
-    this.props = props;
     this.chessboardRef = React.createRef();
     this.timeout = null;
   }
@@ -102,7 +102,6 @@ export default class Chessboard extends React.Component<props, state> {
           }
           pieceColor = engine.chessboard[id]["piece"];
           let queen = engine.chessboard[id]["queen"];
-          
 
           squares.push(
             <Square
@@ -133,7 +132,7 @@ export default class Chessboard extends React.Component<props, state> {
 
     if (this.props.current) {
       currentGameClass = "game-preview__chessboard-wrapper--current";
-    } 
+    }
 
     if (this.props.preview) {
       previewWrapperClass = "game-preview__chessboard-wrapper";
@@ -159,7 +158,10 @@ export default class Chessboard extends React.Component<props, state> {
     const bgAnimationClass = this.getBgAnimationClass();
 
     return (
-      <div className={previewWrapperClass + " " + currentGameClass} onClick={this.handleClick}>
+      <div
+        className={previewWrapperClass + " " + currentGameClass}
+        onClick={this.handleClick}
+      >
         {label}
 
         <div

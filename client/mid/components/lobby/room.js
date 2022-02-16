@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
+;
+;
 function Room(props) {
     var room = props.room;
     var handleClickCloseRoom = function (event) {
@@ -50,4 +52,4 @@ function Room(props) {
             react_1.default.createElement("i", { className: "icon-cancel-circled" })))));
 }
 exports.default = Room;
-//# sourceMappingURL=room.js.map
+//# sourceMappingURL=Room.js.map

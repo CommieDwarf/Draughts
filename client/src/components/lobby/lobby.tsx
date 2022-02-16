@@ -1,11 +1,11 @@
-import React, { MouseEvent, Ref } from "react";
-import Chat from "./chat";
+import React from "react";
+import Chat from "./Chat";
 import { socket } from "../../main";
-import Players from "./players";
-import Room from "./room";
+import Players from "./Players";
+import Room from "./Room";
 import { GAMEMODE } from "../../game";
 import { SIDE } from "../../config";
-import GameInviation from "./gameInvitation";
+import GameInviation from "./GameInvitation";
 import GameInvSent from "./GameInvSent";
 
 export interface IPlayer {
@@ -17,7 +17,7 @@ export interface IPlayer {
   id: string;
 }
 
-type Room = {
+interface Room {
   name: string;
   id: string;
   unread: boolean;
@@ -25,7 +25,7 @@ type Room = {
   isWriting: boolean;
 };
 
-type GameInfo = {
+interface GameInfo {
   gameId: number;
   playerAccepted: string;
   playerAcceptedColor: string;
@@ -34,8 +34,18 @@ type GameInfo = {
 
 type Color = "white" | "black";
 
-type Props = {};
-type State = {
+type Props = {
+  name: string;
+    startNewGame: (
+      gameMode: GAMEMODE,
+      side: SIDE,
+      color: Color,
+      label: string,
+      gameId: number,
+      roomId: string
+    ) => boolean;
+};
+interface State {
   players: IPlayer[];
   rooms: Room[];
   currentRoom: Room;
@@ -56,25 +66,14 @@ type State = {
 };
 
 export default class Lobby extends React.Component<Props, State> {
-  props: {
-    name: string;
-    startNewGame: (
-      gameMode: GAMEMODE,
-      side: SIDE,
-      color: Color,
-      label: string,
-      gameId: number,
-      roomId: string
-    ) => boolean;
-  };
+
   playersRef: React.RefObject<HTMLDivElement>;
   createRoomRef: React.RefObject<HTMLDivElement>;
   inviteRef: React.RefObject<HTMLDivElement>;
   roomsRef: React.RefObject<HTMLDivElement>;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
-    this.props = props;
     this.state = {
       players: [],
       currentRoom: {

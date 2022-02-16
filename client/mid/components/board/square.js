@@ -19,19 +19,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var piece_1 = __importDefault(require("./piece"));
+var Piece_1 = __importDefault(require("./Piece"));
 var Square = /** @class */ (function (_super) {
     __extends(Square, _super);
     function Square(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
+        return _super.call(this, props) || this;
     }
     Square.prototype.render = function () {
         return (react_1.default.createElement("div", { id: this.props.id, className: this.props.className },
-            react_1.default.createElement(piece_1.default, { color: this.props.pieceColor, id: this.props.id, type: this.props.type, queen: this.props.queen })));
+            react_1.default.createElement(Piece_1.default, { color: this.props.pieceColor, id: this.props.id, type: this.props.type, queen: this.props.queen })));
     };
     return Square;
 }(react_1.default.Component));
 exports.default = Square;
-//# sourceMappingURL=square.js.map
+//# sourceMappingURL=Square.js.map

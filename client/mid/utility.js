@@ -1,15 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sleep = exports.filterEverySecondElement = exports.hasOnlyNulls = exports.isEmpty = exports.setIncludesArray = exports.arraysEqual = exports.arrayIncludesArray = exports.filterOutNulls = void 0;
+exports.sleep = exports.filterEverySecondElement = exports.hasOnlyNulls = exports.isEmpty = exports.setIncludesArrayElements = exports.arraysEqual = exports.arrayIncludesArray = exports.filterOutNulls = void 0;
 function filterOutNulls(array) {
-    var filteredOut = [];
-    for (var _i = 0, array_1 = array; _i < array_1.length; _i++) {
-        var element = array_1[_i];
-        if (element) {
-            filteredOut.push(element);
-        }
-    }
-    return filteredOut;
+    return array.filter(function (e) { return Boolean(e); });
 }
 exports.filterOutNulls = filterOutNulls;
 function arrayIncludesArray(searched, array) {
@@ -36,16 +29,10 @@ function arraysEqual(array1, array2) {
     return true;
 }
 exports.arraysEqual = arraysEqual;
-function setIncludesArray(set, array) {
-    var flag = true;
-    array.forEach(function (key) {
-        if (!set.has(key)) {
-            flag = false;
-        }
-    });
-    return flag;
+function setIncludesArrayElements(set, array) {
+    return array.every(function (el) { return Array.from(set).includes(el); });
 }
-exports.setIncludesArray = setIncludesArray;
+exports.setIncludesArrayElements = setIncludesArrayElements;
 function isEmpty(array) {
     return array.length == 0;
 }

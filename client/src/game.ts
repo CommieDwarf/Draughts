@@ -6,13 +6,12 @@ import { SIDE } from "./config";
 export const enum GAMEMODE {
   LOCAL,
   BOT,
-  ONLINE
+  ONLINE,
 }
 
 type Color = "black" | "white";
 
 export default class Game {
-
   engine: Engine;
   bot: Bot;
   gameMode: GAMEMODE;
@@ -23,7 +22,14 @@ export default class Game {
   id: number;
   roomId?: string;
 
-  constructor(gameMode: GAMEMODE, playerColor: Color, side: SIDE, label: string, id: number, roomId?: string) {
+  constructor(
+    gameMode: GAMEMODE,
+    playerColor: Color,
+    side: SIDE,
+    label: string,
+    id: number,
+    roomId?: string
+  ) {
     this.engine = new Engine(side);
     this.botColor = playerColor == "white" ? "black" : "white";
     this.bot = new Bot(this.engine, this.botColor);
@@ -45,7 +51,7 @@ export default class Game {
   }
 
   async clickHandler(event: any) {
-    let engine = this.engine
+    let engine = this.engine;
     if (this.gameMode == GAMEMODE.ONLINE && engine.turn !== this.playerColor) {
       return;
     }
@@ -61,7 +67,7 @@ export default class Game {
         }
         let squareId = square.getAttribute("id");
         if (!squareId) {
-          return
+          return;
         }
         let board = JSON.stringify(this.engine.chessboard);
         engine.performAction(parseInt(squareId), engine.chessboard);
@@ -71,19 +77,19 @@ export default class Game {
         if (engine.turn == this.bot.color && this.gameMode == GAMEMODE.BOT) {
           await sleep(2000);
           this.bot.makeMove(this.engine.chessboard);
-          this.engine.setWinner(this.engine.chessboard, this.engine.turn, this.engine.playerSide);
+          this.engine.setWinner(
+            this.engine.chessboard,
+            this.engine.turn,
+            this.engine.playerSide
+          );
         }
-
       } else {
         engine.unselectPiece();
       }
-
     }
-
   }
 }
 
-
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

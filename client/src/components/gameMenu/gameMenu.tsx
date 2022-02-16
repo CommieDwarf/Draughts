@@ -1,11 +1,11 @@
 import React from 'react';
 import { SIDE } from '../../config';
 import Game, { GAMEMODE } from '../../game';
-import StartGame from "./startGame";
+import StartGame from "./StartGame";
 
 type Color = "black" | "white";
 
-type Props = {
+interface Props {
     startNewGame: (gameMode: GAMEMODE, side: SIDE, color: Color, label: string, id: number) => boolean;
     error: string,
     centered: boolean;

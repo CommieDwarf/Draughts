@@ -1,27 +1,27 @@
 import React from "react";
-import Board from "./components/board";
-import GameMenu from "./components/gameMenu/gameMenu";
-import Lobby from "./components/lobby/lobby";
-import GamePreview from "./components/gamePreview";
+import Board from "./components/Board";
+import GameMenu from "./components/gameMenu/GameMenu";
+import Lobby from "./components/lobby/Lobby";
+import GamePreview from "./components/GamePreview";
 import Game from "./game";
 import { GAMEMODE } from "./game";
-import InputName from "./components/inputName";
+import InputName from "./components/InputName";
 import { SIDE } from "./config";
-import { IPlayer } from "./components/lobby/lobby";
-import ConnectMenu from "./components/connectMenu";
+import { IPlayer } from "./components/lobby/Lobby";
+import ConnectMenu from "./components/ConnectMenu";
 import reverseChessboard from "./reverseChessboard";
 
 import { socket } from "./main";
 
 type Color = "black" | "white";
-export type Rematch = {
+export interface Rematch {
   requested: boolean;
   player: IPlayer | null;
   gameId: number;
   roomId: string;
 };
 
-type State = {
+interface State {
   name: string;
   games: Game[];
   newGameError: string;
@@ -31,7 +31,7 @@ type State = {
   nameError: string;
   rematches: Rematch[];
 };
-type Props = {};
+interface Props {};
 
 export default class App extends React.Component<Props, State> {
   menuPosition: "center" | "right";
@@ -243,19 +243,19 @@ export default class App extends React.Component<Props, State> {
           />
           <Lobby name={this.state.name} startNewGame={this.startNewGame} />
           {this.state.currentGame && (
-              <Board
-                game={this.state.currentGame}
-                restartGame={this.restartGame}
-                player={player}
-                rematches={this.state.rematches}
-              />
-            )}
+            <Board
+              game={this.state.currentGame}
+              restartGame={this.restartGame}
+              player={player}
+              rematches={this.state.rematches}
+            />
+          )}
           <GameMenu
             startNewGame={this.startNewGame}
             centered={gameMenuCentered}
             error={this.state.newGameError}
             games={this.state.games}
-            />
+          />
         </div>
       );
     } else {

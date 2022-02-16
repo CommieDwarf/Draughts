@@ -38,14 +38,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
-var avatar_1 = __importDefault(require("./avatar"));
+var Avatar_1 = __importDefault(require("./Avatar"));
 var main_1 = require("../../main");
 var Players = /** @class */ (function (_super) {
     __extends(Players, _super);
     function Players(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
+        return _super.call(this, props) || this;
     }
     Players.prototype.render = function () {
         var _this = this;
@@ -58,16 +56,18 @@ var Players = /** @class */ (function (_super) {
                 spanClass = "lobby__player--current";
             }
             var canBeInvited = false;
-            if ((_this.props.roomInvitable || _this.props.gameInvitable) && player.id !== main_1.socket.id && !_this.props.rooms.some(function (room) { return room.name == player.name; })) {
+            if ((_this.props.roomInvitable || _this.props.gameInvitable) &&
+                player.id !== main_1.socket.id &&
+                !_this.props.rooms.some(function (room) { return room.name == player.name; })) {
                 canBeInvited = true;
             }
             return (react_1.default.createElement("div", { className: "lobby__player ", key: id, id: player.name, onClick: _this.props.handlePlayerInvite },
-                react_1.default.createElement(avatar_1.default, { name: name, shape: shape, theme: theme, invitable: canBeInvited }),
+                react_1.default.createElement(Avatar_1.default, { name: name, shape: shape, theme: theme, invitable: canBeInvited }),
                 react_1.default.createElement("span", { className: "player-name " + spanClass }, player.name)));
         });
-        return (react_1.default.createElement(react_1.default.Fragment, null, players));
+        return react_1.default.createElement(react_1.default.Fragment, null, players);
     };
     return Players;
 }(react_1.Component));
 exports.default = Players;
-//# sourceMappingURL=players.js.map
+//# sourceMappingURL=Players.js.map

@@ -27,7 +27,6 @@ var InputName = /** @class */ (function (_super) {
             var target = e.target;
             _this.props.setName(target.value);
         };
-        _this.props = props;
         return _this;
     }
     InputName.prototype.render = function () {
@@ -41,4 +40,4 @@ var InputName = /** @class */ (function (_super) {
     return InputName;
 }(react_1.default.Component));
 exports.default = InputName;
-//# sourceMappingURL=inputName.js.map
+//# sourceMappingURL=InputName.js.map

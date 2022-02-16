@@ -28,22 +28,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var message_1 = __importDefault(require("./message"));
+var Message_1 = __importDefault(require("./Message"));
 var main_1 = require("../../main");
-var emojis_1 = __importDefault(require("./emojis"));
+var Emojis_1 = __importDefault(require("./Emojis"));
+;
+;
+;
+;
 var Chat = /** @class */ (function (_super) {
     __extends(Chat, _super);
     function Chat(props) {
         var _this = _super.call(this, props) || this;
         _this.sendMesage = function () {
             var _a;
-            if (_this.state.message.replace(/\s/g, '').length) {
+            if (_this.state.message.replace(/\s/g, "").length) {
                 main_1.socket.emit("done_writing", _this.props.currentRoom);
-                var message = { content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom };
+                var message = {
+                    content: _this.state.message,
+                    author: _this.props.player,
+                    room: _this.props.currentRoom,
+                };
                 main_1.socket.emit("send_message", message);
                 _this.setState(function (prev) {
                     return {
-                        messages: __spreadArray(__spreadArray([], prev.messages, true), [{ content: _this.state.message, author: _this.props.player, room: _this.props.currentRoom }], false),
+                        messages: __spreadArray(__spreadArray([], prev.messages, true), [
+                            {
+                                content: _this.state.message,
+                                author: _this.props.player,
+                                room: _this.props.currentRoom,
+                            },
+                        ], false),
                         message: "",
                     };
                 });
@@ -75,17 +89,17 @@ var Chat = /** @class */ (function (_super) {
         _this.pickEmoji = function (emoji) {
             _this.setState(function (prevState) {
                 return {
-                    message: prevState.message + " " + emoji + " "
+                    message: prevState.message + " " + emoji + " ",
                 };
             });
         };
         _this.handleOutsideClick = function (event) {
             var target = event.target;
-            if (!target.closest('.lobby__emoji-container') && !target.closest(".lobby__emo-button")) {
+            if (!target.closest(".lobby__emoji-container") &&
+                !target.closest(".lobby__emo-button")) {
                 _this.setState({ showEmojis: false });
             }
         };
-        _this.props = props;
         _this.state = {
             messages: [],
             message: "",
@@ -98,7 +112,9 @@ var Chat = /** @class */ (function (_super) {
     }
     Chat.prototype.scrollToBot = function () {
         if (this.messagesDivRef.current) {
-            this.messagesDivRef.current.scrollBy({ top: this.messagesDivRef.current.scrollHeight + 9999 });
+            this.messagesDivRef.current.scrollBy({
+                top: this.messagesDivRef.current.scrollHeight + 9999,
+            });
         }
     };
     Chat.prototype.receiveMessage = function (message) {
@@ -110,17 +126,15 @@ var Chat = /** @class */ (function (_super) {
         }
         this.setState(function (prevState) {
             return {
-                messages: __spreadArray(__spreadArray([], prevState.messages, true), [message], false)
+                messages: __spreadArray(__spreadArray([], prevState.messages, true), [message], false),
             };
         });
         this.scrollToBot();
     };
     Chat.prototype.setEmojiBottom = function () {
-        var emoContainer = document.getElementById('emoji-container');
-        var msgsDiv = document.getElementById('messages');
         if (this.emoContainerDivRef.current && this.messagesDivRef.current) {
             this.emoContainerDivRef.current.setAttribute("style", "top: " + (this.messagesDivRef.current.scrollHeight - 85) + "px");
-            console.log('to bottom');
+            console.log("to bottom");
         }
     };
     Chat.prototype.componentDidMount = function () {
@@ -144,22 +158,22 @@ var Chat = /** @class */ (function (_super) {
         var _this = this;
         var messages = this.state.messages.map(function (msg, id) {
             if (msg.room.id == _this.props.currentRoom.id) {
-                return (react_1.default.createElement(message_1.default, { author: msg.author, content: msg.content, key: id, thisPlayerId: _this.thisPlayerId }));
+                return (react_1.default.createElement(Message_1.default, { author: msg.author, content: msg.content, key: id, thisPlayerId: _this.thisPlayerId }));
             }
         });
         var emoButtonClass = this.state.showEmojis ? "white color-black" : "";
         return (react_1.default.createElement("div", { className: "lobby__chat" },
             react_1.default.createElement("div", { className: "lobby__messages", ref: this.messagesDivRef },
                 messages,
-                this.props.isWriting && react_1.default.createElement("div", { className: "lobby__someone-writing" },
+                this.props.isWriting && (react_1.default.createElement("div", { className: "lobby__someone-writing" },
                     "Someone is writing",
                     react_1.default.createElement("div", { className: "lobby__dot-wrapper lobby__dot-wrapper--1" },
                         react_1.default.createElement("div", { id: "dot-1", className: "lobby__dot" })),
                     react_1.default.createElement("div", { id: "dot-wrapper-2", className: "lobby__dot-wrapper" },
                         react_1.default.createElement("div", { id: "dot-2", className: "lobby__dot" })),
                     react_1.default.createElement("div", { id: "dot-wrapper-3", className: "lobby__dot-wrapper" },
-                        react_1.default.createElement("div", { id: "dot-3", className: "lobby__dot" }))),
-                this.state.showEmojis && react_1.default.createElement(emojis_1.default, { pickEmoji: this.pickEmoji, emoContainerDivRef: this.emoContainerDivRef })),
+                        react_1.default.createElement("div", { id: "dot-3", className: "lobby__dot" })))),
+                this.state.showEmojis && (react_1.default.createElement(Emojis_1.default, { pickEmoji: this.pickEmoji, emoContainerDivRef: this.emoContainerDivRef }))),
             react_1.default.createElement("input", { className: "lobby__input", type: "text", onChange: this.onChangeHandler, value: this.state.message, autoComplete: "off" }),
             react_1.default.createElement("div", { className: "lobby__emo-button no-select " + emoButtonClass, onClick: this.toggleEmojis },
                 react_1.default.createElement("i", { className: "icon-emo-happy" })),
@@ -169,4 +183,4 @@ var Chat = /** @class */ (function (_super) {
     return Chat;
 }(react_1.default.Component));
 exports.default = Chat;
-//# sourceMappingURL=chat.js.map
+//# sourceMappingURL=Chat.js.map

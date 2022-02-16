@@ -1,7 +1,6 @@
-import { getPreset, SIDE, IPreset} from "./config";
+import { getPreset, SIDE, IPreset } from "./config";
 import { IChessboard } from "./engine";
 import { ISquare } from "./engine";
-
 
 export default function createChessboard(side: SIDE) {
   let chessboard = createBoard();
@@ -34,8 +33,7 @@ function pushSquare(i: number, chessboard: IChessboard) {
     "border-left": false,
     queen: false,
   };
-+
-  chessboard.push(square);
+  +chessboard.push(square);
   return chessboard;
 }
 
@@ -113,6 +111,10 @@ function addStartingPieces(
   return chessboard;
 }
 
-function addPiece(i: number, color: "white" | "black", chessboard: IChessboard) {
+function addPiece(
+  i: number,
+  color: "white" | "black",
+  chessboard: IChessboard
+) {
   chessboard[i]["piece"] = color;
 }

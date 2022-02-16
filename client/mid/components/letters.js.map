@@ -1,0 +1,1 @@
+{"version":3,"file":"letters.js","sourceRoot":"","sources":["../../src/components/letters.ts"],"names":[],"mappings":";;AACA,IAAM,OAAO,GAAG,CAAC,GAAG,EAAE,GAAG,EAAE,GAAG,EAAE,GAAG,EAAE,GAAG,EAAE,GAAG,EAAE,GAAG,EAAE,GAAG,CAAC,CAAC;AACzD,kBAAe,OAAO,CAAC","sourcesContent":["\r\nconst letters = [\"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\"];\r\nexport default letters;"]}

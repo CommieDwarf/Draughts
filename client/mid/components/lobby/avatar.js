@@ -35,6 +35,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
+;
+;
 var Avatar = /** @class */ (function (_super) {
     __extends(Avatar, _super);
     function Avatar(props) {
@@ -45,14 +47,13 @@ var Avatar = /** @class */ (function (_super) {
         _this.onErrorHandler = function () {
             _this.setState({
                 src: "./img/pawn.png",
-                error: true
+                error: true,
             });
         };
-        _this.props = props;
         _this.state = {
             loaded: false,
             error: false,
-            src: "http://tinygraphs.com/" + props.shape + "/{" + props.name + "}?theme=" + props.theme + "&numcolors=4&size=220&fmt=svg"
+            src: "http://tinygraphs.com/" + props.shape + "/{" + props.name + "}?theme=" + props.theme + "&numcolors=4&size=220&fmt=svg",
         };
         return _this;
     }
@@ -68,10 +69,10 @@ var Avatar = /** @class */ (function (_super) {
             inviteClass = "lobby__player--invitable";
         }
         return (react_1.default.createElement("div", { className: divClass + " " + inviteClass },
-            !this.state.loaded && !this.state.error && react_1.default.createElement("img", { className: "lobby__avatar-placeholder " + imgClass, src: "./img/pawn.png" }),
+            !this.state.loaded && !this.state.error && (react_1.default.createElement("img", { className: "lobby__avatar-placeholder " + imgClass, src: "./img/pawn.png" })),
             react_1.default.createElement("img", { className: imgClass, src: this.state.src, onLoad: this.onLoadHandler, onError: this.onErrorHandler })));
     };
     return Avatar;
 }(react_1.Component));
 exports.default = Avatar;
-//# sourceMappingURL=avatar.js.map
+//# sourceMappingURL=Avatar.js.map

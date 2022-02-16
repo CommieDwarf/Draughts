@@ -1,23 +1,16 @@
 import React from "react";
 
-import TopLabel from ".//labels/top-label";
-import LeftLabel from "./labels/left-label";
-import Chessboard from "./board/chessboard";
-import RightLabel from "./labels/right-label";
-import BotLabel from "./labels/bot-label";
-import ContextMenu from "./board/context-menu";
-import WinMenu from "./board/winMenu";
+import Chessboard from "./board/Chessboard";
+import Label from "./Label";
 
 import Game, { GAMEMODE } from "../game";
 import { Color } from "./board/getPieceJSX";
 import { socket } from "../main";
 import { ISquare } from "../engine";
-import { IPlayer } from "./lobby/lobby";
+import { IPlayer } from "./lobby/Lobby";
 import { Rematch } from "../App";
-import gameMenu from "./gameMenu/gameMenu";
-import tsify from "tsify";
 
-export type GameInfo = {
+export interface GameInfo {
   chessboard: ISquare[];
   id: number | undefined;
   turn: "black" | "white";
@@ -25,7 +18,7 @@ export type GameInfo = {
   roomId: string;
 };
 
-type MyState = {
+interface State {
   contextMenu: {
     piece: string;
     queen: boolean;
@@ -36,22 +29,21 @@ type MyState = {
   };
   winner: "" | Color;
 };
-type MyProps = {};
-
-export default class Board extends React.Component<MyProps, MyState> {
-  props: {
-    game: Game;
+interface Props {
+  game: Game;
     restartGame: (gameId: number) => void;
     player: IPlayer;
     rematches: Rematch[];
-  };
+};
+
+export default class Board extends React.Component<Props, State> {
+
 
   interval: ReturnType<typeof setTimeout> | null;
   contextMenuRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: any) {
     super(props);
-    this.props = props;
     this.state = {
       contextMenu: {
         piece: "",
@@ -74,7 +66,6 @@ export default class Board extends React.Component<MyProps, MyState> {
   };
 
   clickHandler = (event: any) => {
-    //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
     this.props.game.clickHandler(event);
     if (this.props.game.gameMode == GAMEMODE.ONLINE && this.props.game.roomId) {
       let gameInfo: GameInfo = {
@@ -146,9 +137,9 @@ export default class Board extends React.Component<MyProps, MyState> {
         onClick={this.clickHandler}
         onContextMenu={this.onContextHandler}
       >
-        <TopLabel />
-        <LeftLabel />
-        <RightLabel />
+        <Label side="top"/>
+        <Label side="left"/>
+        <Label side="right"/>
         <Chessboard
           engine={engine}
           preview={false}
@@ -158,8 +149,7 @@ export default class Board extends React.Component<MyProps, MyState> {
           player={this.props.player}
           rematch={rematch}
         />
-        <BotLabel />
-        
+        <Label side="bot"/>
       </div>
     );
   }

@@ -23,19 +23,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
-var colorSelection_1 = __importDefault(require("./colorSelection"));
+var ColorSelection_1 = __importDefault(require("./ColorSelection"));
+;
 function StartGame(props) {
     var _a = (0, react_1.useState)(""), error = _a[0], setError = _a[1];
-    (0, react_1.useEffect)(function () {
-        if (props.games.length < 4) {
-            setError("");
-        }
-    }, [props.games]);
     return (react_1.default.createElement("div", { className: "game-menu__start-game" },
         react_1.default.createElement("h3", null, props.title),
-        react_1.default.createElement(colorSelection_1.default, { color: "white", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
-        react_1.default.createElement(colorSelection_1.default, { color: "black", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
+        react_1.default.createElement(ColorSelection_1.default, { color: "white", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
+        react_1.default.createElement(ColorSelection_1.default, { color: "black", gameMode: props.gameMode, startNewGame: props.startNewGame, label: props.label, setError: setError }),
         react_1.default.createElement("p", { className: "game-menu__error" }, error)));
 }
 exports.default = StartGame;
-//# sourceMappingURL=startGame.js.map
+//# sourceMappingURL=StartGame.js.map

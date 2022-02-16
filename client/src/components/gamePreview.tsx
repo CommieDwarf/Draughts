@@ -1,25 +1,24 @@
 import React from "react";
-import Chessboard from "./board/chessboard";
+import Chessboard from "./board/Chessboard";
 import Game from "../game";
 
-type Props = {};
-type State = {
+interface Props {
+  games: Game[];
+  switchGame: (id: number) => void;
+  closeGame: (counter: number, gameId?: number) => void;
+  currentGame: Game | null;
+};
+interface State {
   mouseOver: boolean;
 };
 
 export default class GamePreview extends React.Component<Props, State> {
-  props: {
-    games: Game[];
-    switchGame: (id: number) => void;
-    closeGame: (counter: number, gameId?: number) => void;
-    currentGame: Game | null;
-  };
+
 
   gamePreviewRef: React.RefObject<HTMLDivElement>;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
-    this.props = props;
     this.gamePreviewRef = React.createRef();
     this.state = {
       mouseOver: false,
@@ -34,10 +33,6 @@ export default class GamePreview extends React.Component<Props, State> {
     }
     return false;
   };
-
-
-
-
 
   render() {
     const games = this.props.games.map((game, i) => {

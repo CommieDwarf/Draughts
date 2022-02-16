@@ -181,7 +181,8 @@ height: 6px;
     position: relative;
 }
 .lobby__room--global {
-    width: 85px;
+    width: 95px;
+    text-align: center;
 }
 
 .lobby__room {

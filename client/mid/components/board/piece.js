@@ -23,9 +23,7 @@ var getPieceJSX_1 = require("./getPieceJSX");
 var Piece = /** @class */ (function (_super) {
     __extends(Piece, _super);
     function Piece(props) {
-        var _this = _super.call(this, props) || this;
-        _this.props = props;
-        return _this;
+        return _super.call(this, props) || this;
     }
     Piece.prototype.render = function () {
         var piece = (0, getPieceJSX_1.getPieceJSX)(this.props.color, this.props.type, this.props.queen);
@@ -34,4 +32,4 @@ var Piece = /** @class */ (function (_super) {
     return Piece;
 }(react_1.default.Component));
 exports.default = Piece;
-//# sourceMappingURL=piece.js.map
+//# sourceMappingURL=Piece.js.map

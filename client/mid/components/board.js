@@ -30,12 +30,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var top_label_1 = __importDefault(require(".//labels/top-label"));
-var left_label_1 = __importDefault(require("./labels/left-label"));
-var chessboard_1 = __importDefault(require("./board/chessboard"));
-var right_label_1 = __importDefault(require("./labels/right-label"));
-var bot_label_1 = __importDefault(require("./labels/bot-label"));
+var Chessboard_1 = __importDefault(require("./board/Chessboard"));
+var Label_1 = __importDefault(require("./Label"));
 var main_1 = require("../main");
+;
+;
+;
 var Board = /** @class */ (function (_super) {
     __extends(Board, _super);
     function Board(props) {
@@ -46,7 +46,6 @@ var Board = /** @class */ (function (_super) {
             });
         };
         _this.clickHandler = function (event) {
-            //this.setState({contextMenu: {...this.state.contextMenu, showMenu: false}});
             _this.props.game.clickHandler(event);
             if (_this.props.game.gameMode == 2 /* ONLINE */ && _this.props.game.roomId) {
                 var gameInfo = {
@@ -95,7 +94,6 @@ var Board = /** @class */ (function (_super) {
             }
             return false;
         };
-        _this.props = props;
         _this.state = {
             contextMenu: {
                 piece: "",
@@ -119,14 +117,14 @@ var Board = /** @class */ (function (_super) {
         var engine = this.props.game.engine;
         var rematch = this.props.rematches.find(function (r) { return r.gameId == _this.props.game.id; });
         return (react_1.default.createElement("div", { className: "board", onClick: this.clickHandler, onContextMenu: this.onContextHandler },
-            react_1.default.createElement(top_label_1.default, null),
-            react_1.default.createElement(left_label_1.default, null),
-            react_1.default.createElement(right_label_1.default, null),
-            react_1.default.createElement(chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner, restartGame: this.props.restartGame, player: this.props.player, rematch: rematch }),
-            react_1.default.createElement(bot_label_1.default, null)));
+            react_1.default.createElement(Label_1.default, { side: "top" }),
+            react_1.default.createElement(Label_1.default, { side: "left" }),
+            react_1.default.createElement(Label_1.default, { side: "right" }),
+            react_1.default.createElement(Chessboard_1.default, { engine: engine, preview: false, game: this.props.game, setWinner: this.setWinner, restartGame: this.props.restartGame, player: this.props.player, rematch: rematch }),
+            react_1.default.createElement(Label_1.default, { side: "bot" })));
     };
     return Board;
 }(react_1.default.Component));
 exports.default = Board;
 var restartFlag = false;
-//# sourceMappingURL=board.js.map
+//# sourceMappingURL=Board.js.map

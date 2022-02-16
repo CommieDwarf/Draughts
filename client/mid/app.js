@@ -28,15 +28,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var board_1 = __importDefault(require("./components/board"));
-var gameMenu_1 = __importDefault(require("./components/gameMenu/gameMenu"));
-var lobby_1 = __importDefault(require("./components/lobby/lobby"));
-var gamePreview_1 = __importDefault(require("./components/gamePreview"));
+var Board_1 = __importDefault(require("./components/Board"));
+var GameMenu_1 = __importDefault(require("./components/gameMenu/GameMenu"));
+var Lobby_1 = __importDefault(require("./components/lobby/Lobby"));
+var GamePreview_1 = __importDefault(require("./components/GamePreview"));
 var game_1 = __importDefault(require("./game"));
-var inputName_1 = __importDefault(require("./components/inputName"));
-var connectMenu_1 = __importDefault(require("./components/connectMenu"));
+var InputName_1 = __importDefault(require("./components/InputName"));
+var ConnectMenu_1 = __importDefault(require("./components/ConnectMenu"));
 var reverseChessboard_1 = __importDefault(require("./reverseChessboard"));
 var main_1 = require("./main");
+;
+;
+;
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App(props) {
@@ -211,15 +214,15 @@ var App = /** @class */ (function (_super) {
         var gameMenuCentered = this.state.currentGame ? false : true;
         if (this.state.connected) {
             return (react_1.default.createElement("div", { id: "app", className: "app" },
-                react_1.default.createElement(gamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame, currentGame: this.state.currentGame }),
-                react_1.default.createElement(lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
-                this.state.currentGame && (react_1.default.createElement(board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })),
-                react_1.default.createElement(gameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games })));
+                react_1.default.createElement(GamePreview_1.default, { games: games, switchGame: this.switchGame, closeGame: this.closeGame, currentGame: this.state.currentGame }),
+                react_1.default.createElement(Lobby_1.default, { name: this.state.name, startNewGame: this.startNewGame }),
+                this.state.currentGame && (react_1.default.createElement(Board_1.default, { game: this.state.currentGame, restartGame: this.restartGame, player: player, rematches: this.state.rematches })),
+                react_1.default.createElement(GameMenu_1.default, { startNewGame: this.startNewGame, centered: gameMenuCentered, error: this.state.newGameError, games: this.state.games })));
         }
         else {
             return (react_1.default.createElement(react_1.default.Fragment, null,
-                react_1.default.createElement(inputName_1.default, { setName: this.setName, error: this.state.nameError }),
-                react_1.default.createElement(connectMenu_1.default, { connect: this.connect })));
+                react_1.default.createElement(InputName_1.default, { setName: this.setName, error: this.state.nameError }),
+                react_1.default.createElement(ConnectMenu_1.default, { connect: this.connect })));
         }
     };
     return App;

@@ -33,14 +33,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emojis = exports.path = void 0;
+exports.emojiList = exports.path = void 0;
 var react_1 = __importStar(require("react"));
 var path = "./img/emojis/";
 exports.path = path;
-var emojis = ["10of10", "Clap", "Cry", "Facepalm", "Glasses", "Hacker", "Hands", "Help", "Hmmm", "KEKW",
-    "KingCry", "Restless", "Sleep", "Susp", "Think"];
-exports.emojis = emojis;
+var emojiList_1 = __importDefault(require("./emojiList"));
+exports.emojiList = emojiList_1.default;
 var Emojis = /** @class */ (function (_super) {
     __extends(Emojis, _super);
     function Emojis(props) {
@@ -50,15 +52,14 @@ var Emojis = /** @class */ (function (_super) {
             var emoji = target.alt;
             _this.props.pickEmoji(emoji);
         };
-        _this.props = props;
         return _this;
     }
     Emojis.prototype.render = function () {
         var _this = this;
-        var imgs = emojis.map(function (emoji, id) { return react_1.default.createElement("img", { className: "lobby__emoji", key: id, src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler }); });
+        var imgs = emojiList_1.default.map(function (emoji, id) { return (react_1.default.createElement("img", { className: "lobby__emoji", key: id, src: path + emoji + ".png", alt: emoji, onClick: _this.onClickHandler })); });
         return (react_1.default.createElement("div", { className: "lobby__emoji-container", ref: this.props.emoContainerDivRef }, imgs));
     };
     return Emojis;
 }(react_1.Component));
 exports.default = Emojis;
-//# sourceMappingURL=emojis.js.map
+//# sourceMappingURL=Emojis.js.map
