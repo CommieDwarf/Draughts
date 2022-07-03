@@ -5,8 +5,8 @@
 ## Game modes
 1. [x] Local
 2. [x] Bot
-3. [ ] online
+3. [x] online
 
-Now with working chat!
+
 
     
