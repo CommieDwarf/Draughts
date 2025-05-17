@@ -26,10 +26,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CommieDwarf/warcaby.git"
+    "url": "https://github.com/CommieDwarf/draughts.git"
   },
   "bugs": {
-    "url": "https://github.com/CommieDwarf/warcaby/issues"
+    "url": "https://github.com/CommieDwarf/draughts/issues"
   },
-  "homepage": "https://github.com/CommieDwarf/warcaby#readme"
+  "homepage": "https://github.com/CommieDwarf/draughts#readme"
 }
