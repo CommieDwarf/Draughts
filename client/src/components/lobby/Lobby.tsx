@@ -3,7 +3,7 @@ import Chat from "./Chat";
 import { socket } from "../../main";
 import Players from "./Players";
 import Room from "./Room";
-import { GAMEMODE } from "../../game";
+import { GAMEMODE } from "../../Game";
 import { SIDE } from "../../config";
 import GameInviation from "./GameInvitation";
 import GameInvSent from "./GameInvSent";

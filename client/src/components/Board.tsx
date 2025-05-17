@@ -3,10 +3,10 @@ import React from "react";
 import Chessboard from "./board/Chessboard";
 import Label from "./Label";
 
-import Game, { GAMEMODE } from "../game";
+import Game, { GAMEMODE } from "../Game";
 import { Color } from "./board/getPieceJSX";
 import { socket } from "../main";
-import { ISquare } from "../engine";
+import { ISquare } from "../Engine";
 import { IPlayer } from "./lobby/Lobby";
 import { Rematch } from "../App";
 

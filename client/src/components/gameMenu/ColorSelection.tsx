@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { SIDE } from "../../config";
-import { GAMEMODE } from "../../game";
+import { GAMEMODE } from "../../Game";
 type Color = "black" | "white";
 
 interface Props {

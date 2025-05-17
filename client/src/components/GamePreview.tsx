@@ -1,6 +1,6 @@
 import React from "react";
 import Chessboard from "./board/Chessboard";
-import Game from "../game";
+import Game from "../Game";
 
 interface Props {
   games: Game[];

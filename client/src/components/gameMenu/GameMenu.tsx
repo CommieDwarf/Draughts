@@ -1,6 +1,6 @@
 import React from 'react';
 import { SIDE } from '../../config';
-import Game, { GAMEMODE } from '../../game';
+import Game, { GAMEMODE } from '../../Game';
 import StartGame from "./StartGame";
 
 type Color = "black" | "white";

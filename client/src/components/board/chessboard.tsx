@@ -1,9 +1,9 @@
 import React, { ReactElement } from "react";
 import Square from "./Square";
-import { Engine, IChessboard } from "../../engine";
+import { Engine, IChessboard } from "../../Engine";
 import { Color } from "./getPieceJSX";
 import CloseGame from "./CloseGame";
-import Game, { GAMEMODE } from "../../game";
+import Game, { GAMEMODE } from "../../Game";
 import WinMenu from "./WinMenu";
 import { IPlayer } from "../lobby/Lobby";
 import { Rematch } from "../../App";

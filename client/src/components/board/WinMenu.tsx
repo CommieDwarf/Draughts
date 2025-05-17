@@ -1,5 +1,5 @@
 import React from "react";
-import Game, { GAMEMODE } from "../../game";
+import Game, { GAMEMODE } from "../../Game";
 import { socket } from "../../main";
 import { IPlayer } from "../lobby/Lobby";
 import { Rematch } from "../../App";

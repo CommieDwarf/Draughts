@@ -1,6 +1,6 @@
-import { Engine } from "./engine";
-import { IChessboard } from "./engine";
-import { Move } from "./engine";
+import { Engine } from "./Engine";
+import { IChessboard } from "./Engine";
+import { Move } from "./Engine";
 import {sleep} from "./utility";
 
 type Color = "black" | "white";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { SIDE } from "../../config";
-import Game, { GAMEMODE } from "../../game";
+import Game, { GAMEMODE } from "../../Game";
 import ColorSelection from "./ColorSelection";
 
 type Color = "black" | "white";

@@ -1,5 +1,5 @@
-import Bot from "./bot";
-import { Engine } from "./engine";
+import Bot from "./Bot";
+import { Engine } from "./Engine";
 import createChessboard from "./createChessboard";
 import { SIDE } from "./config";
 

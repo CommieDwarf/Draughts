@@ -1,13 +1,12 @@
 import React from "react";
 import Board from "./components/Board";
 import GameMenu from "./components/gameMenu/GameMenu";
-import Lobby from "./components/lobby/Lobby";
+import Lobby, { IPlayer } from "./components/lobby/Lobby";
 import GamePreview from "./components/GamePreview";
-import Game from "./game";
-import { GAMEMODE } from "./game";
+import Game from "./Game";
+import { GAMEMODE } from "./Game";
 import InputName from "./components/InputName";
 import { SIDE } from "./config";
-import { IPlayer } from "./components/lobby/Lobby";
 import ConnectMenu from "./components/ConnectMenu";
 import reverseChessboard from "./reverseChessboard";
 
