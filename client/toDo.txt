@@ -6,7 +6,7 @@
 6. [x] Repair context menu
 7. [x] Repair restart game functionality
 8. [x] Break apart lobby - make Room component
-9. [ ] shadow box support for other browsers
+9. [x] shadow box support for other browsers
 10. [x] Scroll games
 
 In the future

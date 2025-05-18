@@ -1,6 +1,6 @@
 import { getPreset, SIDE, IPreset } from "./config";
-import { IChessboard } from "./engine";
-import { ISquare } from "./engine";
+import { IChessboard } from "./Engine";
+import { ISquare } from "./Engine";
 
 export default function createChessboard(side: SIDE) {
   let chessboard = createBoard();

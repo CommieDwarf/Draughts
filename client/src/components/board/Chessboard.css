@@ -1,0 +1,81 @@
+.chessboard {
+  height: 400px;
+  width: 400px;
+  background-color: black;
+  margin-top: 50px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  border: 3px solid black;
+
+  z-index: 1;
+  position: relative;
+  z-index: 5;
+}
+.chessboard__square {
+  height: 50px;
+  width: 50px;
+  position: relative;
+}
+.chessboard__square--hightlight {
+  border-radius: bb;
+  -webkit-box-shadow: inset 0px 0px 33px 14px rgba(21, 255, 0, 0.41);
+  -moz-box-shadow: inset 0px 0px 33px 14px rgba(21, 255, 0, 0.41);
+  box-shadow: inset 0px 0px 33px 14px rgba(21, 255, 0, 0.41);
+}
+.chessboard__square--white {
+  background-color: white;
+}
+.chessboard__square--black {
+  background-color: black;
+}
+
+.no-bg-animation {
+    box-shadow: 0px 0px 150px 0 lightgreen !important;
+    -webkit-box-shadow: 0px 0px 150px 0 lightgreen !important;
+    -moz-box-shadow: 0px 0px 150px 0 lightgreen !important;
+}
+
+.bg-animation {
+  position: relative;
+  color: lightgreen; /* lub lightgreen */
+  z-index: 1;
+}
+
+.bg-animation--white {
+  color: white;
+}
+
+.bg-animation--green {
+  color: lightgreen;
+}
+
+.bg-animation::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: currentColor;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  animation: fogBlur 8s infinite ease-in-out;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@-moz-document url-prefix() {
+  .bg-animation::before {
+    top: -40px;
+    left: -40px;
+    right: -40px;
+    bottom: -40px;
+    filter: blur(120px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes fogBlur {
+  0%   { opacity: 0.3; filter: blur(40px); }
+  50%  { opacity: 0.6; filter: blur(80px); }
+  100% { opacity: 0.3; filter: blur(40px); }
+}

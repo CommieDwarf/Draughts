@@ -1,5 +1,5 @@
 import React from "react";
-import letters from "./letters";
+import letters from "./Letters";
 
 interface Props {
   side: "top" | "bot" | "left" | "right";

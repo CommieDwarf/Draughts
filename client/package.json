@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watchify": "watchify ./mid/main.js -o ./dist/bundle.js --debug;"
+    "watchify": "watchify ./mid/main.js -o ./dist/bundle.js --debug;",
+    "build": "npx tsc && npx browserify mid/main.js -o ./bundle.js"
   },
   "author": "Konrad Czaczkowski",
   "license": "ISC",
@@ -13,6 +14,8 @@
     "@types/node": "^16.3.2",
     "@types/prop-types": "^15.7.4",
     "@types/react-dom": "^17.0.9",
+    "browserify": "^17.0.1",
+    "cpx": "^1.5.0",
     "typescript": "^4.3.5"
   },
   "dependencies": {
@@ -26,10 +29,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CommieDwarf/warcaby.git"
+    "url": "https://github.com/CommieDwarf/draughts.git"
   },
   "bugs": {
-    "url": "https://github.com/CommieDwarf/warcaby/issues"
+    "url": "https://github.com/CommieDwarf/draughts/issues"
   },
-  "homepage": "https://github.com/CommieDwarf/warcaby#readme"
+  "homepage": "https://github.com/CommieDwarf/draughts#readme"
 }
