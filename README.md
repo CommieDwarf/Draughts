@@ -82,4 +82,4 @@ Still, I was proud when some of my friends lost games against it.
 The main goal of this project was not to create the best bot possible, but to have fun turning strategy into code and improving my development skills.
 
 I rewrote the entire application about three times, improving the code quality and architecture with each iteration.  
-For reference, I kept the old bot logic in `oldEngine.ts` to remind myself how far I’ve come – my first attempt was in pure JavaScript (and yes, it was a mess 😄).
+For reference, I kept the old logic in `old` folder to remind myself how far I’ve come – my first attempt was in pure JavaScript (and yes, it was a mess 😄).
