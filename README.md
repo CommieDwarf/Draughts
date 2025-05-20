@@ -1,5 +1,7 @@
 # Draughts
 
+Demo: https://draughts-react.netlify.app/
+
 One of my first projects made in React (and generally in programming).
 
 This is an implementation of draughts as a web application built with React and Node.js.
